@@ -59,15 +59,25 @@ for (var party of Q.parties) {
 }
 
 
-// set faction strength/dissent to 0
-for (var c of Q.factions) {
-    if (Q[c+'_dissent'] < 0) {
-        Q[c+'_dissent'] = 0;
-    } else if (Q[c+'_dissent'] >= 100) {
-        Q[c+'_dissent'] = 99;
+// Clamp DDP faction values between 0 and 100.
+for (var faction of Q.ddp_factions || Q.factions) {
+    if (Q[faction] === undefined || isNaN(Q[faction])) {
+        Q[faction] = 0;
     }
-    if (Q[c+'_strength'] < 0) {
-        Q[c+'_strength'] = 0;
+    Q[faction] = Math.round(Q[faction]);
+    if (Q[faction] < 0) {
+        Q[faction] = 0;
+    } else if (Q[faction] > 100) {
+        Q[faction] = 100;
+    }
+}
+
+// TODO(DDP factions): Deprecated SPD faction compatibility values are no longer used for aggregation.
+if (Q.deprecated_spd_faction_vars) {
+    for (var spdFactionVar of Q.deprecated_spd_faction_vars) {
+        if (Q[spdFactionVar] === undefined || isNaN(Q[spdFactionVar])) {
+            Q[spdFactionVar] = 0;
+        }
     }
 }
 
@@ -75,20 +85,6 @@ if (Q.unemployed <= 1) {
     Q.unemployed = 1;
 }
 
-// re-calculate dissent.
-var total_strength = Q.left_strength + Q.center_strength + Q.labor_strength + Q.reformist_strength + Q.neorevisionist_strength;
-
-// normalize strength for the different factions
-Q.left_strength = 100*Q.left_strength/total_strength;
-Q.center_strength = 100*Q.center_strength/total_strength;
-Q.labor_strength = 100*Q.labor_strength/total_strength;
-Q.reformist_strength = 100*Q.reformist_strength/total_strength;
-Q.neorevisionist_strength = 100*Q.neorevisionist_strength/total_strength;
-
-var total_dissent = Q.left_strength*Q.left_dissent + Q.center_strength*Q.center_dissent + Q.labor_strength*Q.labor_dissent + Q.reformist_strength*Q.reformist_dissent + Q.neorevisionist_strength*Q.neorevisionist_dissent;
-
-
-Q.dissent = 0.01*total_dissent/total_strength;
 Q.dissent_percent = Q.dissent*100;
 console.log('new dissent: ' + Q.dissent);
 
@@ -97,6 +93,7 @@ if (Q.dissent < 0) {
 } else if (Q.dissent > 0.95) {
     Q.dissent = 0.95;
 }
+Q.dissent_percent = Q.dissent*100;
 
 // 1. update dates
 if (Q.month_actions >= 1) {

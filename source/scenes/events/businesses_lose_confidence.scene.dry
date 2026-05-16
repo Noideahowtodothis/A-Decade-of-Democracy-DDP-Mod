@@ -1,4 +1,5 @@
 title: Businesses Lose Confidence
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 subtitle: Big businesses are losing confidence in our government's policies.
 view-if: (capital_strike_progress >= 6 and capital_strike_progress < 10 and budget > -5) and spd_in_government
 new-page: true
