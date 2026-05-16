@@ -76,8 +76,9 @@ Q.nazi_urgency = 0;
 Q.radicalization = 0;
 // Support for the WTB plan and proto-Keynesian works creation plans in general
 Q.wtb_support = 0;
-// Support for Pacifism within the SPD relative to 1928
-Q.pacifism = 0;
+// Support for Pacifism within the SPD relative to 1928.
+// TODO(culture): This legacy party-campaign meter overlaps with the new public pacifism atmosphere variable; consider consolidating future effects without changing existing balance.
+Q.spd_pacifism = 0;
 // Support for democratic reform within the SPD relative to 1928
 Q.democratization = 0;
 // Support for a communist coalition relative to 1928
@@ -164,13 +165,78 @@ Q.reichswehr_loyalty = 0.2;
 // The state of the country
 
 // popular opinion
-// national ideology - on a binary scale
-// nationalism vs internationalism or pacifism or non-nationalism
+Q.culture_registry_version = 1;
+Q.culture_vars = ['pro_republic', 'pacifism', 'nationalism', 'secularism'];
+Q.culture_var_registry = {
+    pro_republic: {
+        min: 0,
+        max: 100,
+        default: 59,
+        description: 'Support for republican/parliamentary constitutional legitimacy.'
+    },
+    pacifism: {
+        min: 0,
+        max: 100,
+        default: 50,
+        description: 'Public opposition to militarism and support for diplomatic/non-military solutions.'
+    },
+    nationalism: {
+        min: 0,
+        max: 100,
+        default: 60,
+        description: 'Level of nationalist/revanchist political sentiment.'
+    },
+    secularism: {
+        min: 0,
+        max: 100,
+        default: 50,
+        description: 'Support for secular public institutions over confessional/religious influence.'
+    }
+};
+if (typeof window !== 'undefined') {
+window.cultureVarRegistry = Q.culture_var_registry;
+window.clampCultureVars = function(qualities) {
+    for (var i = 0; i < qualities.culture_vars.length; i++) {
+        var cultureVar = qualities.culture_vars[i];
+        var registryEntry = qualities.culture_var_registry[cultureVar];
+        if (typeof qualities[cultureVar] !== 'number' || isNaN(qualities[cultureVar])) {
+            qualities[cultureVar] = registryEntry.default;
+        }
+        qualities[cultureVar] = Math.round(qualities[cultureVar]);
+        if (qualities[cultureVar] < registryEntry.min) {
+            qualities[cultureVar] = registryEntry.min;
+        } else if (qualities[cultureVar] > registryEntry.max) {
+            qualities[cultureVar] = registryEntry.max;
+        }
+    }
+};
+window.modifyCultureVar = function(qualities, cultureVar, amount) {
+    if (qualities.culture_vars.indexOf(cultureVar) < 0) {
+        return;
+    }
+    qualities[cultureVar] += amount;
+    window.clampCultureVars(qualities);
+};
+window.checkCultureVar = function(qualities, cultureVar, operator, target) {
+    var value = qualities[cultureVar];
+    if (operator === '>=') { return value >= target; }
+    if (operator === '>') { return value > target; }
+    if (operator === '<=') { return value <= target; }
+    if (operator === '<') { return value < target; }
+    if (operator === '!=') { return value !== target; }
+    return value === target;
+};
+}
+// Level of nationalist/revanchist political sentiment.
 Q.nationalism = 60;
 // socialism vs capitalism
 Q.socialism = 40;
-// pro-republic vs anti-republic
+// Support for republican/parliamentary constitutional legitimacy.
 Q.pro_republic = 59;
+// Public opposition to militarism and support for diplomatic/non-military solutions.
+Q.pacifism = 50;
+// Support for secular public institutions over confessional/religious influence.
+Q.secularism = 50;
 
 Q.emergency_rule = 0;
 
@@ -406,6 +472,9 @@ Q.judicial_reform = 0;
 Q.bureaucratic_reform = 0;
 Q.military_reform = 0;
 Q.womens_rights = 0;
+// TODO(culture): Family law and abortion-rights politics currently model confessional conflict separately from secularism.
+Q.family_law = 0;
+Q.abortion_rights = 0;
 // level of welfare relative to 1928 (can go negative)
 Q.welfare = 0;
 // level of support for farmers
@@ -440,6 +509,14 @@ Q.eu_progress = 0;
 // science/education
 Q.science = 0;
 Q.education_science = 0;
+// TODO(culture): This legacy binary education-policy flag overlaps with the new secularism atmosphere variable; consider future consolidation without removing current event logic.
+Q.secularized = 0;
+
+// TODO(culture): Concordat progress models church-state relations and may overlap with secularism in a future consolidation pass.
+Q.prussian_concordat_progress = 0;
+Q.prussian_concordat = 0;
+Q.reichskonkordat_progress = 0;
+Q.reichskonkordat = 0;
 
 // Tax rates relative to 1928 baseline
 Q.lower_tax_rates = 0;
