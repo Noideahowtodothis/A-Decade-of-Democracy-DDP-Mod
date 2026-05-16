@@ -285,17 +285,40 @@ set-jump: post_election
 
 @post_election
 on-arrival: {!
-// set congress proportion to votes
-Q.spd_r = Q.spd_votes;
-Q.z_r = Q.z_votes;
-Q.bvp_r = Q.bvp_votes;
-Q.kpd_r = Q.kpd_votes;
-Q.ddp_r = Q.ddp_votes;
-Q.dvp_r = Q.dvp_votes;
-Q.wp_r = Q.wp_votes;
-Q.dnvp_r = Q.dnvp_votes;
-Q.nsdap_r = Q.nsdap_votes;
-Q.other_r = Q.other_votes;
+// Allocate a normalized 100-seat Reichstag with D'Hondt; vote shares remain unchanged.
+var reichstagSeatCount = Q.reichstag_seat_count || 100;
+var threshold = Q.electoral_threshold || 0;
+var eligibleParties = [];
+var allocatedSeats = {};
+for (var party of Q.parties) {
+    var voteShare = Number(Q[party + '_votes']) || 0;
+    var belowThreshold = threshold > 0 && (voteShare < threshold || (threshold > 1 && party == 'other'));
+    allocatedSeats[party] = 0;
+    if (!Q[party + '_banned'] && !belowThreshold && voteShare > 0) {
+        eligibleParties.push(party);
+    }
+}
+for (var seatIndex = 0; seatIndex < reichstagSeatCount; seatIndex++) {
+    var bestParty = null;
+    var bestQuotient = -1;
+    for (var eligibleParty of eligibleParties) {
+        var quotient = Q[eligibleParty + '_votes']/(allocatedSeats[eligibleParty] + 1);
+        if (quotient > bestQuotient) {
+            bestQuotient = quotient;
+            bestParty = eligibleParty;
+        }
+    }
+    if (bestParty === null) {
+        break;
+    }
+    allocatedSeats[bestParty] += 1;
+}
+Q.reichstag_total_seats = 0;
+for (var party of Q.parties) {
+    Q[party + '_r'] = allocatedSeats[party];
+    Q.reichstag_total_seats += Q[party + '_r'];
+}
+Q.reichstag_seat_allocation_valid = Q.reichstag_total_seats == reichstagSeatCount;
 
 // The largest party can only be the NSDAP or the SPD.
 Q.largest_party = 'SPD';

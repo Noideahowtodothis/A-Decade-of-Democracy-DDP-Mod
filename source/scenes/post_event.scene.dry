@@ -98,12 +98,27 @@ if (!Q.culture_var_registry) {
         secularism: {min: 0, max: 100, default: 50, description: 'Support for secular public institutions over confessional/religious influence.'}
     };
 }
-if (!Q.culture_registry_version && typeof Q.spd_pacifism !== 'number') {
-    Q.spd_pacifism = (typeof Q.pacifism === 'number') ? Q.pacifism : 0;
-    Q.pacifism = 50;
+// Migrate legacy save data from the old SPD-specific pacifism meter to the standardized culture variable.
+if (!Q.culture_registry_version && typeof Q.pacifism !== 'number') {
+    Q.pacifism = (typeof Q['spd_pacifism'] === 'number') ? 50 + Q['spd_pacifism'] : Q.culture_var_registry.pacifism.default;
+}
+if (Q['spd_pacifism'] !== undefined) {
+    delete Q['spd_pacifism'];
+}
 Q.pro_republic = Math.round(Q.pro_republic);
 Q.nationalism = Math.round(Q.nationalism);
 Q.socialism = Math.round(Q.socialism);
+
+if (Q.presidential_anger === undefined || Q.presidential_anger === null || isNaN(Q.presidential_anger)) {
+    Q.presidential_anger = 0;
+}
+Q.presidential_anger = Math.round(Q.presidential_anger);
+if (Q.presidential_anger < 0) {
+    Q.presidential_anger = 0;
+}
+if (Q.presidential_anger > 100) {
+    Q.presidential_anger = 100;
+}
 
 // Maintain simplified faction variables for event effects, conditional checks,
 // scripted references, save/load migrations, and debug/state viewers.
@@ -134,6 +149,35 @@ for (var simplified_pair of Q.simplified_faction_pairs) {
     Q[simplified_pair.party + '_faction_total'] = Q[simplified_pair.left] + Q[simplified_pair.right];
     Q[simplified_pair.party + '_faction_balance'] = Q[simplified_pair.right] - Q[simplified_pair.left];
 }
+if (!Q.core_state_variables) {
+    Q.core_state_variables = [];
+}
+if (!Q.scripted_event_variables) {
+    Q.scripted_event_variables = [];
+}
+if (!Q.debug_state_variables) {
+    Q.debug_state_variables = [];
+}
+if (!Q.audit_state_variables) {
+    Q.audit_state_variables = [];
+}
+var requiredStateVariables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism'];
+requiredStateVariables = requiredStateVariables.concat(Q.ddp_factions || [], Q.simplified_faction_variables || []);
+for (var requiredStateVariable of requiredStateVariables) {
+    if (Q.core_state_variables.indexOf(requiredStateVariable) < 0) {
+        Q.core_state_variables.push(requiredStateVariable);
+    }
+    if (Q.scripted_event_variables.indexOf(requiredStateVariable) < 0) {
+        Q.scripted_event_variables.push(requiredStateVariable);
+    }
+    if (Q.debug_state_variables.indexOf(requiredStateVariable) < 0) {
+        Q.debug_state_variables.push(requiredStateVariable);
+    }
+    if (Q.audit_state_variables.indexOf(requiredStateVariable) < 0) {
+        Q.audit_state_variables.push(requiredStateVariable);
+    }
+}
+
 // Represents elite/business confidence in the government and constitutional system.
 // Runtime migration, validation, and clamping for the elite_support gameplay variable.
 if (Q.elite_support === undefined || Q.elite_support === null || isNaN(Q.elite_support)) {
@@ -205,7 +249,7 @@ for (var c of Q.classes) {
     }
     for (var party of Q.parties) {
         Q[c + '_' + party + '_normalized'] = 100*Q[c+'_'+party]/class_votes;
-        Q[c + '_' + party + '_display'] = Math.round(100*Q[c+'_'+party]/class_votes);
+        Q[c + '_' + party + '_display'] = Q[c + '_' + party + '_normalized'].toFixed(1);
     }
 }
 // calculate support for each of the parties
@@ -225,8 +269,9 @@ for (var party of Q.parties) {
 // 2. normalize support (fraction)
 for (var party of Q.parties) {
     Q[party+'_normalized'] = Q[party + '_support']/total_support;
-    Q[party+'_votes'] = Math.round(Q[party+'_normalized']*100);
-    Q[party+'_votes_display'] = Math.round(Q[party+'_normalized']*100);
+    Q[party+'_votes'] = Math.round(Q[party+'_normalized']*1000)/10;
+    Q[party+'_votes_display'] = Q[party+'_votes'].toFixed(1);
+    Q[party+'_votes_disp'] = Q[party+'_votes_display'];
 }
 
 
@@ -332,7 +377,6 @@ if (Q.month_actions >= 1) {
                              'inflation': Q.inflation,
                              'unemployment': Q.unemployed,
                              'elite_support': Q.elite_support});
-                             'unemployment': Q.unemployed});
     if (!Q.political_records) {
         Q.political_records = [];
     }

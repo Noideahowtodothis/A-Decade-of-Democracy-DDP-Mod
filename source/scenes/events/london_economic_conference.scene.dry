@@ -80,7 +80,7 @@ on-arrival: unemployed -= 2 if unemployed >= 10; unemployed -= 1.5 if unemployed
 Wladimir Woytinsky, now part of our delegation to the conference, uses our successful implementation of the WTB-plan in order to argue for loosening currency valuation. The argument is at least somewhat convincing, and an agreement is reached, leading to increased inflation and demand stimulus throughout the world.
 
 @salvage_debts
-choose-if: reparations <= -2 and spd_pacifism >= 3 and (rearmament_exposed or west_relation >= 3)
+choose-if: reparations <= -2 and pacifism >= 53 and (rearmament_exposed or west_relation >= 3)
 unavailable-subtitle: We cannot argue for pacifism in our current state.
 on-arrival: budget += 1; unemployed -= 1 if unemployed >= 10; unemployed -= 1 if unemployed >= 5; inflation += 1 if inflation < 0; new_middle_spd += 4*(1-dissent); workers_spd += 3*(1-dissent); economic_growth += 1 if economic_growth < 3
 
