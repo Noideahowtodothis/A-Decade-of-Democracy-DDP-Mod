@@ -46,8 +46,16 @@ var reichstagSeatCount = Q.reichstag_seat_count || 100;
 var threshold = Q.electoral_threshold || 0;
 var eligibleParties = [];
 var allocatedSeats = {};
+var formatVoteShare = function(value) {
+    return (Math.round((Number(value) || 0)*10)/10).toFixed(1);
+};
 for (var party of Q.parties) {
     Q['old_' + party + '_r'] = Q[party + '_r'];
+    Q['old_' + party + '_votes'] = Number(Q[party + '_result_votes']);
+    if (isNaN(Q['old_' + party + '_votes'])) {
+        Q['old_' + party + '_votes'] = Number(Q[party + '_r']) || 0;
+    }
+    Q['old_' + party + '_votes_disp'] = formatVoteShare(Q['old_' + party + '_votes']);
     var voteShare = Number(Q[party + '_votes']) || 0;
     var banned = Q[party + '_banned'];
     var belowThreshold = threshold > 0 && (voteShare < threshold || (threshold > 1 && party == 'other'));
@@ -75,10 +83,13 @@ Q.reichstag_total_seats = 0;
 for (var party of Q.parties) {
     Q[party + '_r'] = allocatedSeats[party];
     Q.reichstag_total_seats += Q[party + '_r'];
-    Q[party + '_r_disp'] = Q[party + '_r'];
+    Q[party + '_result_votes'] = Q[party + '_votes'];
+    Q[party + '_r_disp'] = Q[party + '_votes_disp'];
     Q['change_' + party + '_r'] = Q[party + '_r'] - Q['old_' + party + '_r'];
-    var sign = Q['change_' + party + '_r'] > 0 ? '+'  : '';
-    Q['str_change_' + party] = sign + Q['change_' + party + '_r'];
+    Q['change_' + party + '_votes'] = Q[party + '_result_votes'] - Q['old_' + party + '_votes'];
+    Q['change_' + party + '_votes_disp'] = formatVoteShare(Q['change_' + party + '_votes']);
+    var sign = Q['change_' + party + '_votes'] > 0 ? '+'  : '';
+    Q['str_change_' + party] = sign + Q['change_' + party + '_votes_disp'];
 }
 Q.reichstag_seat_allocation_valid = Q.reichstag_total_seats == reichstagSeatCount;
 
@@ -175,7 +186,7 @@ if (Q.nsdap_r >= 15) {
 
 var election_result = {'date': new Date(Q.year, Q.month - 1)};
 for (var party of Q.parties) {
-    election_result[party] = Q[party + '_r'];
+    election_result[party] = Q[party + '_result_votes'];
 }
 Q.election_records.push(election_result);
 !}
@@ -279,27 +290,27 @@ go-to: coalition_menu
 
 {!<table>!} 
 {!<tr><td>Party</td><td>Vote share</td><td>% Change</td></tr>!}
-{!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} **SPD:** {!</td><td>!} **[+ spd_r +]%** {!</td><td>!} **[+ str_change_spd +]** {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} **SPD:** {!</td><td>!} **[+ spd_r_disp +]%** {!</td><td>!} **[+ str_change_spd +]** {!</td></tr>!}
 
-[? if sapd_formed : {!<tr><td><div class="box" style='background-color:#C40000'> </div> !}SAPD: {!</td><td>!} [+ sapd_r +]% {!</td><td>!} [+ str_change_sapd +] {!</td></tr>!} ?]
+[? if sapd_formed : {!<tr><td><div class="box" style='background-color:#C40000'> </div> !}SAPD: {!</td><td>!} [+ sapd_r_disp +]% {!</td><td>!} [+ str_change_sapd +] {!</td></tr>!} ?]
 
-{!<tr><td><div class="box" style='background-color:#8B0000'> </div> !}KPD: {!</td><td>!} [+ kpd_r +]% {!</td><td>!} [+ str_change_kpd +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#8B0000'> </div> !}KPD: {!</td><td>!} [+ kpd_r_disp +]% {!</td><td>!} [+ str_change_kpd +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]: {!</td><td>!} [+ ddp_r +]% {!</td><td>!} [+ str_change_ddp +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]: {!</td><td>!} [+ ddp_r_disp +]% {!</td><td>!} [+ str_change_ddp +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z: {!</td><td>!} [+ z_r +]% {!</td><td>!} [+ str_change_z +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z: {!</td><td>!} [+ z_r_disp +]% {!</td><td>!} [+ str_change_z +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#69A2BE'> </div> !} BVP: {!</td><td>!} [+ bvp_r +]% {!</td><td>!} [+ str_change_bvp +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#69A2BE'> </div> !} BVP: {!</td><td>!} [+ bvp_r_disp +]% {!</td><td>!} [+ str_change_bvp +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP: {!</td><td>!} [+ dvp_r +]% {!</td><td>!} [+ str_change_dvp +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP: {!</td><td>!} [+ dvp_r_disp +]% {!</td><td>!} [+ str_change_dvp +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#7A5C20'> </div> !} WP: {!</td><td>!} [+ wp_r +]% {!</td><td>!} [+ str_change_wp +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#7A5C20'> </div> !} WP: {!</td><td>!} [+ wp_r_disp +]% {!</td><td>!} [+ str_change_wp +] {!</td></tr>!}
  
-{!<tr><td><div class="box" style='background-color:#a0a0a0'> </div> !} Others: {!</td><td>!} [+ other_r +] % {!</td><td>!} [+ str_change_other +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#a0a0a0'> </div> !} Others: {!</td><td>!} [+ other_r_disp +]% {!</td><td>!} [+ str_change_other +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP: {!</td><td>!} [+ dnvp_r +]% {!</td><td>!} [+ str_change_dnvp +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP: {!</td><td>!} [+ dnvp_r_disp +]% {!</td><td>!} [+ str_change_dnvp +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP: {!</td><td>!} [+ nsdap_r +]% {!</td><td>!} [+ str_change_nsdap +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP: {!</td><td>!} [+ nsdap_r_disp +]% {!</td><td>!} [+ str_change_nsdap +] {!</td></tr>!}
 {!</table>!}
 
 **Potential coalitions:**
@@ -737,7 +748,7 @@ There is no path to a majority government for now. The scheming around President
 
 @spd_majority
 title: SPD majority alone
-subtitle: SPD: [+ spd_r +]%
+subtitle: SPD: [+ spd_r_disp +]%
 view-if: spd_r >= 50
 on-arrival: chancellor = "Empty"; chancellor_party = "SPD"; spd_in_government = 1; in_spd_majority = 1; pro_republic += 5; foreign_minister_party = "SPD"; foreign_minister = "Breitscheid"; interior_minister_party = "SPD"; interior_minister = "Severing"; justice_minister_party = "SPD"; justice_minister = "Radbruch"; labor_minister_party = "SPD"; labor_minister = "Wissell"; reichswehr_minister_party = "SPD"; reichswehr_minister = "Leber"; economic_minister_party = "SPD"; economic_minister = "Schmidt"; finance_minister_party = "SPD"; finance_minister = "Hilferding"; agriculture_minister_party = "SPD"; agriculture_minister = "Baade"; reichswehr_loyalty -= 0.05; 
 achievement: majority_party

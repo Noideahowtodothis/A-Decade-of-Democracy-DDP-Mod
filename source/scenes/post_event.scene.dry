@@ -249,7 +249,7 @@ for (var c of Q.classes) {
     }
     for (var party of Q.parties) {
         Q[c + '_' + party + '_normalized'] = 100*Q[c+'_'+party]/class_votes;
-        Q[c + '_' + party + '_display'] = Q[c + '_' + party + '_normalized'].toFixed(1);
+        Q[c + '_' + party + '_display'] = (Math.round(Q[c + '_' + party + '_normalized']*10)/10).toFixed(1);
     }
 }
 // calculate support for each of the parties
@@ -269,9 +269,14 @@ for (var party of Q.parties) {
 // 2. normalize support (fraction)
 for (var party of Q.parties) {
     Q[party+'_normalized'] = Q[party + '_support']/total_support;
-    Q[party+'_votes'] = Math.round(Q[party+'_normalized']*1000)/10;
+    Q[party+'_votes_raw'] = Q[party+'_normalized']*100;
+    Q[party+'_votes'] = Math.round(Q[party+'_votes_raw']*10)/10;
     Q[party+'_votes_display'] = Q[party+'_votes'].toFixed(1);
     Q[party+'_votes_disp'] = Q[party+'_votes_display'];
+    if (Q[party + '_result_votes'] === undefined || isNaN(Q[party + '_result_votes'])) {
+        Q[party + '_result_votes'] = Number(Q[party + '_r']) || 0;
+    }
+    Q[party + '_r_disp'] = (Math.round((Number(Q[party + '_result_votes']) || 0)*10)/10).toFixed(1);
 }
 
 

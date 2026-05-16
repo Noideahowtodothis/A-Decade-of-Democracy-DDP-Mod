@@ -20,6 +20,10 @@ if (Q.unions_independent) {
 // update all records
 Q.sapd_r = 0;
 Q.old_sapd_r = 0;
+Q.sapd_result_votes = 0;
+Q.sapd_r_disp = '0.0';
+Q.old_sapd_votes = 0;
+Q.old_sapd_votes_disp = '0.0';
 for (var record of Q.election_records) {
     record['sapd'] = 0;
 }
