@@ -26,6 +26,8 @@ tags: govt_affairs, cabinet
 
 = Education and Science
 
+# TODO: Potential future consolidation with federalism/regional autonomy; preserve existing education responsibility logic for now.
+
 Education in Germany is an area of mixed responsibility between the state governments and the central government. The Weimar Constitution claims that schools are the domain of the central government, but in practice much of it is left to the states, as the Reichstag has historically been unable to pass an education law. Currently, with our control of Prussia and the Chancellorship, we can try to set policy for a large part of the country.
 
 [? if major_curriculum: Current educational curriculum - [+ major_curriculum +], [+ minor_curriculum +] ?]

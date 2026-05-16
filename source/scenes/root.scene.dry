@@ -45,9 +45,23 @@ Q.dues = 2;
 Q.dissent = 0.05;
 Q.dissent_percent = 5;
 
-// factions
-Q.factions = ['left', 'center', 'labor', 'reformist', 'neorevisionist'];
-// should this be normalized to 100%?
+// DDP factions
+Q.factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
+Q.ddp_factions = Q.factions;
+// Left Progressive = culturally progressive republican liberals
+Q.ddp_left_progressive = 0;
+// Laborist = labor-aligned social liberals
+Q.ddp_laborist = 0;
+// Left Liberal = civil-libertarian/liberal reformers
+Q.ddp_left_liberal = 0;
+// Left Bourgeois = moderate bourgeois republicans
+Q.ddp_left_bourgeois = 0;
+// Regionalist = federalist/regional autonomy liberals
+Q.ddp_regionalist = 0;
+
+// Deprecated SPD faction compatibility variables.
+// TODO(DDP factions): Migrate remaining SPD faction effects/conditions to DDP faction variables during future rebalancing.
+Q.deprecated_spd_faction_vars = ['left_strength', 'left_dissent', 'center_strength', 'center_dissent', 'labor_strength', 'labor_dissent', 'reformist_strength', 'reformist_dissent', 'neorevisionist_strength', 'neorevisionist_dissent'];
 Q.left_strength = 15;
 Q.left_dissent = 20;
 Q.center_strength = 30;
@@ -126,6 +140,7 @@ Q.hindenburg_enabled = 0;
 
 
 // Does the SPD lead in Prussia?
+// TODO: Potential future consolidation with federalism once Prussia-state relations mechanics are implemented; preserve existing Prussian control logic for now.
 Q.spd_prussia = 1;
 // Options: spd, z, dnvp, papen, nsdap
 Q.prussian_government = "SPD";
@@ -166,6 +181,9 @@ Q.reichswehr_loyalty = 0.2;
 // The state of the country
 
 // popular opinion
+// Represents support for federal/regional autonomy versus political centralization.
+// TODO: Potential future consolidation with Prussian state-government mechanics, BVP regional politics, state integration, judicial federalization, regional crises, and Prussia-state relations.
+Q.federalism = 50;
 // national ideology - on a binary scale
 // nationalism vs internationalism or pacifism or non-nationalism
 Q.nationalism = 60;
@@ -344,6 +362,15 @@ Q.election_records = [];
 Q.party_support_records = [];
 // inflation and unemployment records
 Q.economic_records = [];
+// federalism/regional-autonomy records for future audit/index views
+Q.political_records = [];
+
+// Variable registries for scripted events, debug/state inspectors, and future audit/index systems.
+Q.core_state_variables = ['federalism'];
+Q.scripted_event_variables = ['federalism'];
+Q.debug_state_variables = ['federalism'];
+Q.audit_state_variables = ['federalism'];
+Q.derived_political_variables = ['federalism_state_integration_pressure', 'federalism_judicial_federalization_readiness', 'federalism_regional_crisis_risk', 'federalism_prussia_state_relations'];
 
 
 // State of the government
@@ -616,6 +643,8 @@ go-to: 1928_main
 
 @1928_hard
 on-arrival: difficulty = 1; resources = 0; dues = 1; rb_strength = 1000; reformist_dissent = 25; left_dissent = 30; labor_dissent = 25; center_dissent = 25; z_relation = 41; bvp_relation = 41; wp_relation = 45; kpd_relation = 16; dvp_relation = 31; budget = 3;
+# TODO(DDP factions): Deprecated SPD faction difficulty tweaks remain for compatibility.
+on-arrival: difficulty = 1; resources = 0; dues = 1; rb_strength = 1000; reformist_dissent = 25; left_dissent = 30; labor_dissent = 25; center_dissent = 25; z_relation = 41; kpd_relation = 16; dvp_relation = 31; budget = 3;
 go-to: 1928_main
 
 @1928_historical
@@ -626,6 +655,7 @@ Q.historical_mode = 1;
 Q.resources = 2;
 Q.dues = 1;
 Q.rb_strength = 2000;
+// TODO(DDP factions): Deprecated SPD faction difficulty tweaks remain for compatibility.
 Q.reformist_dissent = 25;
 Q.left_dissent = 30;
 Q.labor_dissent = 25;

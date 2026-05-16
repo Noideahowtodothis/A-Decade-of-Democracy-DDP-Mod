@@ -1,4 +1,5 @@
 title: High Inflation
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 subtitle: Workers are seeing their purchasing power decline.
 view-if: inflation >= 7 and high_inflation_timer = 0 and spd_in_government
 new-page: true
