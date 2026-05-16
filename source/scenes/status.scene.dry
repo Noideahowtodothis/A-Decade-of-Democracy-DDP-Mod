@@ -33,6 +33,8 @@ Internal dissent: [+ dissent_percent : dissent +]
 
 President: [+ president +]
 
+Presidential anger: [+ presidential_anger : presidential_anger +]
+
 Chancellor: [+ chancellor +] ([+ chancellor_party +])
 
 Reichstag composition:

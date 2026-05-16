@@ -16,6 +16,30 @@
     // Add your custom code here.
   };
 
+  // Represents presidential hostility toward parliamentary governance and the current coalition.
+  window.clampPresidentialAnger = function(value) {
+    value = Number(value) || 0;
+    return Math.max(0, Math.min(100, value));
+  };
+
+  window.setPresidentialAnger = function(value) {
+    var qualities = window.dendryUI.dendryEngine.state.qualities;
+    qualities.presidential_anger = window.clampPresidentialAnger(value);
+    return qualities.presidential_anger;
+  };
+
+  window.increasePresidentialAnger = function(amount) {
+    var qualities = window.dendryUI.dendryEngine.state.qualities;
+    amount = Number(amount) || 0;
+    return window.setPresidentialAnger((qualities.presidential_anger || 0) + amount);
+  };
+
+  window.decreasePresidentialAnger = function(amount) {
+    var qualities = window.dendryUI.dendryEngine.state.qualities;
+    amount = Number(amount) || 0;
+    return window.setPresidentialAnger((qualities.presidential_anger || 0) - amount);
+  };
+
   var TITLE = "Social Democracy: An Alternate History" + '_' + "Autumn Chen";
 
   // the url is a link to game.json

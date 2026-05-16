@@ -1,0 +1,8 @@
+# presidential hostility toward parliamentary governance and the current coalition
+
+(..0) none
+(0..19.999) low
+(19.999..39.999) guarded
+(39.999..59.999) irritated
+(59.999..79.999) hostile
+(79.999..) furious
