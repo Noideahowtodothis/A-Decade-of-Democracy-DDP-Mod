@@ -72,13 +72,51 @@ for (var faction of Q.ddp_factions || Q.factions) {
     }
 }
 
-// TODO(DDP factions): Deprecated SPD faction compatibility values are no longer used for aggregation.
+// Keep deprecated SPD faction compatibility values sane while old scripts still mutate them.
 if (Q.deprecated_spd_faction_vars) {
     for (var spdFactionVar of Q.deprecated_spd_faction_vars) {
         if (Q[spdFactionVar] === undefined || isNaN(Q[spdFactionVar])) {
             Q[spdFactionVar] = 0;
         }
     }
+}
+
+// TODO(DDP factions): Migrate remaining effects that read or write global dissent to DDP faction variables.
+// Until then, derive overall dissent from the live deprecated SPD faction values so vote/support
+// effects that scale by (1-dissent) continue to reflect internal-party unrest.
+var deprecatedSpdFactions = ['left', 'center', 'labor', 'reformist', 'neorevisionist'];
+var totalSpdStrength = 0;
+var totalSpdDissent = 0;
+
+for (var deprecatedSpdFaction of deprecatedSpdFactions) {
+    var spdStrengthVar = deprecatedSpdFaction + '_strength';
+    var spdDissentVar = deprecatedSpdFaction + '_dissent';
+
+    if (Q[spdStrengthVar] === undefined || isNaN(Q[spdStrengthVar]) || Q[spdStrengthVar] < 0) {
+        Q[spdStrengthVar] = 0;
+    }
+    if (Q[spdDissentVar] === undefined || isNaN(Q[spdDissentVar])) {
+        Q[spdDissentVar] = 0;
+    }
+
+    Q[spdDissentVar] = Math.round(Q[spdDissentVar]);
+    if (Q[spdDissentVar] < 0) {
+        Q[spdDissentVar] = 0;
+    } else if (Q[spdDissentVar] >= 100) {
+        Q[spdDissentVar] = 99;
+    }
+
+    totalSpdStrength += Q[spdStrengthVar];
+}
+
+if (totalSpdStrength > 0) {
+    for (var normalizedSpdFaction of deprecatedSpdFactions) {
+        var normalizedSpdStrengthVar = normalizedSpdFaction + '_strength';
+        var normalizedSpdDissentVar = normalizedSpdFaction + '_dissent';
+        Q[normalizedSpdStrengthVar] = 100*Q[normalizedSpdStrengthVar]/totalSpdStrength;
+        totalSpdDissent += Q[normalizedSpdStrengthVar]*Q[normalizedSpdDissentVar];
+    }
+    Q.dissent = 0.01*totalSpdDissent/100;
 }
 
 if (Q.unemployed <= 1) {
