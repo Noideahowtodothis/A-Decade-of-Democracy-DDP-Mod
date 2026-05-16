@@ -1,0 +1,7 @@
+# Represents elite/business confidence in the government and constitutional system.
+
+(..19.9) hostile
+(19.9..39.9) wary
+(39.9..59.9) uncertain
+(59.9..79.9) confident
+(79.9..) strongly supportive

@@ -105,6 +105,28 @@ Q.pro_republic = Math.round(Q.pro_republic);
 Q.nationalism = Math.round(Q.nationalism);
 Q.socialism = Math.round(Q.socialism);
 
+// Represents elite/business confidence in the government and constitutional system.
+// Runtime migration, validation, and clamping for the elite_support gameplay variable.
+if (Q.elite_support === undefined || Q.elite_support === null || isNaN(Q.elite_support)) {
+    Q.elite_support = 50;
+}
+Q.elite_support = Math.max(0, Math.min(100, Q.elite_support));
+if (!Q.gameplay_variable_registry) {
+    Q.gameplay_variable_registry = {};
+}
+Q.gameplay_variable_registry.elite_support = {
+    'default': 50,
+    'min': 0,
+    'max': 100,
+    'description': "Represents elite/business confidence in the government and constitutional system.",
+    'helpers': ['increaseEliteSupport', 'decreaseEliteSupport', 'modifyEliteSupport', 'hasEliteSupportAtLeast', 'hasEliteSupportAtMost']
+};
+Q.gameplay_variable_registry.capital_strike_progress = {
+    'default': 0,
+    'deprecated': true,
+    'replacement': 'elite_support'
+};
+Q.gameplay_variables = Object.keys(Q.gameplay_variable_registry);
 // Represents support for federal/regional autonomy versus political centralization.
 // Quality metadata also clamps federalism to 0-100; this fallback keeps legacy saves and direct debug edits safe.
 if (Q.federalism === undefined) {
@@ -279,6 +301,8 @@ if (Q.month_actions >= 1) {
     Q.party_support_records.push(party_support_results);
     Q.economic_records.push({'date': new Date(Q.year, Q.month - 1),
                              'inflation': Q.inflation,
+                             'unemployment': Q.unemployed,
+                             'elite_support': Q.elite_support});
                              'unemployment': Q.unemployed});
     if (!Q.political_records) {
         Q.political_records = [];
@@ -415,6 +439,38 @@ if (Q.month_actions >= 1) {
     if (Q.inflation >= 8 && Q.pro_republic > 40) {
         Q.pro_republic -= 1;
     }
+
+    ///////////////////////////// change elite/business confidence based on economic and political fundamentals
+    Q.elite_support_pressure = 0;
+    if (Q.upper_tax_rates > 0) {
+        Q.elite_support_pressure -= Q.upper_tax_rates*0.2;
+    }
+    if (Q.tariffs >= 3) {
+        Q.elite_support_pressure -= 0.2;
+    }
+    if (Q.budget <= -2) {
+        Q.elite_support_pressure -= 0.2;
+    }
+    if (Q.budget <= -5) {
+        Q.elite_support_pressure -= 0.3;
+    }
+    if (Q.inflation >= 8) {
+        Q.elite_support_pressure -= 0.3;
+    }
+    if (Q.economic_growth >= 4) {
+        Q.elite_support_pressure += 0.2;
+    }
+    if (Q.economic_growth < -2.5) {
+        Q.elite_support_pressure -= 0.2;
+    }
+    if (Q.pro_republic >= 60) {
+        Q.elite_support_pressure += 0.1;
+    }
+    if (Q.pro_republic < 40) {
+        Q.elite_support_pressure -= 0.1;
+    }
+    Q.elite_support += Q.elite_support_pressure;
+    Q.elite_support = Math.max(0, Math.min(100, Q.elite_support));
 
     ///////////////////////////// change party support based on pro_republic
     // if pro_republic is less than the support of the Weimar coalition, reduce SPD support...
