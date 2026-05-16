@@ -100,6 +100,16 @@ Economic growth: [+ economic_growth_2 +]%
 
 [? if neorevisionism > 0 : Neorevisionist strength: [+ neorevisionist_strength : strength +], dissent: [+ neorevisionist_dissent : dissent +] ?]
 
+= Simplified Party Faction Variables
+
+left = moderate/parliamentary tendency; right = nationalist/authoritarian or radical tendency depending on party.
+
+DNVP: left [+ dnvp_left +], right [+ dnvp_right +]
+
+DVP: left [+ dvp_left +], right [+ dvp_right +]
+
+SPD: left [+ spd_left +], right [+ spd_right +]
+
 
 @paramilitaries
 on-arrival: {!
