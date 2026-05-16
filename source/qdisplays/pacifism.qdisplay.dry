@@ -1,0 +1,7 @@
+# General anti-militarist/diplomatic political atmosphere relative to the 1928 baseline.
+
+(..-3) strongly militarist
+(-3..0.999) baseline
+(0.999..2.999) anti-militarist
+(2.999..4.999) pacifist
+(4.999..) strongly pacifist

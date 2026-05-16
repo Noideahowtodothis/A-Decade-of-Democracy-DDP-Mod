@@ -9,11 +9,28 @@
                  month: 'short',
                  day: 'numeric' };
 
+  var migratePacifismQuality = function(state) {
+    if (state && state.qualities) {
+      var qualities = state.qualities;
+      if (qualities.pacifism === undefined && qualities.spd_pacifism !== undefined) {
+        qualities.pacifism = qualities.spd_pacifism;
+      }
+      if (qualities.spd_pacifism !== undefined) {
+        delete qualities.spd_pacifism;
+      }
+    }
+    return state;
+  };
+
   var main = function(dendryUI) {
     ui = dendryUI;
     game = ui.game;
 
-    // Add your custom code here.
+    migratePacifismQuality(ui.dendryEngine.state);
+    var originalSetState = ui.dendryEngine.setState;
+    ui.dendryEngine.setState = function(state) {
+      return originalSetState.call(this, migratePacifismQuality(state));
+    };
   };
 
   var TITLE = "Social Democracy: An Alternate History" + '_' + "Autumn Chen";
