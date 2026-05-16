@@ -1,4 +1,5 @@
 title: Confronting the Nazis
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true
 is-card: true
 view-if: (nsdap_r >= 10 and nazi_urgency > 1) and confronting_nazis_timer == 0 and iron_front_formed == 0

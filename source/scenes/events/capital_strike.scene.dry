@@ -1,4 +1,5 @@
 title: Capital Strike
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 subtitle: Germany's industries are idling...
 view-if: (capital_strike_progress >= 10 or budget <= -5) and spd_in_government
 new-page: true

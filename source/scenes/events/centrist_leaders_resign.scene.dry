@@ -1,4 +1,5 @@
 title: Centrist leaders resign
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true 
 subtitle: Centrist disagreements with our policies have grown too severe.
 tags: event
