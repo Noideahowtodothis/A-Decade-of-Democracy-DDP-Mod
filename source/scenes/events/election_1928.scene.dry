@@ -40,52 +40,47 @@ Let us hope this does not backfire.
 
 @post_election_1928
 on-arrival: {!
-// set old results
-// election threshold constitutional reform
-// banning parties
-var new_party_sum = 0;
+// set old results and allocate Reichstag seats with D'Hondt.
+// Q[party + '_votes'] remains the one-decimal vote share and is not mutated by seat allocation.
+var reichstagSeatCount = Q.reichstag_seat_count || 100;
+var threshold = Q.electoral_threshold || 0;
+var eligibleParties = [];
+var allocatedSeats = {};
 for (var party of Q.parties) {
     Q['old_' + party + '_r'] = Q[party + '_r'];
-    if (Q.constitutional_reform > 0) {
-        if (Q[party + '_votes'] < Q.electoral_threshold || (Q.electoral_threshold > 1 && party == 'other') || Q[party + '_banned']) {
-            Q[party + '_r'] = 0;
-        } else {
-            Q[party + '_r'] = Q[party + '_votes'];
+    var voteShare = Number(Q[party + '_votes']) || 0;
+    var banned = Q[party + '_banned'];
+    var belowThreshold = threshold > 0 && (voteShare < threshold || (threshold > 1 && party == 'other'));
+    allocatedSeats[party] = 0;
+    if (!banned && !belowThreshold && voteShare > 0) {
+        eligibleParties.push(party);
+    }
+}
+for (var seatIndex = 0; seatIndex < reichstagSeatCount; seatIndex++) {
+    var bestParty = null;
+    var bestQuotient = -1;
+    for (var eligibleParty of eligibleParties) {
+        var quotient = Q[eligibleParty + '_votes']/(allocatedSeats[eligibleParty] + 1);
+        if (quotient > bestQuotient) {
+            bestQuotient = quotient;
+            bestParty = eligibleParty;
         }
-        new_party_sum += Q[party + '_r'];
-    } else {
-        Q[party + '_r'] = Q[party + '_votes'];
     }
-    // if we use decimals, then we might want to truncate the numbers
-    if (Q.use_decimals) {
-        Q[party + '_r_disp'] = Q[party+'_r'].toFixed(1);
-    }  else {
-            Q[party + '_r_disp'] = Q[party+'_r'];
+    if (bestParty === null) {
+        break;
     }
+    allocatedSeats[bestParty] += 1;
+}
+Q.reichstag_total_seats = 0;
+for (var party of Q.parties) {
+    Q[party + '_r'] = allocatedSeats[party];
+    Q.reichstag_total_seats += Q[party + '_r'];
+    Q[party + '_r_disp'] = Q[party + '_r'];
     Q['change_' + party + '_r'] = Q[party + '_r'] - Q['old_' + party + '_r'];
     var sign = Q['change_' + party + '_r'] > 0 ? '+'  : '';
-    Q['str_change_' + party] = sign + Q['change_' + party + '_r'];//.toFixed(1);
+    Q['str_change_' + party] = sign + Q['change_' + party + '_r'];
 }
-// calculate new party sum if electoral reform
-if (Q.electoral_threshold && Q.electoral_threshold > 0) {
-    for (var party of Q.parties) {
-        if (Q[party + '_r'] > 0) {
-            if (Q.use_decimals) {
-                Q[party + '_r'] = Math.round(Q[party + '_r']*1000/new_party_sum)/10;
-            } else {
-                Q[party + '_r'] = Math.round(Q[party + '_r']*100/new_party_sum);
-            }
-        }
-        if (Q.use_decimals) {
-            Q[party + '_r_disp'] = Q[party+'_r'].toFixed(1);
-        } else {
-            Q[party + '_r_disp'] = Q[party+'_r'];
-        }
-        Q['change_' + party + '_r'] = Q[party + '_r'] - Q['old_' + party + '_r'];
-        var sign = Q['change_' + party + '_r'] > 0 ? '+'  : '';
-        Q['str_change_' + party] = sign + Q['change_' + party + '_r'];//.toFixed(1);
-    }
-}
+Q.reichstag_seat_allocation_valid = Q.reichstag_total_seats == reichstagSeatCount;
 
 // get change arrows and signs
 

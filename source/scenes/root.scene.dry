@@ -113,10 +113,7 @@ Q.radicalization = 0;
 // Support for the WTB plan and proto-Keynesian works creation plans in general
 Q.wtb_support = 0;
 // Pacifism is the general anti-militarist/diplomatic political atmosphere relative to 1928.
-Q.pacifism = 0;
-// Support for Pacifism within the SPD relative to 1928.
-// TODO(culture): This legacy party-campaign meter overlaps with the new public pacifism atmosphere variable; consider consolidating future effects without changing existing balance.
-Q.spd_pacifism = 0;
+Q.pacifism = 50;
 // Support for democratic reform within the SPD relative to 1928
 Q.democratization = 0;
 // Support for a communist coalition relative to 1928
@@ -290,6 +287,10 @@ Q.emergency_rule = 0;
 
 // minimum percentage of votes to be represented in the Reichstag
 Q.electoral_threshold = 0;
+// Seat allocation uses a 100-seat normalized Reichstag so existing coalition percentage checks remain valid.
+Q.reichstag_seat_count = 100;
+Q.reichstag_total_seats = 100;
+Q.reichstag_seat_allocation_valid = 1;
 // constitutional reform level
 Q.constitutional_reform = 0;
 // constructive vote of no confidence
@@ -509,10 +510,10 @@ Q.economic_records = [];
 Q.political_records = [];
 
 // Variable registries for scripted events, debug/state inspectors, and future audit/index systems.
-Q.core_state_variables = ['federalism'];
-Q.scripted_event_variables = ['federalism'];
-Q.debug_state_variables = ['federalism'];
-Q.audit_state_variables = ['federalism'];
+Q.core_state_variables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism'];
+Q.scripted_event_variables = Q.core_state_variables.concat(Q.ddp_factions, Q.simplified_faction_variables);
+Q.debug_state_variables = Q.scripted_event_variables;
+Q.audit_state_variables = Q.scripted_event_variables;
 Q.derived_political_variables = ['federalism_state_integration_pressure', 'federalism_judicial_federalization_readiness', 'federalism_regional_crisis_risk', 'federalism_prussia_state_relations'];
 
 
@@ -796,9 +797,8 @@ on-arrival: difficulty = -1; resources = 4; dues = 3; rb_strength = 2500; kpd_re
 go-to: 1928_main
 
 @1928_hard
-on-arrival: difficulty = 1; resources = 0; dues = 1; rb_strength = 1000; reformist_dissent = 25; left_dissent = 30; labor_dissent = 25; center_dissent = 25; z_relation = 41; bvp_relation = 41; wp_relation = 45; kpd_relation = 16; dvp_relation = 31; budget = 3;
 # TODO(DDP factions): Deprecated SPD faction difficulty tweaks remain for compatibility.
-on-arrival: difficulty = 1; resources = 0; dues = 1; rb_strength = 1000; reformist_dissent = 25; left_dissent = 30; labor_dissent = 25; center_dissent = 25; z_relation = 41; kpd_relation = 16; dvp_relation = 31; budget = 3;
+on-arrival: difficulty = 1; resources = 0; dues = 1; rb_strength = 1000; reformist_dissent = 25; left_dissent = 30; labor_dissent = 25; center_dissent = 25; z_relation = 41; bvp_relation = 41; wp_relation = 45; kpd_relation = 16; dvp_relation = 31; budget = 3;
 go-to: 1928_main
 
 @1928_historical

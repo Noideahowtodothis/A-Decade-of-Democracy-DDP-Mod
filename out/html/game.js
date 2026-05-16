@@ -13,13 +13,15 @@
     if (state && state.qualities) {
       var qualities = state.qualities;
       if (qualities.pacifism === undefined && qualities.spd_pacifism !== undefined) {
-        qualities.pacifism = qualities.spd_pacifism;
+        qualities.pacifism = Math.max(0, Math.min(100, 50 + qualities.spd_pacifism));
       }
       if (qualities.spd_pacifism !== undefined) {
         delete qualities.spd_pacifism;
       }
     }
     return state;
+  };
+
   // Represents elite/business confidence in the government and constitutional system.
   window.eliteSupportRegistry = {
     elite_support: {

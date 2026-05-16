@@ -2,6 +2,6 @@ name: Presidential Anger
 initial: 0
 min: 0
 max: 100
-default display: presidential_anger
+default-display: presidential_anger
 
 Represents presidential hostility toward parliamentary governance and the current coalition.
