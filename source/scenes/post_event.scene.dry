@@ -16,6 +16,25 @@ Q.pro_republic = Math.round(Q.pro_republic);
 Q.nationalism = Math.round(Q.nationalism);
 Q.socialism = Math.round(Q.socialism);
 
+// Represents support for federal/regional autonomy versus political centralization.
+// Quality metadata also clamps federalism to 0-100; this fallback keeps legacy saves and direct debug edits safe.
+if (Q.federalism === undefined) {
+    Q.federalism = 50;
+}
+Q.federalism = Math.round(Q.federalism);
+if (Q.federalism < 0) {
+    Q.federalism = 0;
+}
+if (Q.federalism > 100) {
+    Q.federalism = 100;
+}
+
+// Placeholder derived political calculations for future mechanics.
+Q.federalism_state_integration_pressure = 100 - Q.federalism;
+Q.federalism_judicial_federalization_readiness = Q.federalism;
+Q.federalism_regional_crisis_risk = Math.max(0, 50 - Q.federalism);
+Q.federalism_prussia_state_relations = Q.federalism;
+
 if (Q.pro_republic < 0) {
     Q.pro_republic = 0;
 }
@@ -125,6 +144,11 @@ if (Q.month_actions >= 1) {
     Q.economic_records.push({'date': new Date(Q.year, Q.month - 1),
                              'inflation': Q.inflation,
                              'unemployment': Q.unemployed});
+    if (!Q.political_records) {
+        Q.political_records = [];
+    }
+    Q.political_records.push({'date': new Date(Q.year, Q.month - 1),
+                              'federalism': Q.federalism});
     // change economic stats...
     // we're basically implicity drawing a Philips curve
     // budget deficits lead to some inflation

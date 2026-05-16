@@ -75,6 +75,9 @@ Economic growth: [+ economic_growth_2 +]%
 
 = Inter-party Relations
 
+{!<span class="tooltip-text" title="Represents support for federal/regional autonomy versus political centralization.">Federalism</span>!}: [+ federalism : federalism +]
+
+
 
 {!<span class="tooltip-text" title="Center Party">Z</span>!}: [+ z_relation : relationships +]
 

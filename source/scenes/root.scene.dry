@@ -124,6 +124,7 @@ Q.hindenburg_enabled = 0;
 
 
 // Does the SPD lead in Prussia?
+// TODO: Potential future consolidation with federalism once Prussia-state relations mechanics are implemented; preserve existing Prussian control logic for now.
 Q.spd_prussia = 1;
 // Options: spd, z, dnvp, papen, nsdap
 Q.prussian_government = "SPD";
@@ -164,6 +165,9 @@ Q.reichswehr_loyalty = 0.2;
 // The state of the country
 
 // popular opinion
+// Represents support for federal/regional autonomy versus political centralization.
+// TODO: Potential future consolidation with Prussian state-government mechanics, BVP regional politics, state integration, judicial federalization, regional crises, and Prussia-state relations.
+Q.federalism = 50;
 // national ideology - on a binary scale
 // nationalism vs internationalism or pacifism or non-nationalism
 Q.nationalism = 60;
@@ -328,6 +332,15 @@ Q.election_records = [];
 Q.party_support_records = [];
 // inflation and unemployment records
 Q.economic_records = [];
+// federalism/regional-autonomy records for future audit/index views
+Q.political_records = [];
+
+// Variable registries for scripted events, debug/state inspectors, and future audit/index systems.
+Q.core_state_variables = ['federalism'];
+Q.scripted_event_variables = ['federalism'];
+Q.debug_state_variables = ['federalism'];
+Q.audit_state_variables = ['federalism'];
+Q.derived_political_variables = ['federalism_state_integration_pressure', 'federalism_judicial_federalization_readiness', 'federalism_regional_crisis_risk', 'federalism_prussia_state_relations'];
 
 
 // State of the government
