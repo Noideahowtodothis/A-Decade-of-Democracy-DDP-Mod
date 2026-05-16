@@ -3,6 +3,81 @@ new-page: true
 on-arrival: {!
 Q.last_advisor_action = 0;
 Q.last_cabinet_action = 0;
+// Save migration/defaults for parties added after older saves were created.
+var canonicalParties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
+if (!Q.parties) {
+    Q.parties = canonicalParties;
+} else {
+    for (var migrationParty of canonicalParties) {
+        if (Q.parties.indexOf(migrationParty) < 0) {
+            Q.parties.push(migrationParty);
+        }
+    }
+}
+if (Q.bvp_relation == undefined) {
+    Q.bvp_relation = Q.z_relation == undefined ? 50 : Q.z_relation;
+}
+if (Q.wp_relation == undefined) {
+    Q.wp_relation = 50;
+}
+for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap']) {
+    if (Q[relationParty + '_relation'] == undefined) {
+        Q[relationParty + '_relation'] = 50;
+    }
+    Q[relationParty + '_relation'] = Math.max(0, Math.min(100, Q[relationParty + '_relation']));
+}
+var bvpMigrationSupport = {'workers': 0, 'old_middle': 2, 'new_middle': 1, 'rural': 3, 'unemployed': 0, 'catholics': 9};
+var wpMigrationSupport = {'workers': 0, 'old_middle': 4, 'new_middle': 4, 'rural': 1, 'unemployed': 0, 'catholics': 2};
+for (var migrationClass of Q.classes) {
+    if (Q[migrationClass + '_bvp'] == undefined) {
+        Q[migrationClass + '_bvp'] = bvpMigrationSupport[migrationClass] || 0;
+        if (Q[migrationClass + '_z'] != undefined) {
+            Q[migrationClass + '_z'] = Math.max(0, Q[migrationClass + '_z'] - Q[migrationClass + '_bvp']);
+        }
+    }
+    if (Q[migrationClass + '_wp'] == undefined) {
+        Q[migrationClass + '_wp'] = wpMigrationSupport[migrationClass] || 0;
+        if (Q[migrationClass + '_other'] != undefined) {
+            Q[migrationClass + '_other'] = Math.max(0, Q[migrationClass + '_other'] - Q[migrationClass + '_wp']);
+        }
+    }
+}
+if (Q.bvp_r == undefined) {
+    Q.bvp_r = 3;
+    if (Q.z_r != undefined) {
+        Q.z_r = Math.max(0, Q.z_r - 3);
+    }
+}
+if (Q.wp_r == undefined) {
+    Q.wp_r = 0;
+}
+if (Q.old_bvp_r == undefined) {
+    Q.old_bvp_r = Q.bvp_r;
+}
+if (Q.old_wp_r == undefined) {
+    Q.old_wp_r = Q.wp_r;
+}
+if (Q.election_records) {
+    for (var electionRecord of Q.election_records) {
+        if (electionRecord.bvp == undefined) {
+            electionRecord.bvp = 0;
+        }
+        if (electionRecord.wp == undefined) {
+            electionRecord.wp = 0;
+        }
+    }
+}
+if (Q.party_support_records) {
+    for (var supportRecord of Q.party_support_records) {
+        if (supportRecord.bvp == undefined) {
+            supportRecord.bvp = 0;
+        }
+        if (supportRecord.wp == undefined) {
+            supportRecord.wp = 0;
+        }
+    }
+}
+
 // make sure no stat is below 0.
 for (var c of Q.classes) {
     for (var party of Q.parties) {
@@ -26,6 +101,31 @@ if (!Q.culture_var_registry) {
 if (!Q.culture_registry_version && typeof Q.spd_pacifism !== 'number') {
     Q.spd_pacifism = (typeof Q.pacifism === 'number') ? Q.pacifism : 0;
     Q.pacifism = 50;
+Q.pro_republic = Math.round(Q.pro_republic);
+Q.nationalism = Math.round(Q.nationalism);
+Q.socialism = Math.round(Q.socialism);
+
+// Represents support for federal/regional autonomy versus political centralization.
+// Quality metadata also clamps federalism to 0-100; this fallback keeps legacy saves and direct debug edits safe.
+if (Q.federalism === undefined) {
+    Q.federalism = 50;
+}
+Q.federalism = Math.round(Q.federalism);
+if (Q.federalism < 0) {
+    Q.federalism = 0;
+}
+if (Q.federalism > 100) {
+    Q.federalism = 100;
+}
+
+// Placeholder derived political calculations for future mechanics.
+Q.federalism_state_integration_pressure = 100 - Q.federalism;
+Q.federalism_judicial_federalization_readiness = Q.federalism;
+Q.federalism_regional_crisis_risk = Math.max(0, 50 - Q.federalism);
+Q.federalism_prussia_state_relations = Q.federalism;
+
+if (Q.pro_republic < 0) {
+    Q.pro_republic = 0;
 }
 Q.culture_registry_version = 1;
 Q.socialism = Math.round(Q.socialism);
@@ -79,36 +179,70 @@ for (var party of Q.parties) {
 }
 
 
-// set faction strength/dissent to 0
-for (var c of Q.factions) {
-    if (Q[c+'_dissent'] < 0) {
-        Q[c+'_dissent'] = 0;
-    } else if (Q[c+'_dissent'] >= 100) {
-        Q[c+'_dissent'] = 99;
+// Clamp DDP faction values between 0 and 100.
+for (var faction of Q.ddp_factions || Q.factions) {
+    if (Q[faction] === undefined || isNaN(Q[faction])) {
+        Q[faction] = 0;
     }
-    if (Q[c+'_strength'] < 0) {
-        Q[c+'_strength'] = 0;
+    Q[faction] = Math.round(Q[faction]);
+    if (Q[faction] < 0) {
+        Q[faction] = 0;
+    } else if (Q[faction] > 100) {
+        Q[faction] = 100;
     }
+}
+
+// Keep deprecated SPD faction compatibility values sane while old scripts still mutate them.
+if (Q.deprecated_spd_faction_vars) {
+    for (var spdFactionVar of Q.deprecated_spd_faction_vars) {
+        if (Q[spdFactionVar] === undefined || isNaN(Q[spdFactionVar])) {
+            Q[spdFactionVar] = 0;
+        }
+    }
+}
+
+// TODO(DDP factions): Migrate remaining effects that read or write global dissent to DDP faction variables.
+// Until then, derive overall dissent from the live deprecated SPD faction values so vote/support
+// effects that scale by (1-dissent) continue to reflect internal-party unrest.
+var deprecatedSpdFactions = ['left', 'center', 'labor', 'reformist', 'neorevisionist'];
+var totalSpdStrength = 0;
+var totalSpdDissent = 0;
+
+for (var deprecatedSpdFaction of deprecatedSpdFactions) {
+    var spdStrengthVar = deprecatedSpdFaction + '_strength';
+    var spdDissentVar = deprecatedSpdFaction + '_dissent';
+
+    if (Q[spdStrengthVar] === undefined || isNaN(Q[spdStrengthVar]) || Q[spdStrengthVar] < 0) {
+        Q[spdStrengthVar] = 0;
+    }
+    if (Q[spdDissentVar] === undefined || isNaN(Q[spdDissentVar])) {
+        Q[spdDissentVar] = 0;
+    }
+
+    Q[spdDissentVar] = Math.round(Q[spdDissentVar]);
+    if (Q[spdDissentVar] < 0) {
+        Q[spdDissentVar] = 0;
+    } else if (Q[spdDissentVar] >= 100) {
+        Q[spdDissentVar] = 99;
+    }
+
+    totalSpdStrength += Q[spdStrengthVar];
+}
+
+if (totalSpdStrength > 0) {
+    for (var normalizedSpdFaction of deprecatedSpdFactions) {
+        var normalizedSpdStrengthVar = normalizedSpdFaction + '_strength';
+        var normalizedSpdDissentVar = normalizedSpdFaction + '_dissent';
+        Q[normalizedSpdStrengthVar] = 100*Q[normalizedSpdStrengthVar]/totalSpdStrength;
+        totalSpdDissent += Q[normalizedSpdStrengthVar]*Q[normalizedSpdDissentVar];
+    }
+    Q.dissent = 0.01*totalSpdDissent/100;
 }
 
 if (Q.unemployed <= 1) {
     Q.unemployed = 1;
 }
 
-// re-calculate dissent.
-var total_strength = Q.left_strength + Q.center_strength + Q.labor_strength + Q.reformist_strength + Q.neorevisionist_strength;
-
-// normalize strength for the different factions
-Q.left_strength = 100*Q.left_strength/total_strength;
-Q.center_strength = 100*Q.center_strength/total_strength;
-Q.labor_strength = 100*Q.labor_strength/total_strength;
-Q.reformist_strength = 100*Q.reformist_strength/total_strength;
-Q.neorevisionist_strength = 100*Q.neorevisionist_strength/total_strength;
-
-var total_dissent = Q.left_strength*Q.left_dissent + Q.center_strength*Q.center_dissent + Q.labor_strength*Q.labor_dissent + Q.reformist_strength*Q.reformist_dissent + Q.neorevisionist_strength*Q.neorevisionist_dissent;
-
-
-Q.dissent = 0.01*total_dissent/total_strength;
 Q.dissent_percent = Q.dissent*100;
 console.log('new dissent: ' + Q.dissent);
 
@@ -117,6 +251,7 @@ if (Q.dissent < 0) {
 } else if (Q.dissent > 0.95) {
     Q.dissent = 0.95;
 }
+Q.dissent_percent = Q.dissent*100;
 
 // 1. update dates
 if (Q.month_actions >= 1) {
@@ -145,6 +280,11 @@ if (Q.month_actions >= 1) {
     Q.economic_records.push({'date': new Date(Q.year, Q.month - 1),
                              'inflation': Q.inflation,
                              'unemployment': Q.unemployed});
+    if (!Q.political_records) {
+        Q.political_records = [];
+    }
+    Q.political_records.push({'date': new Date(Q.year, Q.month - 1),
+                              'federalism': Q.federalism});
     // change economic stats...
     // we're basically implicity drawing a Philips curve
     // budget deficits lead to some inflation
@@ -278,7 +418,7 @@ if (Q.month_actions >= 1) {
 
     ///////////////////////////// change party support based on pro_republic
     // if pro_republic is less than the support of the Weimar coalition, reduce SPD support...
-    if (Q.pro_republic < (Q.spd_votes + Q.ddp_votes + Q.z_votes - 3)) {
+    if (Q.pro_republic < (Q.spd_votes + Q.ddp_votes + Q.z_votes)) {
         if (Q.new_middle_spd > 0) {
             Q.new_middle_spd -= 5/12;
             Q.new_middle_nsdap += 3/12;
