@@ -9,6 +9,17 @@
                  month: 'short',
                  day: 'numeric' };
 
+  var migratePacifismQuality = function(state) {
+    if (state && state.qualities) {
+      var qualities = state.qualities;
+      if (qualities.pacifism === undefined && qualities.spd_pacifism !== undefined) {
+        qualities.pacifism = qualities.spd_pacifism;
+      }
+      if (qualities.spd_pacifism !== undefined) {
+        delete qualities.spd_pacifism;
+      }
+    }
+    return state;
   // Represents elite/business confidence in the government and constitutional system.
   window.eliteSupportRegistry = {
     elite_support: {
@@ -78,6 +89,11 @@
     ui = dendryUI;
     game = ui.game;
 
+    migratePacifismQuality(ui.dendryEngine.state);
+    var originalSetState = ui.dendryEngine.setState;
+    ui.dendryEngine.setState = function(state) {
+      return originalSetState.call(this, migratePacifismQuality(state));
+    };
     window.ensureEliteSupportState();
   };
 

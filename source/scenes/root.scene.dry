@@ -112,6 +112,8 @@ Q.nazi_urgency = 0;
 Q.radicalization = 0;
 // Support for the WTB plan and proto-Keynesian works creation plans in general
 Q.wtb_support = 0;
+// Pacifism is the general anti-militarist/diplomatic political atmosphere relative to 1928.
+Q.pacifism = 0;
 // Support for Pacifism within the SPD relative to 1928.
 // TODO(culture): This legacy party-campaign meter overlaps with the new public pacifism atmosphere variable; consider consolidating future effects without changing existing balance.
 Q.spd_pacifism = 0;
@@ -273,7 +275,7 @@ window.checkCultureVar = function(qualities, cultureVar, operator, target) {
 // TODO: Potential future consolidation with Prussian state-government mechanics, BVP regional politics, state integration, judicial federalization, regional crises, and Prussia-state relations.
 Q.federalism = 50;
 // national ideology - on a binary scale
-// nationalism vs internationalism or pacifism or non-nationalism
+// nationalism vs internationalism, pacifism, or non-nationalism
 Q.nationalism = 60;
 // socialism vs capitalism
 Q.socialism = 40;

@@ -90,6 +90,8 @@ Economic growth: [+ economic_growth_2 +]%
 
 {!<span class="tooltip-text" title="Represents support for federal/regional autonomy versus political centralization.">Federalism</span>!}: [+ federalism : federalism +]
 
+{!<span class="tooltip-text" title="Pacifism is the general anti-militarist/diplomatic political atmosphere relative to 1928.">Pacifism</span>!}: [+ pacifism : pacifism +]
+
 
 
 {!<span class="tooltip-text" title="Center Party">Z</span>!}: [+ z_relation : relationships +]
@@ -226,6 +228,8 @@ Rural: SPD: [+ rural_spd_display +]%, Z: [+ rural_z_display +]%, BVP: [+ rural_b
 Unemployed: SPD: [+ unemployed_spd_display +]%, Z: [+ unemployed_z_display +]%, BVP: [+ unemployed_bvp_display +]%, KPD: [+ unemployed_kpd_display +]%, [? if not ddp_name: DDP?][? if ddp_name != 0 : [+ ddp_name +]?]: [+ unemployed_ddp_display +]%, DVP: [+ unemployed_dvp_display +]%, WP: [+ unemployed_wp_display +]%; DNVP: [+ unemployed_dnvp_display +]%, NSDAP: [+ unemployed_nsdap_display +]%, Others: [+ unemployed_other_display +]% [? if sapd_formed: SAPD: [+ unemployed_sapd_display +]% ?]
 
 Catholics: SPD: [+ catholics_spd_display +]%, Z: [+ catholics_z_display +]%, BVP: [+ catholics_bvp_display +]%, KPD: [+ catholics_kpd_display +]%, [? if not ddp_name: DDP?][? if ddp_name != 0 : [+ ddp_name +]?]: [+ catholics_ddp_display +]%, DVP: [+ catholics_dvp_display +]%, WP: [+ catholics_wp_display +]%; DNVP: [+ catholics_dnvp_display +]%, NSDAP: [+ catholics_nsdap_display +]%, Others: [+ catholics_other_display +]% [? if sapd_formed: SAPD: [+ catholics_sapd_display +]% ?]
+
+{!<span class="tooltip-text" title="Pacifism is the general anti-militarist/diplomatic political atmosphere relative to 1928.">Pacifism</span>!}: [+ pacifism : pacifism +]
 
 Support for the Republic: [+ pro_republic_disp +]%
 

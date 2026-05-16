@@ -161,6 +161,10 @@ set-jump: election_projections
 
 #Support for Socialism: [+ socialism +]%
 
+#Support for Nationalism: [+ nationalism +]%
+
+{!<span class="tooltip-text" title="Pacifism is the general anti-militarist/diplomatic political atmosphere relative to 1928.">Pacifism</span>!}: [+ pacifism : pacifism +]
+
 Support for the Republic: [+ pro_republic_disp +]%
 
 Public Pacifism: [+ pacifism_disp +]%
