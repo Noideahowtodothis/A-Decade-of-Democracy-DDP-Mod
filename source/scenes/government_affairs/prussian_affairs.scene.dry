@@ -6,6 +6,7 @@ on-arrival: prussian_affairs_timer += 6; month_actions += 1
 tags: govt_affairs
 card-image: img/braun.jpg
 #subtitle: The state government of Prussia is a bulwark of democracy...
+# TODO: Potential future consolidation with federalism, Prussian centralization, state integration, regional crises, and Prussia-state relations; preserve existing Prussian mechanics for now.
 
 = Prussian Affairs
 
@@ -43,7 +44,7 @@ on-arrival: prussian_police_strength += 20
 We have increased the size of the Prussian police.
 
 @bureaucracy
-on-arrival: prussian_police_loyalty += 0.05; nationalism -= 5; pacifism += 1; democratization += 1; pro_republic += 3*(1-dissent); new_middle_spd += 2*(1-dissent) if democratization >= 3; new_middle_spd += 2*(1-dissent) if democratization >= 4; coup_progress += 0.5
+on-arrival: prussian_police_loyalty += 0.05; nationalism -= 5; spd_pacifism += 1; democratization += 1; pro_republic += 3*(1-dissent); new_middle_spd += 2*(1-dissent) if democratization >= 3; new_middle_spd += 2*(1-dissent) if democratization >= 4; coup_progress += 0.5
 
 The bureaucracy is deeply reactionary, and many abuse their power to favor the political right. By removing the pro-monarchy and pro-dictatorship elements, we can democratize it. Some of our opponents claim that we are infringing on individual freedoms, but perhaps the security of the republic requires it.
 

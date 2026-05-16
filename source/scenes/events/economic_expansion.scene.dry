@@ -1,4 +1,5 @@
 title: Economic Expansion
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 subtitle: The economy is growing steadily.
 new-page: true
 view-if: economic_expansion >= 85 and unemployed <= 6 and inflation <= 6 and spd_in_government

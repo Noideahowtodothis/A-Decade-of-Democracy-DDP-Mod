@@ -1,4 +1,5 @@
 title: Emergency budget cuts
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 subtitle: Chancellor [+ chancellor +] proposes significant cuts to social spending.
 new-page: true
 view-if: (year == 1929 or year == 1930 or year == 1931 or year == 1932) and month >= 12 and chancellor == "Brüning" and spd_in_government == 0 and (unemployed > 15 or (year == 1929 and unemployed > 10)) and welfare >= 0 and emergency_cuts_timer = 0

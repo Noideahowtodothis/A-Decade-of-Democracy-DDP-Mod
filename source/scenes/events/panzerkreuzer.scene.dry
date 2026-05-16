@@ -1,4 +1,5 @@
 title: Panzerkreuzer A
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 subtitle: A political question
 tags: event, govt_affairs
 is-card: true
@@ -24,7 +25,7 @@ Our grassroots party members are shocked by our intransigence! Many party branch
 The campaign against the battlecruiser fails, with only the dissident SPD and KPD members voting against. The ship will be built.
 
 @vote_no
-on-arrival: dvp_relation -= 8; z_relation -= 5; pacifism += 1; nationalism -= 5*(1-dissent); coalition_dissent += 1
+on-arrival: dvp_relation -= 8; z_relation -= 5; spd_pacifism += 1; nationalism -= 5*(1-dissent); coalition_dissent += 1
 go-to: vote_no_chancellor if chancellor_party = "SPD"; vote_no_pass if chancellor_party != "SPD"
 
 @vote_no_chancellor

@@ -1,0 +1,9 @@
+name: Federalism
+initial: 50
+min: 0
+max: 100
+default-display: federalism
+
+Represents support for federal/regional autonomy versus political centralization.
+
+Scripted events can modify this quality directly with `federalism += N` or `federalism -= N`; runtime quality bounds clamp it to 0-100. Conditional checks can use normal predicates such as `federalism >= 60`.

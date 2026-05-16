@@ -1,4 +1,5 @@
 title: Businesses Lose Confidence
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 subtitle: Big businesses are losing confidence in our government's policies.
 view-if: (capital_strike_progress >= 6 and capital_strike_progress < 10 and budget > -5) and spd_in_government
 new-page: true
