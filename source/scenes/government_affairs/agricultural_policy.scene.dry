@@ -1,4 +1,5 @@
 title: Agricultural Policy
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 new-page: true
 is-card: true
 on-arrival: agricultural_policy_timer += 6; month_actions += 1

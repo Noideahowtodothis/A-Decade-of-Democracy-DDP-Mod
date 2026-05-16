@@ -190,7 +190,56 @@ Q.nsdap_banned = 0;
 // coups and capital strikes happen when you upset the right or the capitalists too much with your policies. they're an additional check on your policies, when purely electoral checks don't suffice.
 // when coup_progress reaches 10 or capital_strike_progress reaches 10, there's a special event that launches the coup.
 Q.coup_progress = 0;
+// Deprecated: capital_strike_progress is retained for legacy capital-strike event logic.
+// TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 Q.capital_strike_progress = 0;
+// Represents elite/business confidence in the government and constitutional system.
+Q.elite_support = 50;
+Q.elite_support_min = 0;
+Q.elite_support_max = 100;
+Q.elite_support_description = "Represents elite/business confidence in the government and constitutional system.";
+
+Q.gameplay_variable_registry = {
+    'elite_support': {
+        'default': 50,
+        'min': 0,
+        'max': 100,
+        'description': "Represents elite/business confidence in the government and constitutional system.",
+        'helpers': ['increaseEliteSupport', 'decreaseEliteSupport', 'modifyEliteSupport', 'hasEliteSupportAtLeast', 'hasEliteSupportAtMost']
+    },
+    'capital_strike_progress': {
+        'default': 0,
+        'deprecated': true,
+        'replacement': 'elite_support'
+    }
+};
+Q.gameplay_variables = Object.keys(Q.gameplay_variable_registry);
+
+if (typeof globalThis !== "undefined") {
+    globalThis.clampEliteSupport = function(qualities) {
+        if (qualities.elite_support === undefined || qualities.elite_support === null || isNaN(qualities.elite_support)) {
+            qualities.elite_support = 50;
+        }
+        qualities.elite_support = Math.max(0, Math.min(100, qualities.elite_support));
+        return qualities.elite_support;
+    };
+    globalThis.modifyEliteSupport = function(qualities, amount) {
+        qualities.elite_support = (qualities.elite_support === undefined || qualities.elite_support === null || isNaN(qualities.elite_support) ? 50 : qualities.elite_support) + amount;
+        return globalThis.clampEliteSupport(qualities);
+    };
+    globalThis.increaseEliteSupport = function(qualities, amount) {
+        return globalThis.modifyEliteSupport(qualities, Math.abs(amount));
+    };
+    globalThis.decreaseEliteSupport = function(qualities, amount) {
+        return globalThis.modifyEliteSupport(qualities, -Math.abs(amount));
+    };
+    globalThis.hasEliteSupportAtLeast = function(qualities, threshold) {
+        return globalThis.clampEliteSupport(qualities) >= threshold;
+    };
+    globalThis.hasEliteSupportAtMost = function(qualities, threshold) {
+        return globalThis.clampEliteSupport(qualities) <= threshold;
+    };
+}
 
 Q.budget = 4;
 

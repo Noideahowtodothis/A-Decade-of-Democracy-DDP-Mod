@@ -19,6 +19,10 @@ Q.catholics = 30;
 
 Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
 Q.parties = ['spd', 'kpd', 'z', 'ddp', 'dvp', 'dnvp', 'nsdap', 'other'];
+// Represents elite/business confidence in the government and constitutional system.
+Q.elite_support = 50;
+Q.elite_support_min = 0;
+Q.elite_support_max = 100;
 
 // Support for party by social group
 // they don't have to sum to 100 since the electoral calculations will be normalized.
@@ -92,6 +96,10 @@ Q.catholics = 30;
 
 Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
 Q.parties = ['spd', 'kpd', 'z', 'ddp', 'dvp', 'dnvp', 'nsdap', 'other'];
+// Represents elite/business confidence in the government and constitutional system.
+Q.elite_support = 50;
+Q.elite_support_min = 0;
+Q.elite_support_max = 100;
 
 // Support for party by social group
 // they don't have to sum to 100 since the electoral calculations will be normalized.
@@ -174,6 +182,10 @@ Q.catholics = 30;
 
 Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
 Q.parties = ['spd', 'kpd', 'z', 'ddp', 'dvp', 'dnvp', 'nsdap', 'other'];
+// Represents elite/business confidence in the government and constitutional system.
+Q.elite_support = 50;
+Q.elite_support_min = 0;
+Q.elite_support_max = 100;
 
 // Support for party by social group
 // they don't have to sum to 100 since the electoral calculations will be normalized.

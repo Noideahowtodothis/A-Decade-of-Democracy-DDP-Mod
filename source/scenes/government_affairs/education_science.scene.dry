@@ -1,4 +1,5 @@
 title: Education & Science
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 new-page: true
 is-card: true
 view-if: spd_in_government and spd_prussia and chancellor_party = "SPD" and education_science_timer = 0 and (black_thursday_seen = 0 or return_to_normalcy = 1)

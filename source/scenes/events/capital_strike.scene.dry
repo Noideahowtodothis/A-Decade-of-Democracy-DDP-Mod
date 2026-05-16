@@ -1,4 +1,5 @@
 title: Capital Strike
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 subtitle: Germany's industries are idling...
 view-if: (capital_strike_progress >= 10 or budget <= -5) and spd_in_government
 new-page: true

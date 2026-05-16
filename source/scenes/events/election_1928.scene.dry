@@ -1,4 +1,5 @@
 title: Reichstag Elections
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 new-page: true
 tags: event
 priority: -1

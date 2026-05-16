@@ -1,4 +1,5 @@
 title: Economic Democracy
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 is-card: true
 new-page: true
 on-arrival: economic_democracy_timer += 10; month_actions += 1
