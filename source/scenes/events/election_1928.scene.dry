@@ -1,4 +1,5 @@
 title: Reichstag Elections
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true
 tags: event
@@ -100,20 +101,22 @@ if (Q.kpd_r >= Q.spd_r && Q.kpd_r >= Q.nsdap_r) {
 }
 
 // coalitions
-Q.weimar_coalition = Q.spd_r + Q.ddp_r + Q.z_r - 3;
-Q.grand_coalition = Q.spd_r + Q.ddp_r + Q.z_r + Q.dvp_r;
-Q.bourgeois_coalition = Q.ddp_r + Q.z_r + Q.dvp_r + Q.other_r;
-Q.center_right_coalition = Q.z_r + Q.ddp_r + Q.dvp_r + Q.other_r + Q.dnvp_r;
-Q.right_coalition = Q.z_r + Q.dvp_r + Q.other_r + Q.dnvp_r;
+Q.weimar_coalition = Q.spd_r + Q.ddp_r + Q.z_r;
+// TODO: implement BVP relationship to Z and Bavarian/federalist autonomy behavior in coalition negotiations.
+Q.grand_coalition = Q.spd_r + Q.ddp_r + Q.z_r + Q.bvp_r + Q.dvp_r;
+Q.bourgeois_coalition = Q.ddp_r + Q.z_r + Q.bvp_r + Q.dvp_r + Q.wp_r + Q.other_r;
+Q.center_right_coalition = Q.z_r + Q.bvp_r + Q.ddp_r + Q.dvp_r + Q.wp_r + Q.other_r + Q.dnvp_r;
+// TODO: implement WP coalition compatibility beyond basic center/right placeholders.
+Q.right_coalition = Q.z_r + Q.bvp_r + Q.dvp_r + Q.wp_r + Q.other_r + Q.dnvp_r;
 Q.far_right_coalition = Q.dnvp_r + Q.nsdap_r;
 Q.left_coalition = Q.spd_r + Q.kpd_r + Q.sapd_r;
 // this is an absurd concept lol
-Q.popular_front_coalition = Q.spd_r + Q.kpd_r + Q.z_r + Q.ddp_r - 3 + Q.sapd_r;
+Q.popular_front_coalition = Q.spd_r + Q.kpd_r + Q.z_r + Q.ddp_r + Q.sapd_r;
 Q.anti_democratic_coalition = Q.kpd_r + Q.nsdap_r + Q.dnvp_r;
 // aka everyone except nazi, kpd, dnvp
-Q.neo_weimar_coalition = Q.spd_r + Q.ddp_r + Q.z_r + Q.dvp_r + Q.other_r;
+Q.neo_weimar_coalition = Q.spd_r + Q.ddp_r + Q.z_r + Q.bvp_r + Q.dvp_r + Q.wp_r + Q.other_r;
 // Hitler + Right-wing parties (only comes into effect if you've alienated Z too badly)
-Q.hitler_right_coalition = Q.z_r + Q.dnvp_r + Q.nsdap_r;
+Q.hitler_right_coalition = Q.z_r + Q.bvp_r + Q.dnvp_r + Q.nsdap_r;
 // Progressive coalition isn't going to be implemented as a distinct coalition but it's the coalition that lets you pass improved women's rights/gay rights
 Q.progressive_coalition = Q.spd_r + Q.kpd_r + Q.ddp_r + Q.sapd_r;
 
@@ -169,7 +172,6 @@ Q.reichswehr_goal_completed = 0;
 
 Q.strike_term_seen = 0;
 
-Q.z_minus_bvp_r = Q.z_r - 3;
 
 // understanding the enemy
 if (Q.nsdap_r >= 15) {
@@ -217,19 +219,25 @@ data = data.concat([
         "id": "z",
         "legend": "Center",
         "name": "Center",
-        "seats": Math.round((Q.z_r - 3)*5),
+        "seats": Math.round(Q.z_r*5),
     },
     {
         "id": "bvp",
         "legend": "BVP",
         "name": "BVP",
-        "seats": Math.round(3*5),
+        "seats": Math.round(Q.bvp_r*5),
     },
     {
         "id": "dvp",
         "legend": "DVP",
         "name": "DVP",
         "seats": Math.round(Q.dvp_r*5),
+    },
+    {
+        "id": "wp",
+        "legend": "WP",
+        "name": "WP",
+        "seats": Math.round(Q.wp_r*5),
     },
     {
         "id": "other",
@@ -284,11 +292,13 @@ go-to: coalition_menu
 
 {!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]: {!</td><td>!} [+ ddp_r +]% {!</td><td>!} [+ str_change_ddp +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z: {!</td><td>!} [+ z_minus_bvp_r +]% {!</td><td>!} [+ str_change_z +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z: {!</td><td>!} [+ z_r +]% {!</td><td>!} [+ str_change_z +] {!</td></tr>!}
 
-{!<tr><td><div class="box" style='background-color:#69A2BE'> </div> !} BVP: {!</td><td>!} 3% {!</td><td>!} 0 {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#69A2BE'> </div> !} BVP: {!</td><td>!} [+ bvp_r +]% {!</td><td>!} [+ str_change_bvp +] {!</td></tr>!}
 
 {!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP: {!</td><td>!} [+ dvp_r +]% {!</td><td>!} [+ str_change_dvp +] {!</td></tr>!}
+
+{!<tr><td><div class="box" style='background-color:#7A5C20'> </div> !} WP: {!</td><td>!} [+ wp_r +]% {!</td><td>!} [+ str_change_wp +] {!</td></tr>!}
  
 {!<tr><td><div class="box" style='background-color:#a0a0a0'> </div> !} Others: {!</td><td>!} [+ other_r +] % {!</td><td>!} [+ str_change_other +] {!</td></tr>!}
 
@@ -303,9 +313,9 @@ Weimar Coalition (SPD + Z + [+ ddp_name +]): [+ weimar_coalition +]%
 
 Grand Coalition (SPD + Z + BVP + [+ ddp_name +] + DVP): [+ grand_coalition +]%
 
-Bourgeois Coalition (Z + BVP + [+ ddp_name +] + DVP + Others): [+ bourgeois_coalition +]%
+Bourgeois Coalition (Z + BVP + [+ ddp_name +] + DVP + WP + Others): [+ bourgeois_coalition +]%
 
-Right-wing Coalition (Z + BVP + DVP + Others + DNVP): [+ right_coalition +]%
+Right-wing Coalition (Z + BVP + DVP + WP + Others + DNVP): [+ right_coalition +]%
 
 [? if nazi_urgency <= 1 and nsdap_r >= 15 : The rapid rise in NSDAP votes is extremely worrying. Many had believed that the party was moribund; now, some of us consider it to be the greatest threat to democracy in Germany. ?]
 
@@ -536,12 +546,12 @@ In response to the KPD's entrance into the government, the right-wing immediatel
 
 @right_coalition
 title: Refuse to form a government, so that a right-wing coalition may be formed.
-subtitle: Z + BVP + DVP + DNVP + Others ([+ right_coalition +]%)
+subtitle: Z + BVP + DVP + WP + DNVP + Others ([+ right_coalition +]%)
 unavailable-subtitle: The DNVP is not interested in a coalition with the Center.
 view-if: right_coalition >= 50
 choose-if: year < 1929
 
-There are enough votes for a right-wing coalition of the Center (+ BVP), DVP, DNVP, and minor conservative parties. [? if largest_party == "SPD": However, this will be seen as abdicating responsibility for government, as we are the largest party. ?]
+There are enough votes for a right-wing coalition of the Center, BVP, DVP, WP, DNVP, and minor conservative parties. [? if largest_party == "SPD": However, this will be seen as abdicating responsibility for government, as we are the largest party. ?]
 
 - @right_coalition_sure: Yes, we will abdicate our responsibility for government formation, and let a right-wing coalition take power.
 - @grand_coalition: Actually, we wish to form a grand coalition after all.
@@ -618,10 +628,10 @@ The third option is to have new elections.
 
 @new_grand_coalition
 title: A "New Grand Coalition" of all the constitutional parties?
-subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + Others ([+ neo_weimar_coalition +]%)
+subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + WP + Others ([+ neo_weimar_coalition +]%)
 view-if: neo_weimar_coalition >= 50 and grand_coalition < 50
-choose-if: z_relation >= 50 and dvp_relation >= 30
-unavailable-subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + Others ([+ neo_weimar_coalition +]%) - [? if z_relation < 50 : We do not have adequate relations with the Center Party. ?][? if dvp_relation < 30 : We do not have adequate relations with the DVP. ?]
+choose-if: z_relation >= 50 and bvp_relation >= 40 and dvp_relation >= 30
+unavailable-subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + WP + Others ([+ neo_weimar_coalition +]%) - [? if z_relation < 50 : We do not have adequate relations with the Center Party. ?][? if bvp_relation < 40 : We do not have adequate relations with the BVP. ?][? if dvp_relation < 30 : We do not have adequate relations with the DVP. ?]
 
 How do we convince vehemently anti-socialist parties to allow us to form a majority coalition? Our largely benevolent relations with the Center and DVP may allow us some leverage.
 
@@ -659,7 +669,7 @@ We have assembled a new coalition under Otto Braun.
 
 @unity_government
 title: The Center Party offers a "Government of National Unity" under Chancellor Joseph Wirth.
-subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + Others ([+ neo_weimar_coalition +]%)
+subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + WP + Others ([+ neo_weimar_coalition +]%)
 view-if: z_party_leader == "Joos" and neo_weimar_coalition >= 50 and weimar_coalition < 50 and z_relation >= 10
 
 The Center Party leader, Joseph Joos, clearly sees the threat from the ascension of the anti-democratic extremist parties, and thus tries to negotiate a "Government of National Unity" to save the republic. This coalition would be led by Joseph Wirth, a left-leaning member of the Center Party and former chancellor, and would encompass all of the constitutional parties. Our role in this government might be limited, however.
@@ -1173,7 +1183,7 @@ We have promised to let the Center have more influence in the government in resp
 @z_chancellor
 title: Let the Center Party have their chancellor.
 subtitle: Heinrich Brüning will be chancellor. This is unexpected and will cause internal dissent, but may give us a better position in negotiating for other cabinet positions.
-on-arrival: left_dissent += 5; center_dissent += 5; labor_dissent += 5; z_relation += 10; dvp_relation += 5; kpd_relation -= 5; in_grand_coalition = 1 if in_weimar_coalition == 0; chancellor = "Brüning"; chancellor_party = "Z"; spd_in_government = 1; leverage += 5
+on-arrival: left_dissent += 5; center_dissent += 5; labor_dissent += 5; z_relation += 10; bvp_relation += 8; dvp_relation += 5; wp_relation += 3; kpd_relation -= 5; in_grand_coalition = 1 if in_weimar_coalition == 0; chancellor = "Brüning"; chancellor_party = "Z"; spd_in_government = 1; leverage += 5
 go-to: ministries
 
 This is highly unexpected, and many in the left and center of our party are criticizing this decision.
@@ -1185,7 +1195,7 @@ This is highly unexpected, and many in the left and center of our party are crit
 title: Let Joseph Wirth of the Center Party be chancellor.
 view-if: z_party_leader == "Joos"
 subtitle: Wirth is on the left wing of the Center Party. This may give us a better position in negotiating for other cabinet positions.
-on-arrival: left_dissent += 2; z_relation += 6; ddp_relation += 3; kpd_relation -= 5; in_grand_coalition = 1 if in_weimar_coalition == 0; chancellor = "Wirth"; chancellor_party = "Z"; spd_in_government = 1; leverage += 5
+on-arrival: left_dissent += 2; z_relation += 6; bvp_relation += 5; ddp_relation += 3; kpd_relation -= 5; in_grand_coalition = 1 if in_weimar_coalition == 0; chancellor = "Wirth"; chancellor_party = "Z"; spd_in_government = 1; leverage += 5
 go-to: ministries
 
 

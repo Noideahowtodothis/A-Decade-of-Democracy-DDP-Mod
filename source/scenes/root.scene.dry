@@ -73,6 +73,28 @@ Q.reformist_dissent = 5;
 Q.neorevisionist_strength = 5;
 Q.neorevisionist_dissent = 10;
 
+// Simplified faction variables for party-level internal tendencies.
+// left = moderate/parliamentary tendency.
+// right = nationalist/authoritarian or radical tendency depending on party.
+// These qualities are registered separately with 0..100 clamps and can be
+// modified by events, checked in conditionals, or referenced from scripts.
+Q.simplified_faction_variables = ['dnvp_left', 'dnvp_right', 'dvp_left', 'dvp_right', 'spd_left', 'spd_right'];
+Q.simplified_faction_pairs = [
+    {party: 'dnvp', left: 'dnvp_left', right: 'dnvp_right'},
+    {party: 'dvp', left: 'dvp_left', right: 'dvp_right'},
+    {party: 'spd', left: 'spd_left', right: 'spd_right'}
+];
+Q.simplified_faction_axis = {
+    left: 'moderate/parliamentary tendency',
+    right: 'nationalist/authoritarian or radical tendency depending on party'
+};
+Q.dnvp_left = 50;
+Q.dnvp_right = 50;
+Q.dvp_left = 50;
+Q.dvp_right = 50;
+Q.spd_left = 50;
+Q.spd_right = 50;
+
 // secret events...
 Q.unions_independent = 0;
 Q.centrists_resign = 0;
@@ -92,6 +114,9 @@ Q.radicalization = 0;
 Q.wtb_support = 0;
 // Pacifism is the general anti-militarist/diplomatic political atmosphere relative to 1928.
 Q.pacifism = 0;
+// Support for Pacifism within the SPD relative to 1928.
+// TODO(culture): This legacy party-campaign meter overlaps with the new public pacifism atmosphere variable; consider consolidating future effects without changing existing balance.
+Q.spd_pacifism = 0;
 // Support for democratic reform within the SPD relative to 1928
 Q.democratization = 0;
 // Support for a communist coalition relative to 1928
@@ -116,12 +141,14 @@ Q.moderate_plan_adopted = 0;
 
 // inter-party relations
 Q.z_relation = 50;
+Q.bvp_relation = 50;
+Q.wp_relation = 50;
 Q.kpd_relation = 25;
 Q.ddp_relation = 60;
 Q.dvp_relation = 35;
 // DNVP and NSDAP are invariably hostile
-Q.DNVP_relation = 10;
-Q.NSDAP_relation = 0;
+Q.dnvp_relation = 10;
+Q.nsdap_relation = 0;
 
 Q.kpd_leader = "Thälmann";
 // alternative is the Conciliators as party leader
@@ -133,6 +160,8 @@ Q.nsdap_leader = "Hitler";
 
 // hmm... maybe we can play nice with Hindenburg???
 Q.hindenburg_relation = 25;
+// Represents presidential hostility toward parliamentary governance and the current coalition.
+Q.presidential_anger = 0;
 // whether or not hindenburg can dismiss the government.
 Q.hindenburg_enabled = 0;
 
@@ -179,6 +208,69 @@ Q.reichswehr_loyalty = 0.2;
 // The state of the country
 
 // popular opinion
+Q.culture_registry_version = 1;
+Q.culture_vars = ['pro_republic', 'pacifism', 'nationalism', 'secularism'];
+Q.culture_var_registry = {
+    pro_republic: {
+        min: 0,
+        max: 100,
+        default: 59,
+        description: 'Support for republican/parliamentary constitutional legitimacy.'
+    },
+    pacifism: {
+        min: 0,
+        max: 100,
+        default: 50,
+        description: 'Public opposition to militarism and support for diplomatic/non-military solutions.'
+    },
+    nationalism: {
+        min: 0,
+        max: 100,
+        default: 60,
+        description: 'Level of nationalist/revanchist political sentiment.'
+    },
+    secularism: {
+        min: 0,
+        max: 100,
+        default: 50,
+        description: 'Support for secular public institutions over confessional/religious influence.'
+    }
+};
+if (typeof window !== 'undefined') {
+window.cultureVarRegistry = Q.culture_var_registry;
+window.clampCultureVars = function(qualities) {
+    for (var i = 0; i < qualities.culture_vars.length; i++) {
+        var cultureVar = qualities.culture_vars[i];
+        var registryEntry = qualities.culture_var_registry[cultureVar];
+        if (typeof qualities[cultureVar] !== 'number' || isNaN(qualities[cultureVar])) {
+            qualities[cultureVar] = registryEntry.default;
+        }
+        qualities[cultureVar] = Math.round(qualities[cultureVar]);
+        if (qualities[cultureVar] < registryEntry.min) {
+            qualities[cultureVar] = registryEntry.min;
+        } else if (qualities[cultureVar] > registryEntry.max) {
+            qualities[cultureVar] = registryEntry.max;
+        }
+    }
+};
+window.modifyCultureVar = function(qualities, cultureVar, amount) {
+    if (qualities.culture_vars.indexOf(cultureVar) < 0) {
+        return;
+    }
+    qualities[cultureVar] += amount;
+    window.clampCultureVars(qualities);
+};
+window.checkCultureVar = function(qualities, cultureVar, operator, target) {
+    var value = qualities[cultureVar];
+    if (operator === '>=') { return value >= target; }
+    if (operator === '>') { return value > target; }
+    if (operator === '<=') { return value <= target; }
+    if (operator === '<') { return value < target; }
+    if (operator === '!=') { return value !== target; }
+    return value === target;
+};
+}
+// Level of nationalist/revanchist political sentiment.
 // Represents support for federal/regional autonomy versus political centralization.
 // TODO: Potential future consolidation with Prussian state-government mechanics, BVP regional politics, state integration, judicial federalization, regional crises, and Prussia-state relations.
 Q.federalism = 50;
@@ -187,8 +279,12 @@ Q.federalism = 50;
 Q.nationalism = 60;
 // socialism vs capitalism
 Q.socialism = 40;
-// pro-republic vs anti-republic
+// Support for republican/parliamentary constitutional legitimacy.
 Q.pro_republic = 59;
+// Public opposition to militarism and support for diplomatic/non-military solutions.
+Q.pacifism = 50;
+// Support for secular public institutions over confessional/religious influence.
+Q.secularism = 50;
 
 Q.emergency_rule = 0;
 
@@ -208,7 +304,56 @@ Q.nsdap_banned = 0;
 // coups and capital strikes happen when you upset the right or the capitalists too much with your policies. they're an additional check on your policies, when purely electoral checks don't suffice.
 // when coup_progress reaches 10 or capital_strike_progress reaches 10, there's a special event that launches the coup.
 Q.coup_progress = 0;
+// Deprecated: capital_strike_progress is retained for legacy capital-strike event logic.
+// TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 Q.capital_strike_progress = 0;
+// Represents elite/business confidence in the government and constitutional system.
+Q.elite_support = 50;
+Q.elite_support_min = 0;
+Q.elite_support_max = 100;
+Q.elite_support_description = "Represents elite/business confidence in the government and constitutional system.";
+
+Q.gameplay_variable_registry = {
+    'elite_support': {
+        'default': 50,
+        'min': 0,
+        'max': 100,
+        'description': "Represents elite/business confidence in the government and constitutional system.",
+        'helpers': ['increaseEliteSupport', 'decreaseEliteSupport', 'modifyEliteSupport', 'hasEliteSupportAtLeast', 'hasEliteSupportAtMost']
+    },
+    'capital_strike_progress': {
+        'default': 0,
+        'deprecated': true,
+        'replacement': 'elite_support'
+    }
+};
+Q.gameplay_variables = Object.keys(Q.gameplay_variable_registry);
+
+if (typeof globalThis !== "undefined") {
+    globalThis.clampEliteSupport = function(qualities) {
+        if (qualities.elite_support === undefined || qualities.elite_support === null || isNaN(qualities.elite_support)) {
+            qualities.elite_support = 50;
+        }
+        qualities.elite_support = Math.max(0, Math.min(100, qualities.elite_support));
+        return qualities.elite_support;
+    };
+    globalThis.modifyEliteSupport = function(qualities, amount) {
+        qualities.elite_support = (qualities.elite_support === undefined || qualities.elite_support === null || isNaN(qualities.elite_support) ? 50 : qualities.elite_support) + amount;
+        return globalThis.clampEliteSupport(qualities);
+    };
+    globalThis.increaseEliteSupport = function(qualities, amount) {
+        return globalThis.modifyEliteSupport(qualities, Math.abs(amount));
+    };
+    globalThis.decreaseEliteSupport = function(qualities, amount) {
+        return globalThis.modifyEliteSupport(qualities, -Math.abs(amount));
+    };
+    globalThis.hasEliteSupportAtLeast = function(qualities, threshold) {
+        return globalThis.clampEliteSupport(qualities) >= threshold;
+    };
+    globalThis.hasEliteSupportAtMost = function(qualities, threshold) {
+        return globalThis.clampEliteSupport(qualities) <= threshold;
+    };
+}
 
 Q.budget = 4;
 
@@ -246,7 +391,7 @@ Q.old_middle_qol = 100;
 Q.new_middle_qol = 100;
 
 Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
-Q.parties = ['spd', 'kpd', 'z', 'ddp', 'dvp', 'dnvp', 'nsdap', 'other'];
+Q.parties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
 
 // TODO: add 'sapd' later on
 Q.sapd_formed = 0;
@@ -256,82 +401,96 @@ Q.sapd_formed = 0;
 Q.workers_spd = 60;
 Q.workers_kpd = 20;
 Q.workers_z = 5;
+Q.workers_bvp = 0;
 Q.workers_ddp = 0;
 Q.workers_dvp = 0;
+Q.workers_wp = 0;
 Q.workers_dnvp = 5;
 Q.workers_nsdap = 0;
 Q.workers_other = 10;
 
 Q.old_middle_spd = 5;
 Q.old_middle_kpd = 0;
-Q.old_middle_z = 5;
+Q.old_middle_z = 4;
+Q.old_middle_bvp = 2;
 Q.old_middle_ddp= 10;
-Q.old_middle_dvp = 25;
+Q.old_middle_dvp = 24;
+Q.old_middle_wp = 4;
 Q.old_middle_dnvp = 25;
 Q.old_middle_nsdap = 10;
-Q.old_middle_other = 10;
+Q.old_middle_other = 8;
 
 Q.new_middle_spd = 5;
 Q.new_middle_kpd = 1;
-Q.new_middle_z = 10;
+Q.new_middle_z = 9;
+Q.new_middle_bvp = 1;
 Q.new_middle_ddp= 25;
-Q.new_middle_dvp = 25;
+Q.new_middle_dvp = 24;
+Q.new_middle_wp = 4;
 Q.new_middle_dnvp = 10;
 Q.new_middle_nsdap = 5;
-Q.new_middle_other = 15;
+Q.new_middle_other = 12;
 
 Q.rural_spd = 10;
 Q.rural_kpd = 0;
-Q.rural_z = 5;
+Q.rural_z = 4;
+Q.rural_bvp = 3;
 Q.rural_ddp= 5;
 Q.rural_dvp = 15;
+Q.rural_wp = 1;
 Q.rural_dnvp = 45;
 Q.rural_nsdap = 5;
-Q.rural_other = 10;
+Q.rural_other = 9;
 
 Q.unemployed_spd = 25;
 Q.unemployed_kpd = 55;
 Q.unemployed_z = 1;
+Q.unemployed_bvp = 0;
 Q.unemployed_ddp = 0;
 Q.unemployed_dvp = 0;
+Q.unemployed_wp = 0;
 Q.unemployed_dnvp = 5;
 Q.unemployed_nsdap = 15;
 Q.unemployed_other = 9;
 
 Q.catholics_spd = 15;
 Q.catholics_kpd = 2;
-Q.catholics_z = 50;
+Q.catholics_z = 41;
+Q.catholics_bvp = 9;
 Q.catholics_ddp = 0;
 Q.catholics_dvp = 5;
+Q.catholics_wp = 2;
 Q.catholics_dnvp = 5;
 Q.catholics_nsdap = 0;
-Q.catholics_other = 12;
+Q.catholics_other = 10;
 
 
 // Current Reichstag composition
 // % of Reichstag in Jan 1928
 // source: wikipedia
-// note: the Z figures also include the BVP (Bavarian people's party)
-// since they were ideologically similar, but they were separate parties.
-// They did not have a CDU/CSU-style relationship.
+// Current Reichstag party shares track BVP and WP separately from the Center Party.
 Q.spd_r = 26;
 Q.kpd_r = 9;
-Q.z_r = 17;
+Q.z_r = 14;
+Q.bvp_r = 3;
 Q.ddp_r = 6;
 Q.dvp_r = 10;
+Q.wp_r = 4;
 Q.dnvp_r = 20;
 Q.nsdap_r = 3;
-Q.other_r = 9;
+Q.other_r = 5;
 
 // diff from prev
 Q.old_spd_r = 26;
 Q.old_kpd_r = 9;
-Q.old_z_r = 17;
+Q.old_z_r = 14;
+Q.old_bvp_r = 3;
 Q.old_ddp_r = 6;
 Q.old_dvp_r = 10;
+Q.old_wp_r = 4;
 Q.old_dnvp_r = 20;
 Q.old_nsdap_r = 3;
-Q.old_other_r = 9;
+Q.old_other_r = 5;
 
 // sapd isn't formed yet, but it may be formed
 Q.sapd_r = 0;
@@ -374,7 +533,9 @@ Q.in_right_coalition = 0;
 // Weimar coalition = SPD + Z + DDP
 Q.in_weimar_coalition = 0;
 // Grand coalition = SPD + Z + BVP + DDP + DVP
-// also includes the "new grand coalition" of SPD + Z + BVP + DDP + DVP + Others
+// TODO: implement distinct BVP relationship to Z and federalism/Bavarian autonomy behavior.
+// TODO: implement WP middle-class protest behavior and coalition compatibility.
+// also includes the "new grand coalition" of SPD + Z + BVP + DDP + DVP + WP + Others
 Q.in_grand_coalition = 0;
 // Popular front = SPD + KPD + Z + DDP
 Q.in_popular_front = 0;
@@ -433,6 +594,9 @@ Q.judicial_reform = 0;
 Q.bureaucratic_reform = 0;
 Q.military_reform = 0;
 Q.womens_rights = 0;
+// TODO(culture): Family law and abortion-rights politics currently model confessional conflict separately from secularism.
+Q.family_law = 0;
+Q.abortion_rights = 0;
 // level of welfare relative to 1928 (can go negative)
 Q.welfare = 0;
 // level of support for farmers
@@ -467,6 +631,14 @@ Q.eu_progress = 0;
 // science/education
 Q.science = 0;
 Q.education_science = 0;
+// TODO(culture): This legacy binary education-policy flag overlaps with the new secularism atmosphere variable; consider future consolidation without removing current event logic.
+Q.secularized = 0;
+
+// TODO(culture): Concordat progress models church-state relations and may overlap with secularism in a future consolidation pass.
+Q.prussian_concordat_progress = 0;
+Q.prussian_concordat = 0;
+Q.reichskonkordat_progress = 0;
+Q.reichskonkordat = 0;
 
 // Tax rates relative to 1928 baseline
 Q.lower_tax_rates = 0;
@@ -620,10 +792,11 @@ For more information on the politics and government of the German Republic, see 
 - @1928_historical: Begin (historical mode)
 
 @1928_easy
-on-arrival: difficulty = -1; resources = 4; dues = 3; rb_strength = 2500; kpd_relation = 29; z_relation = 54; dvp_relation = 49; budget = 5;
+on-arrival: difficulty = -1; resources = 4; dues = 3; rb_strength = 2500; kpd_relation = 29; z_relation = 54; bvp_relation = 54; wp_relation = 50; dvp_relation = 49; budget = 5;
 go-to: 1928_main
 
 @1928_hard
+on-arrival: difficulty = 1; resources = 0; dues = 1; rb_strength = 1000; reformist_dissent = 25; left_dissent = 30; labor_dissent = 25; center_dissent = 25; z_relation = 41; bvp_relation = 41; wp_relation = 45; kpd_relation = 16; dvp_relation = 31; budget = 3;
 # TODO(DDP factions): Deprecated SPD faction difficulty tweaks remain for compatibility.
 on-arrival: difficulty = 1; resources = 0; dues = 1; rb_strength = 1000; reformist_dissent = 25; left_dissent = 30; labor_dissent = 25; center_dissent = 25; z_relation = 41; kpd_relation = 16; dvp_relation = 31; budget = 3;
 go-to: 1928_main
@@ -642,6 +815,8 @@ Q.left_dissent = 30;
 Q.labor_dissent = 25;
 Q.center_dissent = 25;
 Q.z_relation = 41;
+Q.bvp_relation = 41;
+Q.wp_relation = 45;
 Q.kpd_relation = 16;
 Q.dvp_relation = 31;
 Q.budget = 2;

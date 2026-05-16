@@ -20,6 +20,69 @@
       }
     }
     return state;
+  // Represents elite/business confidence in the government and constitutional system.
+  window.eliteSupportRegistry = {
+    elite_support: {
+      default: 50,
+      min: 0,
+      max: 100,
+      description: "Represents elite/business confidence in the government and constitutional system.",
+      helpers: ['increaseEliteSupport', 'decreaseEliteSupport', 'modifyEliteSupport', 'hasEliteSupportAtLeast', 'hasEliteSupportAtMost']
+    },
+    capital_strike_progress: {
+      default: 0,
+      deprecated: true,
+      replacement: 'elite_support'
+    }
+  };
+
+  window.clampEliteSupport = function(qualities) {
+    if (!qualities) {
+      return 50;
+    }
+    if (qualities.elite_support === undefined || qualities.elite_support === null || isNaN(qualities.elite_support)) {
+      qualities.elite_support = 50;
+    }
+    qualities.elite_support = Math.max(0, Math.min(100, qualities.elite_support));
+    return qualities.elite_support;
+  };
+
+  window.modifyEliteSupport = function(qualities, amount) {
+    if (!qualities) {
+      return 50;
+    }
+    qualities.elite_support = (qualities.elite_support === undefined || qualities.elite_support === null || isNaN(qualities.elite_support) ? 50 : qualities.elite_support) + amount;
+    return window.clampEliteSupport(qualities);
+  };
+
+  window.increaseEliteSupport = function(qualities, amount) {
+    return window.modifyEliteSupport(qualities, Math.abs(amount));
+  };
+
+  window.decreaseEliteSupport = function(qualities, amount) {
+    return window.modifyEliteSupport(qualities, -Math.abs(amount));
+  };
+
+  window.hasEliteSupportAtLeast = function(qualities, threshold) {
+    return window.clampEliteSupport(qualities) >= threshold;
+  };
+
+  window.hasEliteSupportAtMost = function(qualities, threshold) {
+    return window.clampEliteSupport(qualities) <= threshold;
+  };
+
+  window.ensureEliteSupportState = function() {
+    if (!window.dendryUI || !window.dendryUI.dendryEngine || !window.dendryUI.dendryEngine.state) {
+      return;
+    }
+    var qualities = window.dendryUI.dendryEngine.state.qualities;
+    window.clampEliteSupport(qualities);
+    if (!qualities.gameplay_variable_registry) {
+      qualities.gameplay_variable_registry = {};
+    }
+    qualities.gameplay_variable_registry.elite_support = window.eliteSupportRegistry.elite_support;
+    qualities.gameplay_variable_registry.capital_strike_progress = window.eliteSupportRegistry.capital_strike_progress;
+    qualities.gameplay_variables = Object.keys(qualities.gameplay_variable_registry);
   };
 
   var main = function(dendryUI) {
@@ -31,6 +94,31 @@
     ui.dendryEngine.setState = function(state) {
       return originalSetState.call(this, migratePacifismQuality(state));
     };
+    window.ensureEliteSupportState();
+  };
+
+  // Represents presidential hostility toward parliamentary governance and the current coalition.
+  window.clampPresidentialAnger = function(value) {
+    value = Number(value) || 0;
+    return Math.max(0, Math.min(100, value));
+  };
+
+  window.setPresidentialAnger = function(value) {
+    var qualities = window.dendryUI.dendryEngine.state.qualities;
+    qualities.presidential_anger = window.clampPresidentialAnger(value);
+    return qualities.presidential_anger;
+  };
+
+  window.increasePresidentialAnger = function(amount) {
+    var qualities = window.dendryUI.dendryEngine.state.qualities;
+    amount = Number(amount) || 0;
+    return window.setPresidentialAnger((qualities.presidential_anger || 0) + amount);
+  };
+
+  window.decreasePresidentialAnger = function(amount) {
+    var qualities = window.dendryUI.dendryEngine.state.qualities;
+    amount = Number(amount) || 0;
+    return window.setPresidentialAnger((qualities.presidential_anger || 0) - amount);
   };
 
   var TITLE = "Social Democracy: An Alternate History" + '_' + "Autumn Chen";
@@ -188,6 +276,7 @@
   
   // This function runs on a new page. Right now, this auto-saves.
   window.onNewPage = function() {
+    window.ensureEliteSupportState();
     var scene = window.dendryUI.dendryEngine.state.sceneId;
     if (scene != 'root' && !window.justLoaded) {
         window.dendryUI.autosave();
@@ -199,6 +288,7 @@
 
   // TODO: have some code for tabbed sidebar browsing.
   window.updateSidebar = function() {
+      window.ensureEliteSupportState();
       $('#qualities').empty();
       var scene = dendryUI.game.scenes[window.statusTab];
       dendryUI.dendryEngine._runActions(scene.onArrival);

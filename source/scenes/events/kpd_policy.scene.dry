@@ -1,4 +1,5 @@
 title: KPD policy
+# TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
 subtitle: The KPD ministers are carrying out their policy portfolios.
 new-page: true
 view-if: (in_popular_front or in_left_front) and (labor_minister_party = "KPD" or economic_minister_party = "KPD" or finance_minister_party = "KPD") and (kpd_policy_timer = 0)

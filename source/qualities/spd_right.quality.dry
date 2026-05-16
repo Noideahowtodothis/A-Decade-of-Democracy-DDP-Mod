@@ -1,0 +1,6 @@
+name: SPD Right Faction
+initial: 50
+min: 0
+max: 100
+
+Simplified SPD faction variable. right = nationalist/authoritarian or radical tendency depending on party.

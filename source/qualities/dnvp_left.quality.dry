@@ -1,0 +1,6 @@
+name: DNVP Left Faction
+initial: 50
+min: 0
+max: 100
+
+Simplified DNVP faction variable. left = moderate/parliamentary tendency.
