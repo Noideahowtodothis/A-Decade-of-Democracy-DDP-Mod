@@ -17,6 +17,7 @@ Herein contains relevant information about the government and politics of the Ge
 - @public_opinion: Public opinion (and projected election results)
 - @paramilitaries: Paramilitary groups
 - @factions: Internal factions
+- @simple_factions: Simplified party faction variables
 - @figures: Figures and charts
 - @backSpecialScene: Exit library.
 
@@ -331,6 +332,23 @@ Value: [+ ddp_left_liberal +]
 Value: [+ ddp_left_bourgeois +]
 
 **Regionalist**: federalist/regional autonomy liberals.
+
+@simple_factions
+go-to: menu
+
+**Simplified party faction variables**
+
+These party-level variables are available for event modifications, conditional checks, and scripted references. Each value defaults to 50 and is clamped from 0 to 100.
+
+left = moderate/parliamentary tendency.
+
+right = nationalist/authoritarian or radical tendency depending on party.
+
+DNVP: left [+ dnvp_left +], right [+ dnvp_right +]
+
+DVP: left [+ dvp_left +], right [+ dvp_right +]
+
+SPD: left [+ spd_left +], right [+ spd_right +]
 
 Value: [+ ddp_regionalist +]
 

@@ -73,6 +73,28 @@ Q.reformist_dissent = 5;
 Q.neorevisionist_strength = 5;
 Q.neorevisionist_dissent = 10;
 
+// Simplified faction variables for party-level internal tendencies.
+// left = moderate/parliamentary tendency.
+// right = nationalist/authoritarian or radical tendency depending on party.
+// These qualities are registered separately with 0..100 clamps and can be
+// modified by events, checked in conditionals, or referenced from scripts.
+Q.simplified_faction_variables = ['dnvp_left', 'dnvp_right', 'dvp_left', 'dvp_right', 'spd_left', 'spd_right'];
+Q.simplified_faction_pairs = [
+    {party: 'dnvp', left: 'dnvp_left', right: 'dnvp_right'},
+    {party: 'dvp', left: 'dvp_left', right: 'dvp_right'},
+    {party: 'spd', left: 'spd_left', right: 'spd_right'}
+];
+Q.simplified_faction_axis = {
+    left: 'moderate/parliamentary tendency',
+    right: 'nationalist/authoritarian or radical tendency depending on party'
+};
+Q.dnvp_left = 50;
+Q.dnvp_right = 50;
+Q.dvp_left = 50;
+Q.dvp_right = 50;
+Q.spd_left = 50;
+Q.spd_right = 50;
+
 // secret events...
 Q.unions_independent = 0;
 Q.centrists_resign = 0;

@@ -1,0 +1,6 @@
+name: DVP Right Faction
+initial: 50
+min: 0
+max: 100
+
+Simplified DVP faction variable. right = nationalist/authoritarian or radical tendency depending on party.

@@ -105,6 +105,35 @@ Q.pro_republic = Math.round(Q.pro_republic);
 Q.nationalism = Math.round(Q.nationalism);
 Q.socialism = Math.round(Q.socialism);
 
+// Maintain simplified faction variables for event effects, conditional checks,
+// scripted references, save/load migrations, and debug/state viewers.
+// left = moderate/parliamentary tendency.
+// right = nationalist/authoritarian or radical tendency depending on party.
+if (!Q.simplified_faction_variables) {
+    Q.simplified_faction_variables = ['dnvp_left', 'dnvp_right', 'dvp_left', 'dvp_right', 'spd_left', 'spd_right'];
+}
+if (!Q.simplified_faction_pairs) {
+    Q.simplified_faction_pairs = [
+        {party: 'dnvp', left: 'dnvp_left', right: 'dnvp_right'},
+        {party: 'dvp', left: 'dvp_left', right: 'dvp_right'},
+        {party: 'spd', left: 'spd_left', right: 'spd_right'}
+    ];
+}
+for (var faction_variable of Q.simplified_faction_variables) {
+    if (Q[faction_variable] === undefined || isNaN(Q[faction_variable])) {
+        Q[faction_variable] = 50;
+    }
+    Q[faction_variable] = Math.round(Q[faction_variable]);
+    if (Q[faction_variable] < 0) {
+        Q[faction_variable] = 0;
+    } else if (Q[faction_variable] > 100) {
+        Q[faction_variable] = 100;
+    }
+}
+for (var simplified_pair of Q.simplified_faction_pairs) {
+    Q[simplified_pair.party + '_faction_total'] = Q[simplified_pair.left] + Q[simplified_pair.right];
+    Q[simplified_pair.party + '_faction_balance'] = Q[simplified_pair.right] - Q[simplified_pair.left];
+}
 // Represents elite/business confidence in the government and constitutional system.
 // Runtime migration, validation, and clamping for the elite_support gameplay variable.
 if (Q.elite_support === undefined || Q.elite_support === null || isNaN(Q.elite_support)) {
