@@ -37,7 +37,7 @@ for (var c of Q.classes) {
     }
     for (var party of Q.parties) {
         Q[c + '_' + party + '_normalized'] = 100*Q[c+'_'+party]/class_votes;
-        Q[c + '_' + party + '_display'] = Q[c + '_' + party + '_normalized'].toFixed(1);
+        Q[c + '_' + party + '_display'] = (Math.round(Q[c + '_' + party + '_normalized']*10)/10).toFixed(1);
     }
 }
 
@@ -62,10 +62,11 @@ for (var party of Q.parties) {
     total_support += party_support;
 }
 // 2. normalize support (fraction)
-// 3. Store vote shares rounded to one decimal for consistent display and seat allocation input.
+// 3. Store raw vote shares for precision, plus a one-decimal numeric value and display string.
 for (var party of Q.parties) {
     Q[party+'_normalized'] = Q[party + '_support']/total_support;
-    Q[party+'_votes'] = Math.round(Q[party+'_normalized']*1000)/10;
+    Q[party+'_votes_raw'] = Q[party+'_normalized']*100;
+    Q[party+'_votes'] = Math.round(Q[party+'_votes_raw']*10)/10;
     Q[party + '_votes_disp'] = Q[party+'_votes'].toFixed(1);
     Q[party + '_votes_display'] = Q[party + '_votes_disp'];
 }

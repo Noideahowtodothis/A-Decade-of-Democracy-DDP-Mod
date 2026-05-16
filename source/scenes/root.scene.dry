@@ -497,6 +497,14 @@ Q.old_other_r = 5;
 Q.sapd_r = 0;
 Q.old_sapd_r = 0;
 
+var initialVoteShareParties = Q.parties.concat(['sapd']);
+for (var initialVoteShareParty of initialVoteShareParties) {
+    Q[initialVoteShareParty + '_result_votes'] = Q[initialVoteShareParty + '_r'] || 0;
+    Q[initialVoteShareParty + '_r_disp'] = Q[initialVoteShareParty + '_result_votes'].toFixed(1);
+    Q['old_' + initialVoteShareParty + '_votes'] = Q['old_' + initialVoteShareParty + '_r'] || 0;
+    Q['old_' + initialVoteShareParty + '_votes_disp'] = Q['old_' + initialVoteShareParty + '_votes'].toFixed(1);
+}
+
 // for changing the DDP's name to the DStP
 Q.ddp_name = "DDP";
 

@@ -45,26 +45,26 @@ Chancellor: [+ chancellor +] ([+ chancellor_party +])
 Reichstag composition:
 
 # 1928: 30, 1930: 25, 1932: 22
-{!<span class="tooltip-text" title="Social Democratic Party of Germany">SPD</span>!}: [+ spd_r +]%
-[? if sapd_formed and sapd_r > 0: SAPD: [+ sapd_r +]% ?]
+{!<span class="tooltip-text" title="Social Democratic Party of Germany">SPD</span>!}: [+ spd_r_disp +]%
+[? if sapd_formed and sapd_r > 0: SAPD: [+ sapd_r_disp +]% ?]
 # 1928: 15, 1930: 15, 1932: 
-{!<span class="tooltip-text" title="Center Party">Z</span>!}: [+ z_r +]%
+{!<span class="tooltip-text" title="Center Party">Z</span>!}: [+ z_r_disp +]%
 
-{!<span class="tooltip-text" title="Bavarian People's Party">BVP</span>!}: [+ bvp_r +]%
+{!<span class="tooltip-text" title="Bavarian People's Party">BVP</span>!}: [+ bvp_r_disp +]%
 # 1928: 10, 1930: 13
-{!<span class="tooltip-text" title="Communist Party of Germany">KPD</span>!}: [+ kpd_r +]%
+{!<span class="tooltip-text" title="Communist Party of Germany">KPD</span>!}: [+ kpd_r_disp +]%
 # 1928: 5, 1930: 4 (as DstP)
-{!<span class="tooltip-text" title="German Democratic Party">!}[? if not ddp_name: DDP?][? if ddp_name != 0 : [+ ddp_name +]?]{!</span>!}: [+ ddp_r +]%
+{!<span class="tooltip-text" title="German Democratic Party">!}[? if not ddp_name: DDP?][? if ddp_name != 0 : [+ ddp_name +]?]{!</span>!}: [+ ddp_r_disp +]%
 # 1928: 9, 1930: 5
-{!<span class="tooltip-text" title="German People's Party">DVP</span>!}: [+ dvp_r +]%
+{!<span class="tooltip-text" title="German People's Party">DVP</span>!}: [+ dvp_r_disp +]%
 
-{!<span class="tooltip-text" title="Economic Party of the German Middle Class">WP</span>!}: [+ wp_r +]%
+{!<span class="tooltip-text" title="Economic Party of the German Middle Class">WP</span>!}: [+ wp_r_disp +]%
 # 1928: 14, 1930: 7
-{!<span class="tooltip-text" title="German National People's Party">DNVP</span>!}: [+ dnvp_r +]%
+{!<span class="tooltip-text" title="German National People's Party">DNVP</span>!}: [+ dnvp_r_disp +]%
 # 1928: 3, 1930: 18
-{!<span class="tooltip-text" title="National-Socialist German Worker's Party (Nazis)">NSDAP</span>!}: [+ nsdap_r +]%
+{!<span class="tooltip-text" title="National-Socialist German Worker's Party (Nazis)">NSDAP</span>!}: [+ nsdap_r_disp +]%
 # 1928: 9, 1930: 10
-Others: [+ other_r +]%
+Others: [+ other_r_disp +]%
 
 [? if spd_in_government = 1 : Budget: [+ budget +] ?]
 
@@ -193,27 +193,27 @@ Q.socialism_disp = Math.round(Q.socialism);
 
 (if the election were to be held now):
 
-SPD: [+ spd_votes +]%
+SPD: [+ spd_votes_disp +]%
 
-[? if sapd_formed: SAPD: [+ sapd_votes +]% ?]
+[? if sapd_formed: SAPD: [+ sapd_votes_disp +]% ?]
 
-Z: [+ z_votes +]%
+Z: [+ z_votes_disp +]%
 
-BVP: [+ bvp_votes +]%
+BVP: [+ bvp_votes_disp +]%
 
-KPD: [+ kpd_votes +]%
+KPD: [+ kpd_votes_disp +]%
 
-[? if not ddp_name: DDP?][? if ddp_name != 0 : [+ ddp_name +]?]: [+ ddp_votes +]%
+[? if not ddp_name: DDP?][? if ddp_name != 0 : [+ ddp_name +]?]: [+ ddp_votes_disp +]%
 
-DVP: [+ dvp_votes +]%
+DVP: [+ dvp_votes_disp +]%
 
-WP: [+ wp_votes +]%
+WP: [+ wp_votes_disp +]%
 
-DNVP: [+ dnvp_votes +]%
+DNVP: [+ dnvp_votes_disp +]%
 
-NSDAP: [+ nsdap_votes +]%
+NSDAP: [+ nsdap_votes_disp +]%
 
-Others: [+ other_votes +]%
+Others: [+ other_votes_disp +]%
 
 **Detailed results for each demographic**
 
