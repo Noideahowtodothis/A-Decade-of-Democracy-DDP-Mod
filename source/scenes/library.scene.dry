@@ -68,6 +68,10 @@ go-to: cabinet if spd_in_government; menu if not spd_in_government
 
 President: [+ president +]
 
+Presidential anger: [+ presidential_anger : presidential_anger +]
+
+Represents presidential hostility toward parliamentary governance and the current coalition.
+
 Chancellor: [+ chancellor +] ([+ chancellor_party +])
 
 Reichstag composition:
