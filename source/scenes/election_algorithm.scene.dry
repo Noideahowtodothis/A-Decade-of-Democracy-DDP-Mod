@@ -1,5 +1,31 @@
 title: Election
 on-arrival: {!
+var canonicalParties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
+if (!Q.parties) {
+    Q.parties = canonicalParties;
+} else {
+    for (var migrationParty of canonicalParties) {
+        if (Q.parties.indexOf(migrationParty) < 0) {
+            Q.parties.push(migrationParty);
+        }
+    }
+}
+var bvpMigrationSupport = {'workers': 0, 'old_middle': 2, 'new_middle': 1, 'rural': 3, 'unemployed': 0, 'catholics': 9};
+var wpMigrationSupport = {'workers': 0, 'old_middle': 4, 'new_middle': 4, 'rural': 1, 'unemployed': 0, 'catholics': 2};
+for (var migrationClass of Q.classes) {
+    if (Q[migrationClass + '_bvp'] == undefined) {
+        Q[migrationClass + '_bvp'] = bvpMigrationSupport[migrationClass] || 0;
+        if (Q[migrationClass + '_z'] != undefined) {
+            Q[migrationClass + '_z'] = Math.max(0, Q[migrationClass + '_z'] - Q[migrationClass + '_bvp']);
+        }
+    }
+    if (Q[migrationClass + '_wp'] == undefined) {
+        Q[migrationClass + '_wp'] = wpMigrationSupport[migrationClass] || 0;
+        if (Q[migrationClass + '_other'] != undefined) {
+            Q[migrationClass + '_other'] = Math.max(0, Q[migrationClass + '_other'] - Q[migrationClass + '_wp']);
+        }
+    }
+}
 // calculate normalized class voting amounts (0 to 100)
 for (var c of Q.classes) {
     var class_votes = 0;
