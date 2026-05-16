@@ -48,6 +48,7 @@ if (Q.nsdap_normalized >= 0.2 ) {
 view-if: electoral_threshold = 0
 
 # The left is opposed to this.
+# TODO: Potential future consolidation with federalism/BVP regional politics; preserve existing electoral-threshold logic for now.
 
 Some political thinkers believe that the proliferation of minor parties is responsible for the instability of the republic. They believe that a higher electoral threshold will reduce the influence of small radical parties. Parties that win a plurality in a constituency will maintain their representation, a gift to regional parties such as the BVP. 
 
