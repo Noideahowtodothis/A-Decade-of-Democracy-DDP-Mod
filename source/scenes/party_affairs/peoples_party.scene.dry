@@ -1,4 +1,5 @@
 title: Building a People's Party
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true
 is-card: true
 card-image: img/poster_0.jpg

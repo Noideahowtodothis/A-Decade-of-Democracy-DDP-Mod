@@ -1,5 +1,6 @@
 title: Economic Policy
 # TODO: capital_strike_progress is deprecated; migrate this gameplay logic to elite_support in a future balance pass.
+# TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true
 is-card: true
 tags: govt_affairs, cabinet

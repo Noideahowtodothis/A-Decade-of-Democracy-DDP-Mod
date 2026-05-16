@@ -52,7 +52,7 @@ on-arrival: rb_militancy += 0.05; sa_strength += 50; prussian_police_training +=
 The loyal sections of the Prussian police can help train the Reichsbanner.
 
 @peace
-on-arrival: rb_militancy -= 0.02; rb_strength -= 50; pacifism += 1
+on-arrival: rb_militancy -= 0.02; rb_strength -= 50; spd_pacifism += 1
 
 By not fighting, the strength of the Reichsbanner atrophies. Pacifists in the party are gaining the upper hand.
 
