@@ -3,6 +3,81 @@ new-page: true
 on-arrival: {!
 Q.last_advisor_action = 0;
 Q.last_cabinet_action = 0;
+// Save migration/defaults for parties added after older saves were created.
+var canonicalParties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
+if (!Q.parties) {
+    Q.parties = canonicalParties;
+} else {
+    for (var migrationParty of canonicalParties) {
+        if (Q.parties.indexOf(migrationParty) < 0) {
+            Q.parties.push(migrationParty);
+        }
+    }
+}
+if (Q.bvp_relation == undefined) {
+    Q.bvp_relation = Q.z_relation == undefined ? 50 : Q.z_relation;
+}
+if (Q.wp_relation == undefined) {
+    Q.wp_relation = 50;
+}
+for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap']) {
+    if (Q[relationParty + '_relation'] == undefined) {
+        Q[relationParty + '_relation'] = 50;
+    }
+    Q[relationParty + '_relation'] = Math.max(0, Math.min(100, Q[relationParty + '_relation']));
+}
+var bvpMigrationSupport = {'workers': 0, 'old_middle': 2, 'new_middle': 1, 'rural': 3, 'unemployed': 0, 'catholics': 9};
+var wpMigrationSupport = {'workers': 0, 'old_middle': 4, 'new_middle': 4, 'rural': 1, 'unemployed': 0, 'catholics': 2};
+for (var migrationClass of Q.classes) {
+    if (Q[migrationClass + '_bvp'] == undefined) {
+        Q[migrationClass + '_bvp'] = bvpMigrationSupport[migrationClass] || 0;
+        if (Q[migrationClass + '_z'] != undefined) {
+            Q[migrationClass + '_z'] = Math.max(0, Q[migrationClass + '_z'] - Q[migrationClass + '_bvp']);
+        }
+    }
+    if (Q[migrationClass + '_wp'] == undefined) {
+        Q[migrationClass + '_wp'] = wpMigrationSupport[migrationClass] || 0;
+        if (Q[migrationClass + '_other'] != undefined) {
+            Q[migrationClass + '_other'] = Math.max(0, Q[migrationClass + '_other'] - Q[migrationClass + '_wp']);
+        }
+    }
+}
+if (Q.bvp_r == undefined) {
+    Q.bvp_r = 3;
+    if (Q.z_r != undefined) {
+        Q.z_r = Math.max(0, Q.z_r - 3);
+    }
+}
+if (Q.wp_r == undefined) {
+    Q.wp_r = 0;
+}
+if (Q.old_bvp_r == undefined) {
+    Q.old_bvp_r = Q.bvp_r;
+}
+if (Q.old_wp_r == undefined) {
+    Q.old_wp_r = Q.wp_r;
+}
+if (Q.election_records) {
+    for (var electionRecord of Q.election_records) {
+        if (electionRecord.bvp == undefined) {
+            electionRecord.bvp = 0;
+        }
+        if (electionRecord.wp == undefined) {
+            electionRecord.wp = 0;
+        }
+    }
+}
+if (Q.party_support_records) {
+    for (var supportRecord of Q.party_support_records) {
+        if (supportRecord.bvp == undefined) {
+            supportRecord.bvp = 0;
+        }
+        if (supportRecord.wp == undefined) {
+            supportRecord.wp = 0;
+        }
+    }
+}
+
 // make sure no stat is below 0.
 for (var c of Q.classes) {
     for (var party of Q.parties) {
@@ -258,7 +333,7 @@ if (Q.month_actions >= 1) {
 
     ///////////////////////////// change party support based on pro_republic
     // if pro_republic is less than the support of the Weimar coalition, reduce SPD support...
-    if (Q.pro_republic < (Q.spd_votes + Q.ddp_votes + Q.z_votes - 3)) {
+    if (Q.pro_republic < (Q.spd_votes + Q.ddp_votes + Q.z_votes)) {
         if (Q.new_middle_spd > 0) {
             Q.new_middle_spd -= 5/12;
             Q.new_middle_nsdap += 3/12;
