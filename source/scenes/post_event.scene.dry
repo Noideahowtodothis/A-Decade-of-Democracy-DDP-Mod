@@ -87,6 +87,20 @@ for (var c of Q.classes) {
     }
 }
 
+if (!Q.culture_vars) {
+    Q.culture_vars = ['pro_republic', 'pacifism', 'nationalism', 'secularism'];
+}
+if (!Q.culture_var_registry) {
+    Q.culture_var_registry = {
+        pro_republic: {min: 0, max: 100, default: 59, description: 'Support for republican/parliamentary constitutional legitimacy.'},
+        pacifism: {min: 0, max: 100, default: 50, description: 'Public opposition to militarism and support for diplomatic/non-military solutions.'},
+        nationalism: {min: 0, max: 100, default: 60, description: 'Level of nationalist/revanchist political sentiment.'},
+        secularism: {min: 0, max: 100, default: 50, description: 'Support for secular public institutions over confessional/religious influence.'}
+    };
+}
+if (!Q.culture_registry_version && typeof Q.spd_pacifism !== 'number') {
+    Q.spd_pacifism = (typeof Q.pacifism === 'number') ? Q.pacifism : 0;
+    Q.pacifism = 50;
 Q.pro_republic = Math.round(Q.pro_republic);
 Q.nationalism = Math.round(Q.nationalism);
 Q.socialism = Math.round(Q.socialism);
@@ -113,8 +127,20 @@ Q.federalism_prussia_state_relations = Q.federalism;
 if (Q.pro_republic < 0) {
     Q.pro_republic = 0;
 }
-if (Q.pro_republic >= 100) {
-    Q.pro_republic = 99;
+Q.culture_registry_version = 1;
+Q.socialism = Math.round(Q.socialism);
+for (var cultureVar of Q.culture_vars) {
+    var registryEntry = Q.culture_var_registry[cultureVar];
+    if (typeof Q[cultureVar] !== 'number' || isNaN(Q[cultureVar])) {
+        Q[cultureVar] = registryEntry.default;
+    }
+    Q[cultureVar] = Math.round(Q[cultureVar]);
+    if (Q[cultureVar] < registryEntry.min) {
+        Q[cultureVar] = registryEntry.min;
+    }
+    if (Q[cultureVar] > registryEntry.max) {
+        Q[cultureVar] = registryEntry.max;
+    }
 }
 // re-calculate party support
 // calculate normalized class voting for the achievements
