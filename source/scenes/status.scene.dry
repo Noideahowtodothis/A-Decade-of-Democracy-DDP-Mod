@@ -123,16 +123,6 @@ Economic growth: [+ economic_growth_2 +]%
 {!<span class="tooltip-text" title="Regionalist = federalist/regional autonomy liberals.">Regionalist</span>!}: [+ ddp_regionalist +]
 
 
-= Simplified Party Faction Variables
-
-left = moderate/parliamentary tendency; right = nationalist/authoritarian or radical tendency depending on party.
-
-DNVP: left [+ dnvp_left +], right [+ dnvp_right +]
-
-DVP: left [+ dvp_left +], right [+ dvp_right +]
-
-SPD: left [+ spd_left +], right [+ spd_right +]
-
 
 @paramilitaries
 on-arrival: {!
