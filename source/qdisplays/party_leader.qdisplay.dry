@@ -1,0 +1,8 @@
+# Party leader tracker display codes.
+# TODO: Expand as party leader event logic is migrated to numeric codes.
+
+(0..0) placeholder leader
+(1..1) Ernst Thälmann
+(2..2) Heinrich Brüning
+(3..3) Adolf Hitler
+(4..4) Joseph Goebbels

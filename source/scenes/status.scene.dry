@@ -86,6 +86,26 @@ Economic growth: [+ economic_growth_2 +]%
 # TODO: dnvp_elite_support does not exist yet; display it here when the source variable is added.
 # TODO: nsdap_elite_support does not exist yet; display it here when the source variable is added.
 
+= PARTY LEADERS AND IDEOLOGY
+
+SPD: [+ spd_leader : party_leader +], [+ spd_ideology : party_ideology +]
+
+Z: [+ z_leader : party_leader +], [+ z_ideology : party_ideology +]
+
+BVP: [+ bvp_leader : party_leader +], [+ bvp_ideology : party_ideology +]
+
+[? if not ddp_name: DDP?][? if ddp_name != 0 : [+ ddp_name +]?]: [+ ddp_leader : party_leader +], [+ ddp_ideology : party_ideology +]
+
+DVP: [+ dvp_leader : party_leader +], [+ dvp_ideology : party_ideology +]
+
+WP: [+ wp_leader : party_leader +], [+ wp_ideology : party_ideology +]
+
+DNVP: [+ dnvp_leader : party_leader +], [+ dnvp_ideology : party_ideology +]
+
+NSDAP: [+ nsdap_leader : party_leader +], [+ nsdap_ideology : party_ideology +]
+
+KPD: [+ kpd_leader : party_leader +], [+ kpd_ideology : party_ideology +]
+
 = Inter-party Relations
 
 {!<span class="tooltip-text" title="Center Party">Z</span>!}: [+ z_relation : relationships +]

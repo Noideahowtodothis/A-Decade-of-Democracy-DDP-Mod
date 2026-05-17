@@ -1,0 +1,5 @@
+# Party ideology tracker display codes.
+# TODO: Expand as ideology event logic is migrated to numeric codes.
+
+(0..0) placeholder ideology
+(1..1) classical liberalism
