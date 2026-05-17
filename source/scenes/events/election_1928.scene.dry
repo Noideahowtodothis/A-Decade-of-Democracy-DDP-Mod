@@ -116,8 +116,8 @@ Q.leverage = Q.spd_r;
 
 // Coalition negotiation data and helpers are intentionally mechanical placeholder systems.
 Q.coalition_party_labels = {"spd": "SPD", "dvp": "DVP", "dnvp": "DNVP", "z": "Z", "bvp": "BVP", "wp": "WP", "kpd": "KPD", "nsdap": "NSDAP", "ddp": "DDP"};
-Q.coalition_party_blocks = {"spd": ["dnvp", "nsdap"], "dnvp": ["spd", "kpd"], "nsdap": ["spd", "kpd", "z"], "kpd": ["dnvp", "dvp", "nsdap", "z"], "dvp": [], "z": [], "bvp": [], "wp": []};
-// TODO(coalition): refine NSDAP/Z and KPD/Z incompatibility exceptions with explicit scenario flags.
+Q.coalition_party_blocks = {"spd": ["dnvp", "nsdap"], "dnvp": ["spd", "kpd"], "nsdap": ["spd", "kpd"], "kpd": ["dnvp", "dvp", "nsdap"], "dvp": [], "z": [], "bvp": [], "wp": []};
+// TODO(coalition): refine incompatibilities by party leader, presidential pressure, and scenario-specific toleration exceptions.
 Q.coalition_concessions = [
     {id: 'spd_expand_welfare', party: 'spd', label: 'Expand Welfare', isMajor: true, points: 2, effects: '-1 budget; increase SPD worker support; increase ddp_left_bourgeois dissent; damage DVP relations.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
     {id: 'spd_expand_unemployment_insurance', party: 'spd', label: 'Expand Unemployment Insurance', isMajor: true, points: 2, effects: '-1 budget; increase SPD unemployed support; increase ddp_left_bourgeois dissent; damage DVP relations.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
@@ -165,9 +165,14 @@ Q.coalitionEnsureState = function() {
         Q['coalition_' + p + '_member'] = Q.coalition_members.indexOf(p) >= 0 ? 1 : 0;
     }
     Q.coalition_total_seats = 0;
+    var coalitionNames = [];
     for (var member of Q.coalition_members) {
         Q.coalition_total_seats += Number(Q[member + '_r']) || 0;
+        coalitionNames.push((Q.coalition_party_labels && Q.coalition_party_labels[member]) || member.toUpperCase());
     }
+    Q.coalition_member_list_text = coalitionNames.join(' + ');
+    var blockedNames = [];
+    var unavailableNames = [];
     if (Q.coalition_party_blocks) {
         for (var lockParty of ['spd','dvp','dnvp','z','bvp','wp','kpd','nsdap']) {
             var reason = '';
@@ -188,8 +193,16 @@ Q.coalitionEnsureState = function() {
             }
             Q['coalition_lock_reason_' + lockParty] = reason;
             Q['coalition_can_' + lockParty] = (!reason && !Q['coalition_' + lockParty + '_member'] && ((Number(Q[lockParty + '_r']) || 0) > 0)) ? 1 : 0;
+            if (reason && reason != 'Already in coalition.') {
+                blockedNames.push((Q.coalition_party_labels[lockParty] || lockParty.toUpperCase()) + ' (' + reason + ')');
+            }
+            if (!Q['coalition_' + lockParty + '_member'] && ((Number(Q[lockParty + '_r']) || 0) <= 0)) {
+                unavailableNames.push((Q.coalition_party_labels[lockParty] || lockParty.toUpperCase()) + ' (no seats)');
+            }
         }
     }
+    Q.coalition_blocked_parties_text = blockedNames.length ? blockedNames.join('; ') : 'None';
+    Q.coalition_unavailable_parties_text = unavailableNames.length ? unavailableNames.join('; ') : 'None';
 };
 Q.coalitionGetThreshold = function(party) {
     var share = Number(Q[party + '_r']) || 0;
@@ -254,13 +267,22 @@ Q.coalitionBeginParty = function(party) {
 };
 Q.coalitionRecountPoints = function() {
     var points = 0;
+    var selectedNames = [];
+    var selectedBlocks = [];
     for (var concession of Q.coalition_concessions) {
         if (concession.party == Q.coalition_selected_party && Q['concession_' + concession.id + '_selected']) {
             points += concession.points;
+            selectedNames.push(concession.label + ' (' + concession.points + ' point' + (concession.points == 1 ? '' : 's') + ')');
+            for (var blocked of (concession.blockedParties || [])) {
+                var blockedLabel = Q.coalition_party_labels[blocked] || blocked.toUpperCase();
+                if (selectedBlocks.indexOf(blockedLabel) < 0) { selectedBlocks.push(blockedLabel); }
+            }
         }
     }
     Q.coalition_negotiation_points = points;
     Q.coalition_required_points = Q.coalitionGetThreshold(Q.coalition_selected_party);
+    Q.coalition_selected_concessions_text = selectedNames.length ? selectedNames.join('; ') : 'None';
+    Q.coalition_selected_blocks_text = selectedBlocks.length ? selectedBlocks.join(', ') : 'None beyond party incompatibilities';
 };
 Q.toggleCoalitionConcession = function(id) {
     Q['concession_' + id + '_selected'] = Q['concession_' + id + '_selected'] ? 0 : 1;
@@ -601,7 +623,13 @@ on-arrival: {! Q.coalitionEnsureState(); !}
 
 Choose a party to negotiate coalition entry. DDP is treated as the current anchor party for this placeholder system.
 
+Current proposed coalition: **[+ coalition_member_list_text +]**
+
 Current coalition seats: [+ coalition_total_seats +]%
+
+Blocked/incompatible parties: [+ coalition_blocked_parties_text +]
+
+Unavailable parties: [+ coalition_unavailable_parties_text +]
 
 - @coalition_negotiate_spd
 - @coalition_negotiate_dvp
@@ -671,6 +699,14 @@ Placeholder concession screen. Select concessions until the current point total 
 Current concession points: **[+ coalition_negotiation_points +]**
 
 Required concession points: **[+ coalition_required_points +]**
+
+Selected concessions: **[+ coalition_selected_concessions_text +]**
+
+Current proposed coalition: **[+ coalition_member_list_text +]** ([+ coalition_total_seats +]% seats)
+
+Blocked/incompatible parties: **[+ coalition_blocked_parties_text +]**
+
+Selected concessions would block: **[+ coalition_selected_blocks_text +]**
 
 - @toggle_spd_expand_welfare
 - @toggle_spd_expand_unemployment_insurance
