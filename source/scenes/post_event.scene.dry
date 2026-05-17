@@ -277,6 +277,7 @@ for (var party of Q.parties) {
         Q[party + '_result_votes'] = Number(Q[party + '_r']) || 0;
     }
     Q[party + '_r_disp'] = (Math.round((Number(Q[party + '_result_votes']) || 0)*10)/10).toFixed(1);
+    Q[party + '_seat_share_disp'] = (Math.round((100*(Number(Q[party + '_r']) || 0)/(Q.reichstag_seat_count || 100))*10)/10).toFixed(1);
 }
 
 

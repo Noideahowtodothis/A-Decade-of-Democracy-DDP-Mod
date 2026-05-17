@@ -285,37 +285,20 @@ set-jump: post_election
 
 @post_election
 on-arrival: {!
-// Allocate a normalized 100-seat Reichstag with D'Hondt; vote shares remain unchanged.
+// Allocate a normalized 100-seat Reichstag with the shared D'Hondt helper; vote shares remain unchanged.
 var reichstagSeatCount = Q.reichstag_seat_count || 100;
 var threshold = Q.electoral_threshold || 0;
-var eligibleParties = [];
-var allocatedSeats = {};
+var partyVoteShares = {};
+var bannedParties = {};
 for (var party of Q.parties) {
-    var voteShare = Number(Q[party + '_votes']) || 0;
-    var belowThreshold = threshold > 0 && (voteShare < threshold || (threshold > 1 && party == 'other'));
-    allocatedSeats[party] = 0;
-    if (!Q[party + '_banned'] && !belowThreshold && voteShare > 0) {
-        eligibleParties.push(party);
-    }
+    partyVoteShares[party] = Number(Q[party + '_votes']) || 0;
+    bannedParties[party] = Q[party + '_banned'];
 }
-for (var seatIndex = 0; seatIndex < reichstagSeatCount; seatIndex++) {
-    var bestParty = null;
-    var bestQuotient = -1;
-    for (var eligibleParty of eligibleParties) {
-        var quotient = Q[eligibleParty + '_votes']/(allocatedSeats[eligibleParty] + 1);
-        if (quotient > bestQuotient) {
-            bestQuotient = quotient;
-            bestParty = eligibleParty;
-        }
-    }
-    if (bestParty === null) {
-        break;
-    }
-    allocatedSeats[bestParty] += 1;
-}
+var allocatedSeats = window.allocateDhondtSeats(partyVoteShares, reichstagSeatCount, threshold, {parties: Q.parties, banned: bannedParties});
 Q.reichstag_total_seats = 0;
 for (var party of Q.parties) {
     Q[party + '_r'] = allocatedSeats[party];
+    Q[party + '_seat_share_disp'] = (Math.round((100*Q[party + '_r']/reichstagSeatCount)*10)/10).toFixed(1);
     Q.reichstag_total_seats += Q[party + '_r'];
 }
 Q.reichstag_seat_allocation_valid = Q.reichstag_total_seats == reichstagSeatCount;
@@ -344,37 +327,37 @@ Q.anti_democratic_coalition = Q.kpd_r + Q.nsdap_r;
 Q.neo_weimar_coalition = Q.spd_r + Q.ddp_r + Q.z_r + Q.bvp_r + Q.dvp_r + Q.wp_r + Q.other_r;
 !}
 
-The electoral system is essentially proportional, with the proportion of Reichstag seats roughly equal to the proportion of votes.
+The electoral system uses D'Hondt proportional allocation, so the proportion of Reichstag seats roughly equals the proportion of votes while larger parties slightly overperform.
  
 **Election results:**
 
 # 1928: 30, 1930: 25, 1932: 22
-SPD: [+ spd_r +]
+SPD: [+ spd_votes_disp +]% votes, [+ spd_r +] seats ([+ spd_seat_share_disp +]%)
 
 # 1928: 15, 1930: 15, 1932: 
-Z: [+ z_r +]
+Z: [+ z_votes_disp +]% votes, [+ z_r +] seats ([+ z_seat_share_disp +]%)
 
-BVP: [+ bvp_r +]
+BVP: [+ bvp_votes_disp +]% votes, [+ bvp_r +] seats ([+ bvp_seat_share_disp +]%)
 
 # 1928: 10, 1930: 13
-KPD: [+ kpd_r +]
+KPD: [+ kpd_votes_disp +]% votes, [+ kpd_r +] seats ([+ kpd_seat_share_disp +]%)
 
 # 1928: 5, 1930: 4 (as DstP)
-DDP: [+ ddp_r +]
+DDP: [+ ddp_votes_disp +]% votes, [+ ddp_r +] seats ([+ ddp_seat_share_disp +]%)
 
 # 1928: 9, 1930: 5
-DVP: [+ dvp_r +]
+DVP: [+ dvp_votes_disp +]% votes, [+ dvp_r +] seats ([+ dvp_seat_share_disp +]%)
 
-WP: [+ wp_r +]
+WP: [+ wp_votes_disp +]% votes, [+ wp_r +] seats ([+ wp_seat_share_disp +]%)
 
 # 1928: 14, 1930: 7
-DNVP: [+ dnvp_r +]
+DNVP: [+ dnvp_votes_disp +]% votes, [+ dnvp_r +] seats ([+ dnvp_seat_share_disp +]%)
 
 # 1928: 3, 1930: 18
-NSDAP: [+ nsdap_r +]
+NSDAP: [+ nsdap_votes_disp +]% votes, [+ nsdap_r +] seats ([+ nsdap_seat_share_disp +]%)
 
 # 1928: 9, 1930: 10
-Other: [+ other_r +]
+Other: [+ other_votes_disp +]% votes, [+ other_r +] seats ([+ other_seat_share_disp +]%)
 
 **Potential coalitions:**
 

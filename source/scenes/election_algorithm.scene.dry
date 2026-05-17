@@ -1,5 +1,43 @@
 title: Election
 on-arrival: {!
+// Reusable D'Hondt allocator for Reichstag, Landtag, or other proportional chambers.
+// D'Hondt repeatedly awards each next seat to the highest votes/(seats+1) quotient;
+// this remains proportional but slightly favors larger parties over smaller parties.
+// Example/dev check: allocateDhondtSeats({a: 60, b: 25, c: 15}, 4) => {a: 3, b: 1, c: 0}.
+window.allocateDhondtSeats = function(partyValues, totalSeats, threshold, options) {
+    options = options || {};
+    threshold = Number(threshold) || 0;
+    totalSeats = Math.max(0, Math.floor(Number(totalSeats) || 0));
+    var parties = options.parties || Object.keys(partyValues || {});
+    var banned = options.banned || {};
+    var allocatedSeats = {};
+    var eligibleParties = [];
+    for (var partyIndex = 0; partyIndex < parties.length; partyIndex++) {
+        var allocationParty = parties[partyIndex];
+        var partyValue = Number(partyValues[allocationParty]) || 0;
+        allocatedSeats[allocationParty] = 0;
+        if (!banned[allocationParty] && partyValue > 0 && (threshold <= 0 || partyValue >= threshold)) {
+            eligibleParties.push(allocationParty);
+        }
+    }
+    for (var seatIndex = 0; seatIndex < totalSeats; seatIndex++) {
+        var bestParty = null;
+        var bestQuotient = -1;
+        for (var eligibleIndex = 0; eligibleIndex < eligibleParties.length; eligibleIndex++) {
+            var eligibleParty = eligibleParties[eligibleIndex];
+            var quotient = (Number(partyValues[eligibleParty]) || 0)/(allocatedSeats[eligibleParty] + 1);
+            if (quotient > bestQuotient) {
+                bestQuotient = quotient;
+                bestParty = eligibleParty;
+            }
+        }
+        if (bestParty === null) {
+            break;
+        }
+        allocatedSeats[bestParty] += 1;
+    }
+    return allocatedSeats;
+};
 var canonicalParties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
 if (!Q.parties) {
     Q.parties = canonicalParties;

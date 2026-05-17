@@ -501,6 +501,7 @@ var initialVoteShareParties = Q.parties.concat(['sapd']);
 for (var initialVoteShareParty of initialVoteShareParties) {
     Q[initialVoteShareParty + '_result_votes'] = Q[initialVoteShareParty + '_r'] || 0;
     Q[initialVoteShareParty + '_r_disp'] = Q[initialVoteShareParty + '_result_votes'].toFixed(1);
+    Q[initialVoteShareParty + '_seat_share_disp'] = (Math.round((100*(Q[initialVoteShareParty + '_r'] || 0)/Q.reichstag_seat_count)*10)/10).toFixed(1);
     Q['old_' + initialVoteShareParty + '_votes'] = Q['old_' + initialVoteShareParty + '_r'] || 0;
     Q['old_' + initialVoteShareParty + '_votes_disp'] = Q['old_' + initialVoteShareParty + '_votes'].toFixed(1);
 }
