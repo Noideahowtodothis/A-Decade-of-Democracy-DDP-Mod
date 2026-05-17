@@ -92,6 +92,15 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
 
     Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
     Q.parties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
+    Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
+    for (var startupTrackerParty of Q.party_leader_ideology_parties) {
+        Q[startupTrackerParty + '_leader'] = 0;
+        Q[startupTrackerParty + '_ideology'] = 0;
+    }
+    Q.kpd_leader = 1;
+    Q.z_leader = 2;
+    Q.nsdap_leader = 3;
+    Q.dvp_ideology = 1;
     Q.sapd_formed = 0;
     Q.sapd_r = 0;
     Q.old_sapd_r = 0;
@@ -322,13 +331,19 @@ Q.dvp_relation = 35;
 Q.dnvp_relation = 10;
 Q.nsdap_relation = 0;
 
-Q.kpd_leader = "Thälmann";
+Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
+for (var trackerParty of Q.party_leader_ideology_parties) {
+    Q[trackerParty + '_leader'] = 0;
+    Q[trackerParty + '_ideology'] = 0;
+}
+Q.kpd_leader = 1;
 // alternative is the Conciliators as party leader
 Q.kpd_party_leader = "Thälmann";
-Q.z_leader = "Brüning";
+Q.z_leader = 2;
 // party leader - can be Ludwig Kaas, Joseph Joos, or Adam Stegerwald after the 1928 December conference. Joos will be most friendly to the SPD.
 Q.z_party_leader = "Marx";
-Q.nsdap_leader = "Hitler";
+Q.nsdap_leader = 3;
+Q.dvp_ideology = 1;
 
 // hmm... maybe we can play nice with Hindenburg???
 Q.hindenburg_relation = 25;
@@ -718,7 +733,12 @@ Q.political_records = [];
 
 // Variable registries for scripted events, debug/state inspectors, and future audit/index systems.
 Q.core_state_variables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism'];
-Q.scripted_event_variables = Q.core_state_variables.concat(Q.ddp_factions, Q.simplified_faction_variables);
+Q.party_leader_ideology_variables = [];
+for (var trackerVariableParty of Q.party_leader_ideology_parties) {
+    Q.party_leader_ideology_variables.push(trackerVariableParty + '_leader');
+    Q.party_leader_ideology_variables.push(trackerVariableParty + '_ideology');
+}
+Q.scripted_event_variables = Q.core_state_variables.concat(Q.ddp_factions, Q.simplified_faction_variables, Q.party_leader_ideology_variables);
 Q.debug_state_variables = Q.scripted_event_variables;
 Q.audit_state_variables = Q.scripted_event_variables;
 Q.derived_political_variables = ['federalism_state_integration_pressure', 'federalism_judicial_federalization_readiness', 'federalism_regional_crisis_risk', 'federalism_prussia_state_relations'];
