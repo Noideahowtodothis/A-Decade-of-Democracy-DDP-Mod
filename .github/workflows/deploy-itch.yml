@@ -1,4 +1,4 @@
-name: Deploy HTML to itch.io
+name: Deploy to itch.io
 
 on:
   push:
@@ -6,16 +6,9 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  # TODO: Replace with your itch.io username.
-  ITCH_USERNAME: TODO_REPLACE_WITH_ITCH_USERNAME
-  # TODO: Replace with your itch.io game slug.
-  ITCH_GAME_SLUG: TODO_REPLACE_WITH_ITCH_GAME_SLUG
-  ITCH_CHANNEL: html
-
 jobs:
   deploy:
-    name: Deploy out/html with Butler
+    name: Deploy HTML build to itch.io
     runs-on: ubuntu-latest
 
     steps:
@@ -23,25 +16,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Verify HTML build exists
-        run: |
-          test -f out/html/index.html
-
-      - name: Verify itch.io target placeholders were replaced
-        run: |
-          if [ "$ITCH_USERNAME" = "TODO_REPLACE_WITH_ITCH_USERNAME" ] || [ "$ITCH_GAME_SLUG" = "TODO_REPLACE_WITH_ITCH_GAME_SLUG" ]; then
-            echo "Replace ITCH_USERNAME and ITCH_GAME_SLUG in .github/workflows/deploy-itch.yml before deploying."
-            exit 1
-          fi
+        run: test -f out/html/index.html
 
       - name: Install Butler
         run: |
           curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
-          unzip butler.zip
-          chmod +x butler
-          ./butler -V
+          unzip butler.zip -d butler
+          chmod +x butler/butler
+          echo "$PWD/butler" >> "$GITHUB_PATH"
 
-      - name: Deploy HTML build to itch.io
+      - name: Deploy to itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
-        run: |
-          ./butler push out/html "$ITCH_USERNAME/$ITCH_GAME_SLUG:$ITCH_CHANNEL"
+        run: butler push out/html YOUR_ITCH_USERNAME/YOUR_GAME_SLUG:html
