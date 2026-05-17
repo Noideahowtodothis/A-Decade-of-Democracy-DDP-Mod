@@ -1,5 +1,180 @@
 title: Root Scene
 new-page: true
+on-arrival: {!
+// The sidebar/status renderer runs before the player presses Start Game.
+// Keep a display-safe baseline state available on the start menu without marking the game as started.
+if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
+    Q.startup_state_defaults_initialized = 1;
+    Q.started = 0;
+    Q.time = 1;
+    Q.year = 1928;
+    Q.month = 1;
+    Q.month_actions = 0;
+    Q.difficulty = 0;
+    Q.historical_mode = 0;
+    Q.old_demographics = 0;
+    Q.use_decimals = 0;
+    Q.resources = 2;
+    Q.dues = 2;
+    Q.dissent = 0.05;
+    Q.dissent_percent = 5;
+
+    Q.factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
+    Q.ddp_factions = Q.factions;
+    for (var startupDdpFaction of Q.ddp_factions) {
+        Q[startupDdpFaction] = 0;
+    }
+
+    Q.deprecated_spd_faction_vars = ['left_strength', 'left_dissent', 'center_strength', 'center_dissent', 'labor_strength', 'labor_dissent', 'reformist_strength', 'reformist_dissent', 'neorevisionist_strength', 'neorevisionist_dissent'];
+    Q.left_strength = 15;
+    Q.left_dissent = 20;
+    Q.center_strength = 30;
+    Q.center_dissent = 0;
+    Q.labor_strength = 25;
+    Q.labor_dissent = 5;
+    Q.reformist_strength = 25;
+    Q.reformist_dissent = 5;
+    Q.neorevisionist_strength = 5;
+    Q.neorevisionist_dissent = 10;
+
+    Q.simplified_faction_variables = ['dnvp_left', 'dnvp_right', 'dvp_left', 'dvp_right', 'spd_left', 'spd_right'];
+    Q.dnvp_left = 50;
+    Q.dnvp_right = 50;
+    Q.dvp_left = 50;
+    Q.dvp_right = 50;
+    Q.spd_left = 50;
+    Q.spd_right = 50;
+
+    Q.z_relation = 50;
+    Q.bvp_relation = 50;
+    Q.wp_relation = 50;
+    Q.kpd_relation = 25;
+    Q.ddp_relation = 60;
+    Q.dvp_relation = 35;
+    Q.dnvp_relation = 10;
+    Q.nsdap_relation = 0;
+
+    Q.presidential_anger = 0;
+    Q.federalism = 50;
+    Q.nationalism = 60;
+    Q.socialism = 40;
+    Q.pro_republic = 59;
+    Q.pacifism = 50;
+    Q.secularism = 50;
+    Q.elite_support = 50;
+    Q.elite_support_2 = '50';
+
+    Q.president = "Hindenburg";
+    Q.chancellor = "Marx";
+    Q.chancellor_party = 'Z';
+    Q.spd_in_government = 0;
+    Q.z_in_government = 1;
+    Q.bvp_in_government = 0;
+    Q.ddp_in_government = 0;
+    Q.dvp_in_government = 1;
+    Q.wp_in_government = 0;
+    Q.dnvp_in_government = 1;
+    Q.kpd_in_government = 0;
+    Q.nsdap_in_government = 0;
+    Q.spd_caretaker = 0;
+    Q.spd_toleration = 0;
+    Q.in_right_coalition = 0;
+    Q.in_weimar_coalition = 0;
+    Q.in_grand_coalition = 0;
+    Q.in_popular_front = 0;
+    Q.in_left_front = 0;
+    Q.in_emergency_government = 0;
+    Q.in_spd_majority = 0;
+    Q.in_minority_government = 0;
+    Q.minority_government = 0;
+    Q.coalition_dissent = 0;
+    Q.kpd_coalition_dissent = 0;
+
+    Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
+    Q.parties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
+    Q.sapd_formed = 0;
+    Q.sapd_r = 0;
+    Q.old_sapd_r = 0;
+    Q.ddp_name = "DDP";
+
+    var startupReichstag = {spd: 26, kpd: 9, z: 14, bvp: 3, ddp: 6, dvp: 10, wp: 4, dnvp: 20, nsdap: 3, other: 5, sapd: 0};
+    for (var startupParty in startupReichstag) {
+        Q[startupParty + '_r'] = startupReichstag[startupParty];
+        Q['old_' + startupParty + '_r'] = startupReichstag[startupParty];
+        Q[startupParty + '_result_votes'] = startupReichstag[startupParty];
+        Q[startupParty + '_r_disp'] = startupReichstag[startupParty].toFixed(1);
+        Q[startupParty + '_seat_share_disp'] = startupReichstag[startupParty].toFixed(1);
+        Q['old_' + startupParty + '_votes'] = startupReichstag[startupParty];
+        Q['old_' + startupParty + '_votes_disp'] = startupReichstag[startupParty].toFixed(1);
+        Q[startupParty + '_votes'] = startupReichstag[startupParty];
+        Q[startupParty + '_votes_disp'] = startupReichstag[startupParty].toFixed(1);
+        Q[startupParty + '_votes_display'] = startupReichstag[startupParty].toFixed(1);
+    }
+    Q.reichstag_seat_count = 100;
+    Q.reichstag_total_seats = 100;
+    Q.reichstag_seat_allocation_valid = 1;
+
+    Q.coalition_members = ['ddp'];
+    Q.coalition_selected_party = '';
+    Q.coalition_negotiation_points = 0;
+    Q.coalition_required_points = 0;
+    Q.coalition_total_seats = Q.ddp_r;
+    Q.coalition_negotiation_active = 0;
+    Q.coalition_spd_member = 0;
+    Q.coalition_kpd_member = 0;
+    Q.coalition_z_member = 0;
+    Q.coalition_bvp_member = 0;
+    Q.coalition_ddp_member = 1;
+    Q.coalition_dvp_member = 0;
+    Q.coalition_wp_member = 0;
+    Q.coalition_dnvp_member = 0;
+    Q.coalition_nsdap_member = 0;
+    Q.in_custom_negotiated_coalition = 0;
+    Q.coalition_nsdap_z_allowed = 0;
+    Q.coalition_kpd_z_allowed = 0;
+    Q.coalition_toleration_party = '';
+
+    Q.budget = 4;
+    Q.inflation = 2.9;
+    Q.inflation_2 = '2.9';
+    Q.unemployed = 8.6;
+    Q.unemployed_2 = '8.6';
+    Q.economic_growth = 4.4;
+    Q.economic_growth_2 = '4.4';
+    Q.black_thursday_seen = 0;
+
+    Q.next_election_year = 1928;
+    Q.next_election_month = 5;
+    Q.next_election_time = 5;
+    Q.n_elections = 0;
+
+    Q.workers = 48;
+    Q.old_middle = 13;
+    Q.new_middle = 14;
+    Q.rural = 25;
+    Q.catholics = 30;
+    var startupClassVotes = {
+        workers: {spd: 60, kpd: 20, z: 5, bvp: 0, ddp: 0, dvp: 0, wp: 0, dnvp: 5, nsdap: 0, other: 10},
+        old_middle: {spd: 5, kpd: 0, z: 4, bvp: 2, ddp: 10, dvp: 24, wp: 4, dnvp: 25, nsdap: 10, other: 8},
+        new_middle: {spd: 5, kpd: 1, z: 9, bvp: 1, ddp: 25, dvp: 24, wp: 4, dnvp: 10, nsdap: 5, other: 12},
+        rural: {spd: 10, kpd: 0, z: 4, bvp: 3, ddp: 5, dvp: 15, wp: 1, dnvp: 45, nsdap: 5, other: 9},
+        unemployed: {spd: 25, kpd: 55, z: 1, bvp: 0, ddp: 0, dvp: 0, wp: 0, dnvp: 5, nsdap: 15, other: 9},
+        catholics: {spd: 15, kpd: 2, z: 41, bvp: 9, ddp: 0, dvp: 5, wp: 2, dnvp: 5, nsdap: 0, other: 10}
+    };
+    for (var startupClass in startupClassVotes) {
+        var startupClassTotal = 0;
+        for (var startupVoteParty in startupClassVotes[startupClass]) {
+            Q[startupClass + '_' + startupVoteParty] = startupClassVotes[startupClass][startupVoteParty];
+            startupClassTotal += startupClassVotes[startupClass][startupVoteParty];
+        }
+        for (var startupDisplayParty in startupClassVotes[startupClass]) {
+            var startupNormalized = 100*startupClassVotes[startupClass][startupDisplayParty]/startupClassTotal;
+            Q[startupClass + '_' + startupDisplayParty + '_normalized'] = startupNormalized;
+            Q[startupClass + '_' + startupDisplayParty + '_display'] = (Math.round(startupNormalized*10)/10).toFixed(1);
+        }
+    }
+}
+!}
 go-to: post_event if started = 1; start_menu if started = 0
 
 @start_menu
@@ -518,6 +693,7 @@ Q.old_other_r = 5;
 // sapd isn't formed yet, but it may be formed
 Q.sapd_r = 0;
 Q.old_sapd_r = 0;
+Q.coalition_total_seats = Q.ddp_r;
 
 var initialVoteShareParties = Q.parties.concat(['sapd']);
 for (var initialVoteShareParty of initialVoteShareParties) {
@@ -555,8 +731,10 @@ Q.chancellor = "Marx";
 Q.chancellor_party = 'Z';
 Q.spd_in_government = 0;
 Q.z_in_government = 1;
+Q.bvp_in_government = 0;
 Q.ddp_in_government = 0;
 Q.dvp_in_government = 1;
+Q.wp_in_government = 0;
 Q.dnvp_in_government = 1;
 Q.kpd_in_government = 0;
 Q.nsdap_in_government = 0;
