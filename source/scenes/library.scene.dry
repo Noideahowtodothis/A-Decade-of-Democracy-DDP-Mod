@@ -322,23 +322,23 @@ go-to: menu
 
 These internal DDP faction variables are tracked from 0 to 100 and are clamped after events. Existing SPD faction event effects remain as deprecated compatibility hooks until they can be rebalanced.
 
-**Left Progressive**: culturally progressive republican liberals.
+**Left Progressive**: A number of high-profile leftists joined our party in the revolutionary days of 1919. While many have left, others still remain, committed to the idea of a progressive, pacifist, socially conscious party for all Germans. Most support close collaboration with the SPD and are strongly opposed to any cooperation with the anti-Republican parties on the right.
 
 Value: [+ ddp_left_progressive +]
 
-**Laborist**: labor-aligned social liberals.
+**Laborist**: Many members of our party are affiliated with the "yellow" unions of the Hirsch-Dunckersche Gewerkvereine, or even the nationalist Deutschnationaler Handlungsgehilfen-Verband. Their membership tends to be moderately nationalistic and more supportive of leftist economic policies than other factions in our party. They are supportive of our relationship with the SPD, although they are opposed to policies that favor the SPD-aligned unions over other groups.
 
 Value: [+ ddp_laborist +]
 
-**Left Liberal**: civil-libertarian/liberal reformers.
+**Left Liberal**: The Left Liberal wing of our party is the heir of the old Fortschrittliche Volkspartei. They tend to be supportive of a relatively pacifistic approach to foreign policy, a secular approach to cultural issues, civic nationalism (although some like Otto Fischbeck are prominent members of German liberalism's anti-semitic wing), and, above all, the Republic. They are open to working either with the DVP or the SPD, but distrust the DNVP and the anti-republican right.
 
 Value: [+ ddp_left_liberal +]
 
-**Left Bourgeois**: moderate bourgeois republicans.
+**Left Bourgeois**: Many of our members, particularly our supporters among the capitalist class, prefer a broad coalition of the Bürgerblock parties, even potentially the DNVP, to working with the SPD. While these politicians tend to be secular and advocates of Stresemannite diplomacy, for them, economic policies are a priority over cultural and national issues.
 
 Value: [+ ddp_left_bourgeois +]
 
-**Regionalist**: federalist/regional autonomy liberals.
+**Regionalist**: During the Empire, our predecessor parties maintained strong support in the periphery of Germany, particularly among small farmers. While these classes have been drifting away from our party since the establishment of the Republic, we still maintain strong ties to these regions. These members, which include prominent citizens like Hjalmar Schacht, tend to be nationalistic, opposed to centralization, secularist, and opposed to the cultural excesses of the "Jewish Republic" dominated by Berlin.
 
 Value: [+ ddp_regionalist +]
 
