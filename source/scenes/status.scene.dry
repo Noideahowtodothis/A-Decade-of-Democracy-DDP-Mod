@@ -12,11 +12,6 @@ Q.economic_growth_2 = '0';
 if (Q.economic_growth) {
     Q.economic_growth_2 = Q.economic_growth.toFixed(1);
 }
-if (Q.elite_support === undefined || Q.elite_support === null || isNaN(Q.elite_support)) {
-    Q.elite_support = 50;
-}
-Q.elite_support = Math.max(0, Math.min(100, Q.elite_support));
-Q.elite_support_2 = Q.elite_support.toFixed(0);
 !}
 
 = Status
@@ -78,13 +73,18 @@ Inflation: [+ inflation_2 +]%
 
 Economic growth: [+ economic_growth_2 +]%
 
-{!<span class="tooltip-text" title="Represents elite/business confidence in the government and constitutional system.">Elite support</span>!}: [+ elite_support_2 : elite_support +]
-
 
 
 # = Public Opinion
 
 @politics
+
+= ELITE SUPPORT
+
+# TODO: ddp_elite_support does not exist yet; display it here when the source variable is added.
+# TODO: dvp_elite_support does not exist yet; display it here when the source variable is added.
+# TODO: dnvp_elite_support does not exist yet; display it here when the source variable is added.
+# TODO: nsdap_elite_support does not exist yet; display it here when the source variable is added.
 
 = Inter-party Relations
 
