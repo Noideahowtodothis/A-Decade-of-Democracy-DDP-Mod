@@ -356,6 +356,28 @@ if (typeof globalThis !== "undefined") {
     };
 }
 
+// Reusable coalition negotiation state.
+// TODO(coalition): if a future scenario changes the playable party, replace the default DDP anchor with scenario-owned player-party metadata.
+Q.coalition_members = ['ddp'];
+Q.coalition_selected_party = '';
+Q.coalition_negotiation_points = 0;
+Q.coalition_required_points = 0;
+Q.coalition_total_seats = Q.ddp_r;
+Q.coalition_negotiation_active = 0;
+Q.coalition_spd_member = 0;
+Q.coalition_kpd_member = 0;
+Q.coalition_z_member = 0;
+Q.coalition_bvp_member = 0;
+Q.coalition_ddp_member = 1;
+Q.coalition_dvp_member = 0;
+Q.coalition_wp_member = 0;
+Q.coalition_dnvp_member = 0;
+Q.coalition_nsdap_member = 0;
+Q.in_custom_negotiated_coalition = 0;
+Q.coalition_nsdap_z_allowed = 0;
+Q.coalition_kpd_z_allowed = 0;
+Q.coalition_toleration_party = '';
+
 Q.budget = 4;
 
 // Proportion of different social groups

@@ -114,6 +114,273 @@ if (Q.kpd_relation >= 30) {
 
 Q.leverage = Q.spd_r;
 
+// Coalition negotiation data and helpers are intentionally mechanical placeholder systems.
+Q.coalition_party_labels = {"spd": "SPD", "dvp": "DVP", "dnvp": "DNVP", "z": "Z", "bvp": "BVP", "wp": "WP", "kpd": "KPD", "nsdap": "NSDAP", "ddp": "DDP"};
+Q.coalition_party_blocks = {"spd": ["dnvp", "nsdap"], "dnvp": ["spd", "kpd"], "nsdap": ["spd", "kpd", "z"], "kpd": ["dnvp", "dvp", "nsdap", "z"], "dvp": [], "z": [], "bvp": [], "wp": []};
+// TODO(coalition): refine NSDAP/Z and KPD/Z incompatibility exceptions with explicit scenario flags.
+Q.coalition_concessions = [
+    {id: 'spd_expand_welfare', party: 'spd', label: 'Expand Welfare', isMajor: true, points: 2, effects: '-1 budget; increase SPD worker support; increase ddp_left_bourgeois dissent; damage DVP relations.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'spd_expand_unemployment_insurance', party: 'spd', label: 'Expand Unemployment Insurance', isMajor: true, points: 2, effects: '-1 budget; increase SPD unemployed support; increase ddp_left_bourgeois dissent; damage DVP relations.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'spd_expand_labor_protections', party: 'spd', label: 'Expand Labor Protections', isMajor: true, points: 2, effects: 'reduce economic_growth; damage DNVP and DVP relations; reduce elite support; increase SPD worker support; increase ddp_left_bourgeois dissent.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'spd_cut_military_spending', party: 'spd', label: 'Cut Military Spending', isMajor: true, points: 2, effects: '+1 budget; heavily damage DNVP and DVP relations; middle-class DDP support loss scaling inversely with pacifism; increase presidential_anger.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'spd_expand_womens_rights', party: 'spd', label: 'Expand Women’s Rights', isMajor: false, points: 1, effects: 'slightly increase SPD worker and new-middle support; reduce DDP Catholic support; damage Z relations; slightly increase secularism; reduce ddp_left_progressive and ddp_left_liberal dissent.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'spd_sexual_minority_law_reforms', party: 'spd', label: 'Sexual Minority Law Reforms', isMajor: false, points: 1, effects: 'increase secularism; decrease Catholic and old-middle DDP support scaling with secularism; damage Z relations.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'spd_expand_secular_education', party: 'spd', label: 'Expand Secular Education', isMajor: false, points: 1, effects: 'greatly damage Z relations; increase middle-class DDP support scaling inversely with secularism; greatly reduce DDP Catholic support; reduce all DDP faction dissent.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'spd_crackdown_on_paramilitaries', party: 'spd', label: 'Crackdown on Paramilitaries', isMajor: false, points: 1, effects: 'reduce SH, SA, and RFB strength; damage DNVP and DVP relations; increase presidential_anger; small old-middle DDP support loss scaling with nationalism.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dvp_reduce_regulations', party: 'dvp', label: 'Reduce Regulations', isMajor: true, points: 2, effects: 'increase DVP elite backing/support; increase DVP old-middle support; reduce DDP worker support.', blockedParties: Q.coalition_party_blocks['dvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dvp_cut_welfare', party: 'dvp', label: 'Cut Welfare', isMajor: true, points: 2, effects: '+1 budget; slightly increase DVP old-middle support; strongly reduce DDP worker and unemployed support; damage SPD relations.', blockedParties: Q.coalition_party_blocks['dvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dvp_increase_government_salaries', party: 'dvp', label: 'Increase Salaries for Government Employees', isMajor: true, points: 2, effects: 'increase DVP new-middle support; -1 budget; increase DVP relations.', blockedParties: Q.coalition_party_blocks['dvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dvp_expand_secular_education', party: 'dvp', label: 'Expand Secular Education', isMajor: false, points: 1, effects: 'same as SPD secular education concession.', blockedParties: Q.coalition_party_blocks['dvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dvp_crackdown_on_communists', party: 'dvp', label: 'Crackdown on Communists', isMajor: false, points: 1, effects: 'reduce RFB strength; damage KPD ties; slightly reduce DDP worker support; slightly increase DVP old-middle support; decrease presidential_anger.', blockedParties: Q.coalition_party_blocks['dvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dvp_protect_nationalist_bureaucrats', party: 'dvp', label: 'Protect Nationalist Bureaucrats', isMajor: false, points: 1, effects: 'increase DVP new-middle support scaling with nationalism; decrease pro_republic; damage SPD ties; slightly decrease presidential_anger.', blockedParties: Q.coalition_party_blocks['dvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dnvp_increase_tariffs', party: 'dnvp', label: 'Increase Tariffs', isMajor: true, points: 2, effects: 'increase tariffs; +1 budget; decrease DDP worker and unemployed support; increase DNVP rural support; decrease DDP elite backing/support.', blockedParties: Q.coalition_party_blocks['dnvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dnvp_increase_rural_aid', party: 'dnvp', label: 'Increase Rural Aid', isMajor: true, points: 2, effects: '-1 budget; increase DNVP rural support; slightly decrease presidential_anger.', blockedParties: Q.coalition_party_blocks['dnvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dnvp_allow_imperial_symbolism', party: 'dnvp', label: 'Allow Imperial Symbolism', isMajor: false, points: 1, effects: 'increase nationalism; decrease pro_republic; slightly decrease presidential_anger; increase DNVP rural and old-middle support scaling with nationalism; damage SPD relations; damage ddp_left_liberal and ddp_left_progressive support/loyalty.', blockedParties: Q.coalition_party_blocks['dnvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dnvp_crack_down_on_socialists', party: 'dnvp', label: 'Crack Down on Socialists', isMajor: false, points: 1, effects: 'reduce RFB and RB strength; damage SPD and KPD ties.', blockedParties: Q.coalition_party_blocks['dnvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dnvp_protect_nationalist_bureaucrats', party: 'dnvp', label: 'Protect Nationalist Bureaucrats', isMajor: false, points: 1, effects: 'DVP nationalist bureaucrat effects, with DNVP support where applicable.', blockedParties: Q.coalition_party_blocks['dnvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'dnvp_fund_protestant_church_groups', party: 'dnvp', label: 'Increase Funding to Protestant Church Groups', isMajor: false, points: 1, effects: 'increase DNVP rural support inversely scaling with secularism; -1 budget; decrease secularism.', blockedParties: Q.coalition_party_blocks['dnvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'z_expand_catholic_education', party: 'z', label: 'Expand Catholic Education', isMajor: true, points: 2, effects: 'decrease secularism; increase Z Catholic support; damage SPD and DVP ties; reduce DDP support from all groups except Catholics; increase dissent from all DDP factions.', blockedParties: Q.coalition_party_blocks['z'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'z_balance_budget', party: 'z', label: 'Balance the Budget', isMajor: true, points: 2, effects: '+1 budget; damage DDP worker/unemployed/old-middle/new-middle support; damage DVP/DNVP/SPD support; decrease DDP elite support.', blockedParties: Q.coalition_party_blocks['z'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'z_negotiate_papacy', party: 'z', label: 'Further Negotiate with the Papacy', isMajor: true, points: 2, effects: 'increase dissent from all DDP factions; increase Z Catholic support; decrease DVP ties; decrease secularism.', blockedParties: Q.coalition_party_blocks['z'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'z_southern_infrastructure', party: 'z', label: 'Expand Infrastructure in the South', isMajor: false, points: 1, effects: 'increase Z support with all classes; -1 budget; increase economic_growth; increase federalism.', blockedParties: Q.coalition_party_blocks['z'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'z_catholic_student_groups', party: 'z', label: 'Support Catholic Student Groups', isMajor: false, points: 1, effects: 'decrease secularism; increase Z new-middle support; damage DDP new-middle support; damage DVP ties; slightly increase dissent from all DDP factions.', blockedParties: Q.coalition_party_blocks['z'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'z_catholic_unions', party: 'z', label: 'Support Catholic Unions', isMajor: false, points: 1, effects: 'increase Z worker support; reduce SPD ties; increase ddp_laborist dissent; decrease secularism.', blockedParties: Q.coalition_party_blocks['z'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'bvp_expand_state_autonomy', party: 'bvp', label: 'Expand State Autonomy', isMajor: false, points: 1, effects: 'slightly increase BVP Catholic support; increase federalism; damage SPD ties.', blockedParties: Q.coalition_party_blocks['bvp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'wp_reduce_inflation', party: 'wp', label: 'Reduce Inflation', isMajor: true, points: 2, effects: 'reduce inflation; subtract 2 from Lautenbach tracker if it exists; increase WP old-middle support.', blockedParties: Q.coalition_party_blocks['wp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+    {id: 'wp_promote_landlord_interests', party: 'wp', label: 'Promote Landlord Interests', isMajor: false, points: 1, effects: 'increase WP old-middle support; damage DDP worker support; increase dissent/anger in ddp_left_progressive and ddp_laborist factions.', blockedParties: Q.coalition_party_blocks['wp'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
+];
+
+Q.coalitionEnsureState = function() {
+    var defaultMembers = Q.coalition_members && Q.coalition_members.length ? Q.coalition_members : ['ddp'];
+    Q.coalition_members = [];
+    for (var i = 0; i < defaultMembers.length; i++) {
+        if (Q.coalition_members.indexOf(defaultMembers[i]) < 0) {
+            Q.coalition_members.push(defaultMembers[i]);
+        }
+    }
+    if (Q.coalition_members.indexOf('ddp') < 0) {
+        Q.coalition_members.push('ddp');
+    }
+    for (var p of ['spd','kpd','z','bvp','ddp','dvp','wp','dnvp','nsdap']) {
+        Q['coalition_' + p + '_member'] = Q.coalition_members.indexOf(p) >= 0 ? 1 : 0;
+    }
+    Q.coalition_total_seats = 0;
+    for (var member of Q.coalition_members) {
+        Q.coalition_total_seats += Number(Q[member + '_r']) || 0;
+    }
+    if (Q.coalition_party_blocks) {
+        for (var lockParty of ['spd','dvp','dnvp','z','bvp','wp','kpd','nsdap']) {
+            var reason = '';
+            if (Q['coalition_' + lockParty + '_member']) {
+                reason = 'Already in coalition.';
+            } else {
+                for (var lockMember of Q.coalition_members) {
+                    var memberBlocks = Q.coalition_party_blocks[lockMember] || [];
+                    var partyBlocks = Q.coalition_party_blocks[lockParty] || [];
+                    // TODO(coalition): replace these broad locks with party-leader/scenario-specific compatibility rules.
+                    if (memberBlocks.indexOf(lockParty) >= 0 || partyBlocks.indexOf(lockMember) >= 0) {
+                        if ((lockMember == 'nsdap' && lockParty == 'z' && Q.coalition_nsdap_z_allowed) || (lockParty == 'nsdap' && lockMember == 'z' && Q.coalition_nsdap_z_allowed)) { continue; }
+                        if ((lockMember == 'kpd' && lockParty == 'z' && Q.coalition_kpd_z_allowed) || (lockParty == 'kpd' && lockMember == 'z' && Q.coalition_kpd_z_allowed)) { continue; }
+                        reason = (Q.coalition_party_labels[lockMember] || lockMember.toUpperCase()) + ' is incompatible with ' + (Q.coalition_party_labels[lockParty] || lockParty.toUpperCase()) + '.';
+                        break;
+                    }
+                }
+            }
+            Q['coalition_lock_reason_' + lockParty] = reason;
+            Q['coalition_can_' + lockParty] = (!reason && !Q['coalition_' + lockParty + '_member'] && ((Number(Q[lockParty + '_r']) || 0) > 0)) ? 1 : 0;
+        }
+    }
+};
+Q.coalitionGetThreshold = function(party) {
+    var share = Number(Q[party + '_r']) || 0;
+    if (party == 'spd') {
+        if (share < 25) { return 4; }
+        if (share < 30) { return 5; }
+        if (share < 35) { return 6; }
+        return 7;
+    }
+    if (party == 'dvp') {
+        if (share < 5) { return 1; }
+        if (share < 10) { return 2; }
+        if (share < 15) { return 3; }
+        if (share < 20) { return 4; }
+        return 5;
+    }
+    if (party == 'dnvp') {
+        if (share < 15) { return 3; }
+        if (share < 20) { return 4; }
+        if (share < 25) { return 5; }
+        if (share < 30) { return 6; }
+        return 7;
+    }
+    if (party == 'z') {
+        if (share < 10) { return 2; }
+        if (share < 15) { return 3; }
+        if (share < 20) { return 4; }
+        return 5;
+    }
+    if (party == 'bvp') { return 1; }
+    if (party == 'wp') { return Q.coalition_dvp_member ? 1 : 2; }
+    return 99;
+};
+Q.coalitionPartyLockedReason = function(party) {
+    Q.coalitionEnsureState();
+    if (Q['coalition_' + party + '_member']) { return 'Already in coalition.'; }
+    for (var member of Q.coalition_members) {
+        var memberBlocks = Q.coalition_party_blocks[member] || [];
+        var partyBlocks = Q.coalition_party_blocks[party] || [];
+        // TODO(coalition): replace these broad locks with party-leader/scenario-specific compatibility rules.
+        if (memberBlocks.indexOf(party) >= 0 || partyBlocks.indexOf(member) >= 0) {
+            if ((member == 'nsdap' && party == 'z' && Q.coalition_nsdap_z_allowed) || (party == 'nsdap' && member == 'z' && Q.coalition_nsdap_z_allowed)) { continue; }
+            if ((member == 'kpd' && party == 'z' && Q.coalition_kpd_z_allowed) || (party == 'kpd' && member == 'z' && Q.coalition_kpd_z_allowed)) { continue; }
+            return (Q.coalition_party_labels[member] || member.toUpperCase()) + ' is incompatible with ' + (Q.coalition_party_labels[party] || party.toUpperCase()) + '.';
+        }
+    }
+    return '';
+};
+Q.coalitionCanNegotiate = function(party) {
+    return !Q.coalitionPartyLockedReason(party) && (Number(Q[party + '_r']) || 0) > 0;
+};
+Q.coalitionBeginParty = function(party) {
+    Q.coalitionEnsureState();
+    Q.coalition_selected_party = party;
+    Q.coalition_selected_party_label = Q.coalition_party_labels[party] || party.toUpperCase();
+    Q.coalition_required_points = Q.coalitionGetThreshold(party);
+    Q.coalition_negotiation_points = 0;
+    Q.coalition_negotiation_active = 1;
+    for (var concession of Q.coalition_concessions) {
+        Q['concession_' + concession.id + '_selected'] = 0;
+    }
+};
+Q.coalitionRecountPoints = function() {
+    var points = 0;
+    for (var concession of Q.coalition_concessions) {
+        if (concession.party == Q.coalition_selected_party && Q['concession_' + concession.id + '_selected']) {
+            points += concession.points;
+        }
+    }
+    Q.coalition_negotiation_points = points;
+    Q.coalition_required_points = Q.coalitionGetThreshold(Q.coalition_selected_party);
+};
+Q.toggleCoalitionConcession = function(id) {
+    Q['concession_' + id + '_selected'] = Q['concession_' + id + '_selected'] ? 0 : 1;
+    Q.coalitionRecountPoints();
+};
+Q.coalitionNudge = function(name, amount) {
+    if (Q[name] === undefined || Q[name] === null || isNaN(Q[name])) { return; }
+    Q[name] += amount;
+};
+Q.coalitionNudgeAllDdpFactions = function(amount) {
+    for (var faction of (Q.ddp_factions || [])) { Q.coalitionNudge(faction, amount); }
+};
+Q.applyCoalitionConcession = function(id) {
+    var invPacifism = Math.max(0, (100 - (Number(Q.pacifism) || 50)) / 50);
+    var nationalismScale = Math.max(0.5, (Number(Q.nationalism) || 50) / 50);
+    var secularScale = Math.max(0.5, (Number(Q.secularism) || 50) / 50);
+    var invSecularScale = Math.max(0.5, (100 - (Number(Q.secularism) || 50)) / 50);
+    switch (id) {
+        case 'spd_expand_welfare': Q.budget -= 1; Q.workers_spd += 4; Q.ddp_left_bourgeois += 4; Q.dvp_relation -= 5; break;
+        case 'spd_expand_unemployment_insurance': Q.budget -= 1; Q.unemployed_spd += 5; Q.ddp_left_bourgeois += 4; Q.dvp_relation -= 5; break;
+        case 'spd_expand_labor_protections': Q.economic_growth -= 0.3; Q.dnvp_relation -= 4; Q.dvp_relation -= 4; Q.elite_support -= 4; Q.workers_spd += 4; Q.ddp_left_bourgeois += 4; break;
+        case 'spd_cut_military_spending': Q.budget += 1; Q.dnvp_relation -= 8; Q.dvp_relation -= 6; Q.old_middle_ddp -= Math.round(2*invPacifism); Q.new_middle_ddp -= Math.round(2*invPacifism); Q.presidential_anger += 5; break;
+        case 'spd_expand_womens_rights': Q.workers_spd += 2; Q.new_middle_spd += 2; Q.catholics_ddp -= 3; Q.z_relation -= 4; Q.secularism += 2; Q.ddp_left_progressive -= 2; Q.ddp_left_liberal -= 2; break;
+        case 'spd_sexual_minority_law_reforms': Q.secularism += 3; Q.catholics_ddp -= Math.round(2*secularScale); Q.old_middle_ddp -= Math.round(2*secularScale); Q.z_relation -= 5; break;
+        case 'spd_expand_secular_education': case 'dvp_expand_secular_education': Q.z_relation -= 8; Q.old_middle_ddp += Math.round(2*((100 - Q.secularism)/50)); Q.new_middle_ddp += Math.round(2*((100 - Q.secularism)/50)); Q.catholics_ddp -= 6; Q.coalitionNudgeAllDdpFactions(-2); Q.secularism += 4; break;
+        case 'spd_crackdown_on_paramilitaries': Q.sh_strength -= 80; Q.sa_strength -= 80; Q.rfb_strength -= 80; Q.dnvp_relation -= 4; Q.dvp_relation -= 3; Q.presidential_anger += 3; Q.old_middle_ddp -= Math.round(1*nationalismScale); break;
+        case 'dvp_reduce_regulations': Q.elite_support += 4; Q.old_middle_dvp += 4; Q.workers_ddp -= 2; break;
+        case 'dvp_cut_welfare': Q.budget += 1; Q.old_middle_dvp += 2; Q.workers_ddp -= 5; Q.unemployed_ddp -= 5; Q.coalitionNudge('spd_relation', -6); break;
+        case 'dvp_increase_government_salaries': Q.new_middle_dvp += 4; Q.budget -= 1; Q.dvp_relation += 5; break;
+        case 'dvp_crackdown_on_communists': Q.rfb_strength -= 100; Q.kpd_relation -= 5; Q.workers_ddp -= 2; Q.old_middle_dvp += 2; Q.presidential_anger -= 2; break;
+        case 'dvp_protect_nationalist_bureaucrats': Q.new_middle_dvp += Math.round(3*nationalismScale); Q.pro_republic -= 3; Q.coalitionNudge('spd_relation', -4); Q.presidential_anger -= 2; break;
+        case 'dnvp_increase_tariffs': Q.tariffs += 1; Q.budget += 1; Q.workers_ddp -= 3; Q.unemployed_ddp -= 3; Q.rural_dnvp += 4; Q.elite_support -= 2; break;
+        case 'dnvp_increase_rural_aid': Q.budget -= 1; Q.rural_dnvp += 5; Q.presidential_anger -= 2; break;
+        case 'dnvp_allow_imperial_symbolism': Q.nationalism += 4; Q.pro_republic -= 5; Q.presidential_anger -= 2; Q.rural_dnvp += Math.round(3*nationalismScale); Q.old_middle_dnvp += Math.round(3*nationalismScale); Q.coalitionNudge('spd_relation', -5); Q.ddp_left_liberal += 4; Q.ddp_left_progressive += 4; break;
+        case 'dnvp_crack_down_on_socialists': Q.rfb_strength -= 80; Q.rb_strength -= 80; Q.coalitionNudge('spd_relation', -5); Q.kpd_relation -= 6; break;
+        case 'dnvp_protect_nationalist_bureaucrats': Q.new_middle_dnvp += Math.round(3*nationalismScale); Q.pro_republic -= 3; Q.coalitionNudge('spd_relation', -4); Q.presidential_anger -= 2; break;
+        case 'dnvp_fund_protestant_church_groups': Q.rural_dnvp += Math.round(3*invSecularScale); Q.budget -= 1; Q.secularism -= 3; break;
+        case 'z_expand_catholic_education': Q.secularism -= 4; Q.catholics_z += 5; Q.coalitionNudge('spd_relation', -4); Q.dvp_relation -= 4; for (var c of ['workers','old_middle','new_middle','rural','unemployed']) { Q[c + '_ddp'] -= 2; } Q.coalitionNudgeAllDdpFactions(3); break;
+        case 'z_balance_budget': Q.budget += 1; Q.workers_ddp -= 3; Q.unemployed_ddp -= 3; Q.old_middle_ddp -= 2; Q.new_middle_ddp -= 2; Q.old_middle_dvp -= 2; Q.rural_dnvp -= 2; Q.workers_spd -= 2; Q.elite_support -= 2; break;
+        case 'z_negotiate_papacy': Q.coalitionNudgeAllDdpFactions(3); Q.catholics_z += 4; Q.dvp_relation -= 3; Q.secularism -= 3; break;
+        case 'z_southern_infrastructure': for (var cz of Q.classes) { Q[cz + '_z'] += 1; } Q.budget -= 1; Q.economic_growth += 0.3; Q.federalism += 3; break;
+        case 'z_catholic_student_groups': Q.secularism -= 2; Q.new_middle_z += 4; Q.new_middle_ddp -= 3; Q.dvp_relation -= 3; Q.coalitionNudgeAllDdpFactions(1); break;
+        case 'z_catholic_unions': Q.workers_z += 4; Q.coalitionNudge('spd_relation', -4); Q.ddp_laborist += 3; Q.secularism -= 2; break;
+        case 'bvp_expand_state_autonomy': Q.catholics_bvp += 3; Q.federalism += 4; Q.coalitionNudge('spd_relation', -3); break;
+        case 'wp_reduce_inflation': Q.inflation -= 1; if (Q.lautenbach_tracker !== undefined) { Q.lautenbach_tracker -= 2; } Q.old_middle_wp += 4; break;
+        case 'wp_promote_landlord_interests': Q.old_middle_wp += 4; Q.workers_ddp -= 3; Q.ddp_left_progressive += 3; Q.ddp_laborist += 3; break;
+    }
+};
+Q.confirmCoalitionParty = function() {
+    Q.coalitionRecountPoints();
+    if (Q.coalition_negotiation_points < Q.coalition_required_points) { return; }
+    for (var concession of Q.coalition_concessions) {
+        if (concession.party == Q.coalition_selected_party && Q['concession_' + concession.id + '_selected']) {
+            Q.applyCoalitionConcession(concession.id);
+            Q['concession_' + concession.id + '_accepted'] = 1;
+        }
+    }
+    if (Q.coalition_members.indexOf(Q.coalition_selected_party) < 0) {
+        Q.coalition_members.push(Q.coalition_selected_party);
+    }
+    Q.coalitionEnsureState();
+    Q.coalition_negotiation_active = 0;
+};
+Q.formNegotiatedCoalitionGovernment = function() {
+    Q.coalitionEnsureState();
+    Q.in_custom_negotiated_coalition = 1;
+    Q.in_grand_coalition = 0;
+    Q.in_weimar_coalition = 0;
+    Q.in_popular_front = 0;
+    Q.in_left_front = 0;
+    Q.in_minority_government = 0;
+    Q.spd_in_government = Q.coalition_spd_member ? 1 : 0;
+    Q.z_in_government = Q.coalition_z_member ? 1 : 0;
+    Q.dvp_in_government = Q.coalition_dvp_member ? 1 : 0;
+    Q.dnvp_in_government = Q.coalition_dnvp_member ? 1 : 0;
+    Q.kpd_in_government = Q.coalition_kpd_member ? 1 : 0;
+    Q.nsdap_in_government = Q.coalition_nsdap_member ? 1 : 0;
+    var largest = 'ddp';
+    for (var member of Q.coalition_members) {
+        if ((Number(Q[member + '_r']) || 0) > (Number(Q[largest + '_r']) || 0)) { largest = member; }
+    }
+    Q.chancellor_party = (Q.coalition_party_labels[largest] || largest.toUpperCase());
+    Q.chancellor = Q.chancellor_party;
+    Q.leverage = Math.max(10, Number(Q.ddp_r) || 0);
+};
+Q.coalitionTolerationSeats = function(parties) {
+    var seats = 0;
+    for (var party of parties) { seats += Number(Q[party + '_r']) || 0; }
+    return seats;
+};
+Q.coalitionRefreshTolerationOptions = function() {
+    Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_seats = Q.coalitionTolerationSeats(['dnvp','z','bvp','wp','dvp']);
+    Q.coalition_tolerate_nsdap_dnvp_seats = Q.coalitionTolerationSeats(['nsdap','dnvp']);
+    Q.coalition_tolerate_nsdap_dnvp_dvp_seats = Q.coalitionTolerationSeats(['nsdap','dnvp','dvp']);
+    Q.coalition_tolerate_dvp_z_bvp_wp_seats = Q.coalitionTolerationSeats(['dvp','z','bvp','wp']);
+    Q.coalition_tolerate_z_spd_seats = Q.coalitionTolerationSeats(['z','spd']);
+    Q.coalition_tolerate_spd_kpd_seats = Q.coalitionTolerationSeats(['spd','kpd']);
+    Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_viable = Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_seats >= 50 ? 1 : 0;
+    Q.coalition_tolerate_nsdap_dnvp_viable = Q.coalition_tolerate_nsdap_dnvp_seats >= 50 ? 1 : 0;
+    Q.coalition_tolerate_nsdap_dnvp_dvp_viable = Q.coalition_tolerate_nsdap_dnvp_dvp_seats >= 50 ? 1 : 0;
+    Q.coalition_tolerate_dvp_z_bvp_wp_viable = Q.coalition_tolerate_dvp_z_bvp_wp_seats >= 50 ? 1 : 0;
+    Q.coalition_tolerate_z_spd_viable = Q.coalition_tolerate_z_spd_seats >= 50 ? 1 : 0;
+    Q.coalition_tolerate_spd_kpd_viable = Q.coalition_tolerate_spd_kpd_seats >= 50 ? 1 : 0;
+    Q.coalition_viable_tolerations = Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_viable + Q.coalition_tolerate_nsdap_dnvp_viable + Q.coalition_tolerate_nsdap_dnvp_dvp_viable + Q.coalition_tolerate_dvp_z_bvp_wp_viable + Q.coalition_tolerate_z_spd_viable + Q.coalition_tolerate_spd_kpd_viable;
+};
+Q.coalitionViableTolerationCount = function() {
+    Q.coalitionRefreshTolerationOptions();
+    return Q.coalition_viable_tolerations;
+};
+Q.acceptCoalitionToleration = function(id, chancellorParty) {
+    Q.coalition_toleration_party = id;
+    Q.spd_in_government = 0;
+    Q.spd_toleration = 1;
+    Q.in_minority_government = 1;
+    Q.minority_government = 1;
+    Q.chancellor_party = chancellorParty;
+    Q.chancellor = chancellorParty;
+};
+Q.coalitionEnsureState();
+
 Q.grand_coalition_failed = 0;
 // Reset government and ministers... Based on Brüning's 1930 govt
 Q.coalition_dissent = 0;
@@ -324,6 +591,422 @@ There are some potential coalition arrangements.
 - @left_coalition
 - @popular_front_coalition
 - @right_coalition
+- @coalition_negotiation_start
+
+
+@coalition_negotiation_start
+title: Negotiate a custom coalition.
+subtitle: Mechanical placeholder coalition negotiation system.
+on-arrival: {! Q.coalitionEnsureState(); !}
+
+Choose a party to negotiate coalition entry. DDP is treated as the current anchor party for this placeholder system.
+
+Current coalition seats: [+ coalition_total_seats +]%
+
+- @coalition_negotiate_spd
+- @coalition_negotiate_dvp
+- @coalition_negotiate_dnvp
+- @coalition_negotiate_z
+- @coalition_negotiate_bvp
+- @coalition_negotiate_wp
+- @coalition_form_government
+- @coalition_reject_formation
+- @coalition_menu: Back to the existing coalition menu.
+
+@coalition_negotiate_spd
+title: Negotiate with SPD.
+subtitle: SPD seats: [+ spd_r +]%. [? if coalition_spd_member: Already in coalition. ?]
+choose-if: coalition_can_spd = 1
+unavailable-subtitle: [+ coalition_lock_reason_spd +]
+on-arrival: {! Q.coalitionBeginParty('spd'); !}
+go-to: coalition_negotiation_party
+
+@coalition_negotiate_dvp
+title: Negotiate with DVP.
+subtitle: DVP seats: [+ dvp_r +]%. [? if coalition_dvp_member: Already in coalition. ?]
+choose-if: coalition_can_dvp = 1
+unavailable-subtitle: [+ coalition_lock_reason_dvp +]
+on-arrival: {! Q.coalitionBeginParty('dvp'); !}
+go-to: coalition_negotiation_party
+
+@coalition_negotiate_dnvp
+title: Negotiate with DNVP.
+subtitle: DNVP seats: [+ dnvp_r +]%. [? if coalition_dnvp_member: Already in coalition. ?]
+choose-if: coalition_can_dnvp = 1
+unavailable-subtitle: [+ coalition_lock_reason_dnvp +]
+on-arrival: {! Q.coalitionBeginParty('dnvp'); !}
+go-to: coalition_negotiation_party
+
+@coalition_negotiate_z
+title: Negotiate with Z.
+subtitle: Z seats: [+ z_r +]%. [? if coalition_z_member: Already in coalition. ?]
+choose-if: coalition_can_z = 1
+unavailable-subtitle: [+ coalition_lock_reason_z +]
+on-arrival: {! Q.coalitionBeginParty('z'); !}
+go-to: coalition_negotiation_party
+
+@coalition_negotiate_bvp
+title: Negotiate with BVP.
+subtitle: BVP seats: [+ bvp_r +]%. [? if coalition_bvp_member: Already in coalition. ?]
+choose-if: coalition_can_bvp = 1
+unavailable-subtitle: [+ coalition_lock_reason_bvp +]
+on-arrival: {! Q.coalitionBeginParty('bvp'); !}
+go-to: coalition_negotiation_party
+
+@coalition_negotiate_wp
+title: Negotiate with WP.
+subtitle: WP seats: [+ wp_r +]%. [? if coalition_wp_member: Already in coalition. ?]
+choose-if: coalition_can_wp = 1
+unavailable-subtitle: [+ coalition_lock_reason_wp +]
+on-arrival: {! Q.coalitionBeginParty('wp'); !}
+go-to: coalition_negotiation_party
+
+@coalition_negotiation_party
+on-arrival: {! Q.coalitionRecountPoints(); !}
+
+= Coalition negotiation: [+ coalition_selected_party_label +]
+
+Placeholder concession screen. Select concessions until the current point total meets the party threshold.
+
+Current concession points: **[+ coalition_negotiation_points +]**
+
+Required concession points: **[+ coalition_required_points +]**
+
+- @toggle_spd_expand_welfare
+- @toggle_spd_expand_unemployment_insurance
+- @toggle_spd_expand_labor_protections
+- @toggle_spd_cut_military_spending
+- @toggle_spd_expand_womens_rights
+- @toggle_spd_sexual_minority_law_reforms
+- @toggle_spd_expand_secular_education
+- @toggle_spd_crackdown_on_paramilitaries
+- @toggle_dvp_reduce_regulations
+- @toggle_dvp_cut_welfare
+- @toggle_dvp_increase_government_salaries
+- @toggle_dvp_expand_secular_education
+- @toggle_dvp_crackdown_on_communists
+- @toggle_dvp_protect_nationalist_bureaucrats
+- @toggle_dnvp_increase_tariffs
+- @toggle_dnvp_increase_rural_aid
+- @toggle_dnvp_allow_imperial_symbolism
+- @toggle_dnvp_crack_down_on_socialists
+- @toggle_dnvp_protect_nationalist_bureaucrats
+- @toggle_dnvp_fund_protestant_church_groups
+- @toggle_z_expand_catholic_education
+- @toggle_z_balance_budget
+- @toggle_z_negotiate_papacy
+- @toggle_z_southern_infrastructure
+- @toggle_z_catholic_student_groups
+- @toggle_z_catholic_unions
+- @toggle_bvp_expand_state_autonomy
+- @toggle_wp_reduce_inflation
+- @toggle_wp_promote_landlord_interests
+- @coalition_confirm_party
+- @coalition_cancel_party
+
+@toggle_spd_expand_welfare
+title: [? if concession_spd_expand_welfare_selected: ✓ ?] Expand Welfare *
+subtitle: Major, 2 points — -1 budget; increase SPD worker support; increase ddp_left_bourgeois dissent; damage DVP relations.
+view-if: coalition_selected_party = "spd"
+on-arrival: {! Q.toggleCoalitionConcession('spd_expand_welfare'); !}
+go-to: coalition_negotiation_party
+
+@toggle_spd_expand_unemployment_insurance
+title: [? if concession_spd_expand_unemployment_insurance_selected: ✓ ?] Expand Unemployment Insurance *
+subtitle: Major, 2 points — -1 budget; increase SPD unemployed support; increase ddp_left_bourgeois dissent; damage DVP relations.
+view-if: coalition_selected_party = "spd"
+on-arrival: {! Q.toggleCoalitionConcession('spd_expand_unemployment_insurance'); !}
+go-to: coalition_negotiation_party
+
+@toggle_spd_expand_labor_protections
+title: [? if concession_spd_expand_labor_protections_selected: ✓ ?] Expand Labor Protections *
+subtitle: Major, 2 points — reduce economic_growth; damage DNVP and DVP relations; reduce elite support; increase SPD worker support; increase ddp_left_bourgeois dissent.
+view-if: coalition_selected_party = "spd"
+on-arrival: {! Q.toggleCoalitionConcession('spd_expand_labor_protections'); !}
+go-to: coalition_negotiation_party
+
+@toggle_spd_cut_military_spending
+title: [? if concession_spd_cut_military_spending_selected: ✓ ?] Cut Military Spending *
+subtitle: Major, 2 points — +1 budget; heavily damage DNVP and DVP relations; middle-class DDP support loss scaling inversely with pacifism; increase presidential_anger.
+view-if: coalition_selected_party = "spd"
+on-arrival: {! Q.toggleCoalitionConcession('spd_cut_military_spending'); !}
+go-to: coalition_negotiation_party
+
+@toggle_spd_expand_womens_rights
+title: [? if concession_spd_expand_womens_rights_selected: ✓ ?] Expand Women’s Rights
+subtitle: Minor, 1 point — slightly increase SPD worker and new-middle support; reduce DDP Catholic support; damage Z relations; slightly increase secularism; reduce ddp_left_progressive and ddp_left_liberal dissent.
+view-if: coalition_selected_party = "spd"
+on-arrival: {! Q.toggleCoalitionConcession('spd_expand_womens_rights'); !}
+go-to: coalition_negotiation_party
+
+@toggle_spd_sexual_minority_law_reforms
+title: [? if concession_spd_sexual_minority_law_reforms_selected: ✓ ?] Sexual Minority Law Reforms
+subtitle: Minor, 1 point — increase secularism; decrease Catholic and old-middle DDP support scaling with secularism; damage Z relations.
+view-if: coalition_selected_party = "spd"
+on-arrival: {! Q.toggleCoalitionConcession('spd_sexual_minority_law_reforms'); !}
+go-to: coalition_negotiation_party
+
+@toggle_spd_expand_secular_education
+title: [? if concession_spd_expand_secular_education_selected: ✓ ?] Expand Secular Education
+subtitle: Minor, 1 point — greatly damage Z relations; increase middle-class DDP support scaling inversely with secularism; greatly reduce DDP Catholic support; reduce all DDP faction dissent.
+view-if: coalition_selected_party = "spd"
+on-arrival: {! Q.toggleCoalitionConcession('spd_expand_secular_education'); !}
+go-to: coalition_negotiation_party
+
+@toggle_spd_crackdown_on_paramilitaries
+title: [? if concession_spd_crackdown_on_paramilitaries_selected: ✓ ?] Crackdown on Paramilitaries
+subtitle: Minor, 1 point — reduce SH, SA, and RFB strength; damage DNVP and DVP relations; increase presidential_anger; small old-middle DDP support loss scaling with nationalism.
+view-if: coalition_selected_party = "spd"
+on-arrival: {! Q.toggleCoalitionConcession('spd_crackdown_on_paramilitaries'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dvp_reduce_regulations
+title: [? if concession_dvp_reduce_regulations_selected: ✓ ?] Reduce Regulations *
+subtitle: Major, 2 points — increase DVP elite backing/support; increase DVP old-middle support; reduce DDP worker support.
+view-if: coalition_selected_party = "dvp"
+on-arrival: {! Q.toggleCoalitionConcession('dvp_reduce_regulations'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dvp_cut_welfare
+title: [? if concession_dvp_cut_welfare_selected: ✓ ?] Cut Welfare *
+subtitle: Major, 2 points — +1 budget; slightly increase DVP old-middle support; strongly reduce DDP worker and unemployed support; damage SPD relations.
+view-if: coalition_selected_party = "dvp"
+on-arrival: {! Q.toggleCoalitionConcession('dvp_cut_welfare'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dvp_increase_government_salaries
+title: [? if concession_dvp_increase_government_salaries_selected: ✓ ?] Increase Salaries for Government Employees *
+subtitle: Major, 2 points — increase DVP new-middle support; -1 budget; increase DVP relations.
+view-if: coalition_selected_party = "dvp"
+on-arrival: {! Q.toggleCoalitionConcession('dvp_increase_government_salaries'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dvp_expand_secular_education
+title: [? if concession_dvp_expand_secular_education_selected: ✓ ?] Expand Secular Education
+subtitle: Minor, 1 point — same as SPD secular education concession.
+view-if: coalition_selected_party = "dvp"
+on-arrival: {! Q.toggleCoalitionConcession('dvp_expand_secular_education'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dvp_crackdown_on_communists
+title: [? if concession_dvp_crackdown_on_communists_selected: ✓ ?] Crackdown on Communists
+subtitle: Minor, 1 point — reduce RFB strength; damage KPD ties; slightly reduce DDP worker support; slightly increase DVP old-middle support; decrease presidential_anger.
+view-if: coalition_selected_party = "dvp"
+on-arrival: {! Q.toggleCoalitionConcession('dvp_crackdown_on_communists'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dvp_protect_nationalist_bureaucrats
+title: [? if concession_dvp_protect_nationalist_bureaucrats_selected: ✓ ?] Protect Nationalist Bureaucrats
+subtitle: Minor, 1 point — increase DVP new-middle support scaling with nationalism; decrease pro_republic; damage SPD ties; slightly decrease presidential_anger.
+view-if: coalition_selected_party = "dvp"
+on-arrival: {! Q.toggleCoalitionConcession('dvp_protect_nationalist_bureaucrats'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dnvp_increase_tariffs
+title: [? if concession_dnvp_increase_tariffs_selected: ✓ ?] Increase Tariffs *
+subtitle: Major, 2 points — increase tariffs; +1 budget; decrease DDP worker and unemployed support; increase DNVP rural support; decrease DDP elite backing/support.
+view-if: coalition_selected_party = "dnvp"
+on-arrival: {! Q.toggleCoalitionConcession('dnvp_increase_tariffs'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dnvp_increase_rural_aid
+title: [? if concession_dnvp_increase_rural_aid_selected: ✓ ?] Increase Rural Aid *
+subtitle: Major, 2 points — -1 budget; increase DNVP rural support; slightly decrease presidential_anger.
+view-if: coalition_selected_party = "dnvp"
+on-arrival: {! Q.toggleCoalitionConcession('dnvp_increase_rural_aid'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dnvp_allow_imperial_symbolism
+title: [? if concession_dnvp_allow_imperial_symbolism_selected: ✓ ?] Allow Imperial Symbolism
+subtitle: Minor, 1 point — increase nationalism; decrease pro_republic; slightly decrease presidential_anger; increase DNVP rural and old-middle support scaling with nationalism; damage SPD relations; damage ddp_left_liberal and ddp_left_progressive support/loyalty.
+view-if: coalition_selected_party = "dnvp"
+on-arrival: {! Q.toggleCoalitionConcession('dnvp_allow_imperial_symbolism'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dnvp_crack_down_on_socialists
+title: [? if concession_dnvp_crack_down_on_socialists_selected: ✓ ?] Crack Down on Socialists
+subtitle: Minor, 1 point — reduce RFB and RB strength; damage SPD and KPD ties.
+view-if: coalition_selected_party = "dnvp"
+on-arrival: {! Q.toggleCoalitionConcession('dnvp_crack_down_on_socialists'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dnvp_protect_nationalist_bureaucrats
+title: [? if concession_dnvp_protect_nationalist_bureaucrats_selected: ✓ ?] Protect Nationalist Bureaucrats
+subtitle: Minor, 1 point — DVP nationalist bureaucrat effects, with DNVP support where applicable.
+view-if: coalition_selected_party = "dnvp"
+on-arrival: {! Q.toggleCoalitionConcession('dnvp_protect_nationalist_bureaucrats'); !}
+go-to: coalition_negotiation_party
+
+@toggle_dnvp_fund_protestant_church_groups
+title: [? if concession_dnvp_fund_protestant_church_groups_selected: ✓ ?] Increase Funding to Protestant Church Groups
+subtitle: Minor, 1 point — increase DNVP rural support inversely scaling with secularism; -1 budget; decrease secularism.
+view-if: coalition_selected_party = "dnvp"
+on-arrival: {! Q.toggleCoalitionConcession('dnvp_fund_protestant_church_groups'); !}
+go-to: coalition_negotiation_party
+
+@toggle_z_expand_catholic_education
+title: [? if concession_z_expand_catholic_education_selected: ✓ ?] Expand Catholic Education *
+subtitle: Major, 2 points — decrease secularism; increase Z Catholic support; damage SPD and DVP ties; reduce DDP support from all groups except Catholics; increase dissent from all DDP factions.
+view-if: coalition_selected_party = "z"
+on-arrival: {! Q.toggleCoalitionConcession('z_expand_catholic_education'); !}
+go-to: coalition_negotiation_party
+
+@toggle_z_balance_budget
+title: [? if concession_z_balance_budget_selected: ✓ ?] Balance the Budget *
+subtitle: Major, 2 points — +1 budget; damage DDP worker/unemployed/old-middle/new-middle support; damage DVP/DNVP/SPD support; decrease DDP elite support.
+view-if: coalition_selected_party = "z"
+on-arrival: {! Q.toggleCoalitionConcession('z_balance_budget'); !}
+go-to: coalition_negotiation_party
+
+@toggle_z_negotiate_papacy
+title: [? if concession_z_negotiate_papacy_selected: ✓ ?] Further Negotiate with the Papacy *
+subtitle: Major, 2 points — increase dissent from all DDP factions; increase Z Catholic support; decrease DVP ties; decrease secularism.
+view-if: coalition_selected_party = "z"
+on-arrival: {! Q.toggleCoalitionConcession('z_negotiate_papacy'); !}
+go-to: coalition_negotiation_party
+
+@toggle_z_southern_infrastructure
+title: [? if concession_z_southern_infrastructure_selected: ✓ ?] Expand Infrastructure in the South
+subtitle: Minor, 1 point — increase Z support with all classes; -1 budget; increase economic_growth; increase federalism.
+view-if: coalition_selected_party = "z"
+on-arrival: {! Q.toggleCoalitionConcession('z_southern_infrastructure'); !}
+go-to: coalition_negotiation_party
+
+@toggle_z_catholic_student_groups
+title: [? if concession_z_catholic_student_groups_selected: ✓ ?] Support Catholic Student Groups
+subtitle: Minor, 1 point — decrease secularism; increase Z new-middle support; damage DDP new-middle support; damage DVP ties; slightly increase dissent from all DDP factions.
+view-if: coalition_selected_party = "z"
+on-arrival: {! Q.toggleCoalitionConcession('z_catholic_student_groups'); !}
+go-to: coalition_negotiation_party
+
+@toggle_z_catholic_unions
+title: [? if concession_z_catholic_unions_selected: ✓ ?] Support Catholic Unions
+subtitle: Minor, 1 point — increase Z worker support; reduce SPD ties; increase ddp_laborist dissent; decrease secularism.
+view-if: coalition_selected_party = "z"
+on-arrival: {! Q.toggleCoalitionConcession('z_catholic_unions'); !}
+go-to: coalition_negotiation_party
+
+@toggle_bvp_expand_state_autonomy
+title: [? if concession_bvp_expand_state_autonomy_selected: ✓ ?] Expand State Autonomy
+subtitle: Minor, 1 point — slightly increase BVP Catholic support; increase federalism; damage SPD ties.
+view-if: coalition_selected_party = "bvp"
+on-arrival: {! Q.toggleCoalitionConcession('bvp_expand_state_autonomy'); !}
+go-to: coalition_negotiation_party
+
+@toggle_wp_reduce_inflation
+title: [? if concession_wp_reduce_inflation_selected: ✓ ?] Reduce Inflation *
+subtitle: Major, 2 points — reduce inflation; subtract 2 from Lautenbach tracker if it exists; increase WP old-middle support.
+view-if: coalition_selected_party = "wp"
+on-arrival: {! Q.toggleCoalitionConcession('wp_reduce_inflation'); !}
+go-to: coalition_negotiation_party
+
+@toggle_wp_promote_landlord_interests
+title: [? if concession_wp_promote_landlord_interests_selected: ✓ ?] Promote Landlord Interests
+subtitle: Minor, 1 point — increase WP old-middle support; damage DDP worker support; increase dissent/anger in ddp_left_progressive and ddp_laborist factions.
+view-if: coalition_selected_party = "wp"
+on-arrival: {! Q.toggleCoalitionConcession('wp_promote_landlord_interests'); !}
+go-to: coalition_negotiation_party
+
+@coalition_confirm_party
+title: Confirm concessions and add party to coalition.
+subtitle: Requires [+ coalition_required_points +] concession points.
+choose-if: coalition_negotiation_points >= coalition_required_points
+unavailable-subtitle: Not enough concessions selected.
+on-arrival: {! Q.confirmCoalitionParty(); !}
+go-to: coalition_negotiation_start
+
+[+ coalition_selected_party_label +] has joined the negotiated coalition.
+
+@coalition_cancel_party
+title: Cancel this negotiation.
+go-to: coalition_negotiation_start
+
+No concessions are finalized.
+
+@coalition_form_government
+title: Form the negotiated coalition government.
+subtitle: Current coalition seats: [+ coalition_total_seats +]%.
+view-if: coalition_total_seats >= 50
+on-arrival: {! Q.formNegotiatedCoalitionGovernment(); !}
+go-to: coalition_custom_formed
+
+@coalition_custom_formed
+
+The negotiated coalition has been formed. Placeholder text: update ministries and cabinet distribution in a later content pass.
+
+- @ministries: Continue to ministry selection.
+- @root: Continue.
+
+@coalition_reject_formation
+title: Reject coalition formation.
+go-to: coalition_fallback
+
+@coalition_fallback
+on-arrival: {! Q.coalitionRefreshTolerationOptions(); !}
+go-to: coalition_fallback_new_elections if coalition_viable_tolerations = 0
+
+No custom coalition will be formed. If another viable grouping can be tolerated, choose it here; otherwise new elections are triggered.
+
+- @tolerate_dnvp_z_bvp_wp_dvp
+- @tolerate_nsdap_dnvp
+- @tolerate_nsdap_dnvp_dvp
+- @tolerate_dvp_z_bvp_wp
+- @tolerate_z_spd
+- @tolerate_spd_kpd
+- @coalition_fallback_new_elections: Trigger new elections.
+- @coalition_negotiation_start: Return to negotiations.
+
+@tolerate_dnvp_z_bvp_wp_dvp
+title: Tolerate DNVP-Z-BVP-WP-DVP.
+subtitle: Seats: [+ coalition_tolerate_dnvp_z_bvp_wp_dvp_seats +]%.
+view-if: coalition_tolerate_dnvp_z_bvp_wp_dvp_viable = 1
+on-arrival: {! Q.acceptCoalitionToleration('dnvp-z-bvp-wp-dvp', 'Z'); !}
+
+Placeholder toleration accepted.
+
+@tolerate_nsdap_dnvp
+title: Tolerate NSDAP-DNVP.
+subtitle: Seats: [+ coalition_tolerate_nsdap_dnvp_seats +]%.
+view-if: coalition_tolerate_nsdap_dnvp_viable = 1
+on-arrival: {! Q.acceptCoalitionToleration('nsdap-dnvp', 'NSDAP'); !}
+
+Placeholder toleration accepted.
+
+@tolerate_nsdap_dnvp_dvp
+title: Tolerate NSDAP-DNVP-DVP.
+subtitle: Seats: [+ coalition_tolerate_nsdap_dnvp_dvp_seats +]%.
+view-if: coalition_tolerate_nsdap_dnvp_dvp_viable = 1
+on-arrival: {! Q.acceptCoalitionToleration('nsdap-dnvp-dvp', 'NSDAP'); !}
+
+Placeholder toleration accepted.
+
+@tolerate_dvp_z_bvp_wp
+title: Tolerate DVP-Z-BVP-WP.
+subtitle: Seats: [+ coalition_tolerate_dvp_z_bvp_wp_seats +]%.
+view-if: coalition_tolerate_dvp_z_bvp_wp_viable = 1
+on-arrival: {! Q.acceptCoalitionToleration('dvp-z-bvp-wp', 'Z'); !}
+
+Placeholder toleration accepted.
+
+@tolerate_z_spd
+title: Tolerate Z-SPD.
+subtitle: Seats: [+ coalition_tolerate_z_spd_seats +]%.
+view-if: coalition_tolerate_z_spd_viable = 1
+on-arrival: {! Q.acceptCoalitionToleration('z-spd', 'Z'); !}
+
+Placeholder toleration accepted.
+
+@tolerate_spd_kpd
+title: Tolerate SPD-KPD.
+subtitle: Seats: [+ coalition_tolerate_spd_kpd_seats +]%.
+view-if: coalition_tolerate_spd_kpd_viable = 1
+on-arrival: {! Q.acceptCoalitionToleration('spd-kpd', 'SPD'); !}
+
+Placeholder toleration accepted.
+
+@coalition_fallback_new_elections
+title: Trigger new elections.
+go-to: new_elections
 
 # TODO: black-brown coalition
 
