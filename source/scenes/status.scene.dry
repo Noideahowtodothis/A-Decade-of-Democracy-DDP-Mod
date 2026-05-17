@@ -88,12 +88,6 @@ Economic growth: [+ economic_growth_2 +]%
 
 = Inter-party Relations
 
-{!<span class="tooltip-text" title="Represents support for federal/regional autonomy versus political centralization.">Federalism</span>!}: [+ federalism : federalism +]
-
-{!<span class="tooltip-text" title="Pacifism is the general anti-militarist/diplomatic political atmosphere relative to 1928.">Pacifism</span>!}: [+ pacifism : pacifism +]
-
-
-
 {!<span class="tooltip-text" title="Center Party">Z</span>!}: [+ z_relation : relationships +]
 
 {!<span class="tooltip-text" title="Bavarian People's Party">BVP</span>!}: [+ bvp_relation : relationships +]
@@ -171,13 +165,6 @@ Prussian police loyalty: [+ prussian_police_loyalty : loyalty +]
 [? if spd_in_government : Interior police loyalty: [+ interior_police_loyalty : loyalty +] ?]
 
 @polls
-on-arrival: {!
-Q.pro_republic_disp = Math.round(Q.pro_republic);
-Q.pacifism_disp = Math.round(Q.pacifism);
-Q.nationalism_disp = Math.round(Q.nationalism);
-Q.secularism_disp = Math.round(Q.secularism);
-Q.socialism_disp = Math.round(Q.socialism);
-!}
 
 = Projected election results
 
@@ -219,12 +206,23 @@ Unemployed: SPD: [+ unemployed_spd_display +]%, Z: [+ unemployed_z_display +]%, 
 
 Catholics: SPD: [+ catholics_spd_display +]%, Z: [+ catholics_z_display +]%, BVP: [+ catholics_bvp_display +]%, KPD: [+ catholics_kpd_display +]%, [? if not ddp_name: DDP?][? if ddp_name != 0 : [+ ddp_name +]?]: [+ catholics_ddp_display +]%, DVP: [+ catholics_dvp_display +]%, WP: [+ catholics_wp_display +]%; DNVP: [+ catholics_dnvp_display +]%, NSDAP: [+ catholics_nsdap_display +]%, Others: [+ catholics_other_display +]% [? if sapd_formed: SAPD: [+ catholics_sapd_display +]% ?]
 
-{!<span class="tooltip-text" title="Pacifism is the general anti-militarist/diplomatic political atmosphere relative to 1928.">Pacifism</span>!}: [+ pacifism : pacifism +]
+@culture
+on-arrival: {!
+Q.pro_republic_disp = Math.round(Q.pro_republic);
+Q.federalism_disp = Math.round(Q.federalism);
+Q.pacifism_disp = Math.round(Q.pacifism);
+Q.nationalism_disp = Math.round(Q.nationalism);
+Q.secularism_disp = Math.round(Q.secularism);
+!}
 
-Support for the Republic: [+ pro_republic_disp +]%
+= Culture
 
-Public Pacifism: [+ pacifism_disp +]%
+Republicanism: [+ pro_republic_disp +]%
 
-Support for Nationalism: [+ nationalism_disp +]%
+Federalism: [+ federalism_disp +]%
 
-Public Secularism: [+ secularism_disp +]%
+Pacifism: [+ pacifism_disp +]%
+
+Nationalism: [+ nationalism_disp +]%
+
+Secularism: [+ secularism_disp +]%
