@@ -191,6 +191,7 @@ Q.federalism_disp = Math.round(Q.federalism);
 Q.pacifism_disp = Math.round(Q.pacifism);
 Q.nationalism_disp = Math.round(Q.nationalism);
 Q.secularism_disp = Math.round(Q.secularism);
+Q.feminism_disp = Math.round(Q.feminism);
 !}
 
 = Culture
@@ -204,6 +205,8 @@ Pacifism: [+ pacifism_disp +]%
 Nationalism: [+ nationalism_disp +]%
 
 Secularism: [+ secularism_disp +]%
+
+{!<span class="tooltip-text" title="Support for women’s political, social, and legal equality.">Feminism</span>!}: [+ feminism_disp +]%
 @ddp_ideology
 on-arrival: {!
 var ddpNationalityLabels = ['Not set', 'Oppose Extreme Nationalism', 'Support Liberal Civic Nationalism', 'Use Nationalism for Political Benefit', 'Support German Racial Nationalism'];

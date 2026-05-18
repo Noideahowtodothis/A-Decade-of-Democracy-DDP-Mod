@@ -70,6 +70,7 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.pro_republic = 59;
     Q.pacifism = 50;
     Q.secularism = 50;
+    Q.feminism = 50;
     Q.elite_support = 50;
     Q.elite_support_2 = '50';
 
@@ -424,7 +425,7 @@ Q.reichswehr_loyalty = 0.2;
 
 // popular opinion
 Q.culture_registry_version = 1;
-Q.culture_vars = ['pro_republic', 'pacifism', 'nationalism', 'secularism'];
+Q.culture_vars = ['pro_republic', 'pacifism', 'nationalism', 'secularism', 'feminism'];
 Q.culture_var_registry = {
     pro_republic: {
         min: 0,
@@ -449,6 +450,12 @@ Q.culture_var_registry = {
         max: 100,
         default: 50,
         description: 'Support for secular public institutions over confessional/religious influence.'
+    },
+    feminism: {
+        min: 0,
+        max: 100,
+        default: 50,
+        description: 'Support for women’s political, social, and legal equality.'
     }
 };
 if (typeof window !== 'undefined') {
@@ -500,6 +507,8 @@ Q.pro_republic = 59;
 Q.pacifism = 50;
 // Support for secular public institutions over confessional/religious influence.
 Q.secularism = 50;
+// Support for women’s political, social, and legal equality.
+Q.feminism = 50;
 
 Q.emergency_rule = 0;
 
@@ -766,7 +775,7 @@ Q.economic_records = [];
 Q.political_records = [];
 
 // Variable registries for scripted events, debug/state inspectors, and future audit/index systems.
-Q.core_state_variables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism'];
+Q.core_state_variables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism', 'feminism'];
 for (var ddpIdeologyVariable of Q.ddp_ideology_variables) {
     if (Q.core_state_variables.indexOf(ddpIdeologyVariable) < 0) {
         Q.core_state_variables.push(ddpIdeologyVariable);
