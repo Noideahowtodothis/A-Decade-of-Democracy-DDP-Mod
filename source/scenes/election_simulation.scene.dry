@@ -359,13 +359,5 @@ NSDAP: [+ nsdap_votes_disp +]% votes, [+ nsdap_r +] seats ([+ nsdap_seat_share_d
 # 1928: 9, 1930: 10
 Other: [+ other_votes_disp +]% votes, [+ other_r +] seats ([+ other_seat_share_disp +]%)
 
-**Potential coalitions:**
-
-Weimar Coalition (SPD + Z + DDP): [+ weimar_coalition +]
-
-Grand Coalition (SPD + Z + BVP + DDP + DVP): [+ grand_coalition +]
-
-Bourgeois Coalition (Z + BVP + DDP + DVP + WP + Others): [+ bourgeois_coalition +]
-
-Right-wing Coalition (Z + BVP + DVP + WP + Others + DNVP): [+ right_coalition +]
+Coalition formation uses the negotiation flow: current coalition parties, current seats out of 500, a 251-seat majority threshold, negotiable parties with seat counts, and a Form Government button once the negotiated coalition reaches a majority.
 

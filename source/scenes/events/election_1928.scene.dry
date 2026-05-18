@@ -43,6 +43,7 @@ on-arrival: {!
 // Set old results and allocate Reichstag seats with the shared D'Hondt helper.
 // Q[party + '_votes'] remains the one-decimal vote share and is not mutated by seat allocation.
 var reichstagSeatCount = Q.reichstag_seat_count || 500;
+// TODO(coalition): future version should allow Reichstag seat total to vary historically/randomly over time.
 var threshold = Q.electoral_threshold || 0;
 var partyVoteShares = {};
 var bannedParties = {};
@@ -370,12 +371,6 @@ Q.formNegotiatedCoalitionGovernment = function() {
     Q.dnvp_in_government = Q.coalition_dnvp_member ? 1 : 0;
     Q.kpd_in_government = 0;
     Q.nsdap_in_government = 0;
-    var largest = 'ddp';
-    for (var member of Q.coalition_members) {
-        if ((Number(Q[member + '_r']) || 0) > (Number(Q[largest + '_r']) || 0)) { largest = member; }
-    }
-    Q.chancellor_party = (Q.coalition_party_labels[largest] || largest.toUpperCase());
-    Q.chancellor = Q.chancellor_party;
     Q.total_ministries = 8;
     Q.ddp_ministry_picks = Math.max(1, Math.round(Q.total_ministries * (Number(Q.ddp_r) || 0) / Math.max(1, Q.coalition_total_seats)));
     Q.ddp_ministry_picks_remaining = Q.ddp_ministry_picks;
@@ -388,6 +383,31 @@ Q.formNegotiatedCoalitionGovernment = function() {
     Q.economic_minister_party = '';
     Q.finance_minister_party = '';
     Q.agriculture_minister_party = '';
+};
+Q.prepareNegotiatedChancellorOptions = function() {
+    Q.coalitionEnsureState();
+    var beforeMarch1931 = (Number(Q.year) || 0) < 1931 || ((Number(Q.year) || 0) == 1931 && (Number(Q.month) || 0) < 3);
+    var ddpShareOverTen = ((Number(Q.ddp_r) || 0) * 10) > (Number(Q.coalition_total_seats) || 0);
+    Q.chancellor_can_braun = Q.coalition_spd_member ? 1 : 0;
+    Q.chancellor_reason_braun = Q.coalition_spd_member ? '' : 'Requires SPD in coalition.';
+    Q.chancellor_can_wels = Q.coalition_spd_member ? 1 : 0;
+    Q.chancellor_reason_wels = Q.coalition_spd_member ? '' : 'Requires SPD in coalition.';
+    Q.chancellor_can_muller = (Q.coalition_spd_member && beforeMarch1931) ? 1 : 0;
+    Q.chancellor_reason_muller = !Q.coalition_spd_member ? 'Requires SPD in coalition.' : (beforeMarch1931 ? '' : 'Only available before March 1931.');
+    Q.chancellor_can_breitscheid = Q.coalition_spd_member ? 1 : 0;
+    Q.chancellor_reason_breitscheid = Q.coalition_spd_member ? '' : 'Requires SPD in coalition.';
+    Q.chancellor_can_bruning = Q.coalition_z_member ? 1 : 0;
+    Q.chancellor_reason_bruning = Q.coalition_z_member ? '' : 'Requires Z in coalition.';
+    Q.chancellor_can_luther = (Q.coalition_dvp_member && !Q.coalition_spd_member) ? 1 : 0;
+    Q.chancellor_reason_luther = !Q.coalition_dvp_member ? 'Requires DVP in coalition.' : (Q.coalition_spd_member ? 'Requires SPD not in coalition.' : '');
+    Q.chancellor_can_dietrich = (Q.coalition_ddp_member && ddpShareOverTen) ? 1 : 0;
+    Q.chancellor_reason_dietrich = ddpShareOverTen ? '' : 'Requires DDP over 10% of coalition seats.';
+    Q.chancellor_can_heuss = (Q.coalition_ddp_member && ddpShareOverTen) ? 1 : 0;
+    Q.chancellor_reason_heuss = ddpShareOverTen ? '' : 'Requires DDP over 10% of coalition seats.';
+};
+Q.selectNegotiatedChancellor = function(name, party) {
+    Q.chancellor = name;
+    Q.chancellor_party = party == 'DDP' ? (Q.ddp_name || 'DDP') : party;
 };
 Q.assignRemainingNegotiatedMinistries = function() {
     if (!Q.in_custom_negotiated_coalition) { return; }
@@ -634,36 +654,15 @@ Reichstag seats: **[+ reichstag_total_seats +] / 500**
 {!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP: {!</td><td>!} [+ nsdap_r_disp +]% {!</td><td>!} [+ nsdap_r +] {!</td><td>!} [+ nsdap_seat_share_disp +]% {!</td><td>!} [+ str_change_nsdap +] {!</td></tr>!}
 {!</table>!}
 
-**Potential coalitions:**
-
-Weimar Coalition (SPD + Z + [+ ddp_name +]): [+ weimar_coalition +] / 500 seats
-
-Grand Coalition (SPD + Z + BVP + [+ ddp_name +] + DVP): [+ grand_coalition +] / 500 seats
-
-Bourgeois Coalition (Z + BVP + [+ ddp_name +] + DVP + WP + Others): [+ bourgeois_coalition +] / 500 seats
-
-Right-wing Coalition (Z + BVP + DVP + WP + Others + DNVP): [+ right_coalition +] / 500 seats
-
 [? if nazi_urgency <= 1 and nsdap_r >= 15 : The rapid rise in NSDAP votes is extremely worrying. Many had believed that the party was moribund; now, some of us consider it to be the greatest threat to democracy in Germany. ?]
 
 [? if anti_democratic_coalition >= 251 : Together, the anti-democratic KPD, DNVP, and NSDAP have a majority in the Reichstag. A stable governing majority will be almost impossible. ?]
 
-There are some potential coalition arrangements.
+Coalition formation proceeds through negotiated coalition entry.
 
 @coalition_menu
 
-- @spd_majority
-- @weimar_coalition
-- @grand_coalition
-- @new_grand_coalition
-- @unity_government
-- @far_right_coalition
-- @no_majority
-- @brauns_dilemma
-- @left_coalition
-- @popular_front_coalition
-- @right_coalition
-- @coalition_negotiation_start
+- @coalition_negotiation_start: Begin coalition negotiations.
 
 
 @coalition_negotiation_start
@@ -699,8 +698,6 @@ Unavailable parties: [+ coalition_unavailable_parties_text +]
 - @coalition_negotiate_bvp
 - @coalition_negotiate_wp
 - @coalition_form_government
-- @coalition_reject_formation
-- @coalition_menu: Back to the existing coalition menu.
 
 @coalition_negotiate_spd
 title: Negotiate with SPD.
@@ -1031,19 +1028,88 @@ go-to: coalition_negotiation_start
 No concessions are finalized.
 
 @coalition_form_government
-title: Form the negotiated coalition government.
+title: Form Government
 subtitle: Current coalition seats: [+ coalition_total_seats +] / 500. Majority threshold: 251.
 view-if: coalition_total_seats >= 251
 on-arrival: {! Q.formNegotiatedCoalitionGovernment(); !}
-go-to: coalition_custom_formed
+go-to: coalition_chancellor_selection
 
-@coalition_custom_formed
+@coalition_chancellor_selection
+title: Select Chancellor.
+on-arrival: {! Q.prepareNegotiatedChancellorOptions(); !}
 
-The negotiated coalition has been formed. Continue to ministry selection.
+Current coalition parties: **[+ coalition_member_list_text +]**
 
-DDP ministry picks: **[+ ddp_ministry_picks +]**
+Current coalition seat total: **[+ coalition_total_seats +] / 500**
 
-- @ministries: Continue to ministry selection.
+Majority threshold: **251**
+
+DDP ministry picks after Chancellor selection: **[+ ddp_ministry_picks +]**
+
+- @coalition_chancellor_braun
+- @coalition_chancellor_wels
+- @coalition_chancellor_muller
+- @coalition_chancellor_breitscheid
+- @coalition_chancellor_bruning
+- @coalition_chancellor_luther
+- @coalition_chancellor_dietrich
+- @coalition_chancellor_heuss
+
+@coalition_chancellor_braun
+title: Otto Braun
+choose-if: chancellor_can_braun = 1
+unavailable-subtitle: [+ chancellor_reason_braun +]
+on-arrival: {! Q.selectNegotiatedChancellor('Braun', 'SPD'); !}
+go-to: ministries
+
+@coalition_chancellor_wels
+title: Otto Wels
+choose-if: chancellor_can_wels = 1
+unavailable-subtitle: [+ chancellor_reason_wels +]
+on-arrival: {! Q.selectNegotiatedChancellor('Wels', 'SPD'); !}
+go-to: ministries
+
+@coalition_chancellor_muller
+title: Hermann Müller
+choose-if: chancellor_can_muller = 1
+unavailable-subtitle: [+ chancellor_reason_muller +]
+on-arrival: {! Q.selectNegotiatedChancellor('Müller', 'SPD'); !}
+go-to: ministries
+
+@coalition_chancellor_breitscheid
+title: Rudolf Breitscheid
+choose-if: chancellor_can_breitscheid = 1
+unavailable-subtitle: [+ chancellor_reason_breitscheid +]
+on-arrival: {! Q.selectNegotiatedChancellor('Breitscheid', 'SPD'); !}
+go-to: ministries
+
+@coalition_chancellor_bruning
+title: Heinrich Brüning
+choose-if: chancellor_can_bruning = 1
+unavailable-subtitle: [+ chancellor_reason_bruning +]
+on-arrival: {! Q.selectNegotiatedChancellor('Brüning', 'Z'); !}
+go-to: ministries
+
+@coalition_chancellor_luther
+title: Hans Luther
+choose-if: chancellor_can_luther = 1
+unavailable-subtitle: [+ chancellor_reason_luther +]
+on-arrival: {! Q.selectNegotiatedChancellor('Luther', 'DVP'); !}
+go-to: ministries
+
+@coalition_chancellor_dietrich
+title: Hermann Dietrich
+choose-if: chancellor_can_dietrich = 1
+unavailable-subtitle: [+ chancellor_reason_dietrich +]
+on-arrival: {! Q.selectNegotiatedChancellor('Dietrich', 'DDP'); !}
+go-to: ministries
+
+@coalition_chancellor_heuss
+title: Theodor Heuss
+choose-if: chancellor_can_heuss = 1
+unavailable-subtitle: [+ chancellor_reason_heuss +]
+on-arrival: {! Q.selectNegotiatedChancellor('Heuss', 'DDP'); !}
+go-to: ministries
 
 @coalition_reject_formation
 title: Reject coalition formation.
@@ -2030,6 +2096,8 @@ We are seen as responsible for the failure to form a government, and many of our
 @ministries
 
 We can pick ministries according to the DDP seat share within the negotiated coalition. Controlling a ministry allows us to directly effect policy in that area.
+
+[? if in_custom_negotiated_coalition : Chancellor: **[+ chancellor +]** ([+ chancellor_party +]) {!<br><br>!} ?]
 
 DDP ministry picks remaining: **[+ leverage +]**
 

@@ -130,6 +130,7 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
         Q[startupParty + '_votes_disp'] = startupVoteShare[startupParty].toFixed(1);
         Q[startupParty + '_votes_display'] = startupVoteShare[startupParty].toFixed(1);
     }
+    // TODO(coalition): future version should allow Reichstag seat total to vary historically/randomly over time.
     Q.reichstag_seat_count = 500;
     Q.reichstag_total_seats = 500;
     Q.reichstag_seat_allocation_valid = 1;
@@ -505,6 +506,7 @@ Q.emergency_rule = 0;
 // minimum percentage of votes to be represented in the Reichstag
 Q.electoral_threshold = 0;
 // Seat allocation uses a simplified 500-seat Reichstag for election and coalition mechanics.
+// TODO(coalition): future version should allow Reichstag seat total to vary historically/randomly over time.
 Q.reichstag_seat_count = 500;
 Q.reichstag_total_seats = 500;
 Q.reichstag_seat_allocation_valid = 1;
