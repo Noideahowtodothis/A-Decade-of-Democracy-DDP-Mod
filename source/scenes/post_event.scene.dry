@@ -296,6 +296,62 @@ for (var cultureVar of Q.culture_vars) {
         Q[cultureVar] = registryEntry.max;
     }
 }
+// Monthly republicanism vote drift.
+// Tiny monthly pressure from republican legitimacy toward/away from constitutional parties.
+var REPUBLICANISM_MONTHLY_DRIFT_RATE = 0.05;
+function transferVoteSupport(className, sourceParties, targetParties, totalTransfer) {
+    if (totalTransfer <= 0) {
+        return;
+    }
+    var sourceTotal = 0;
+    for (var sourceParty of sourceParties) {
+        var sourceKey = className + '_' + sourceParty;
+        if (Q[sourceKey] === undefined || isNaN(Q[sourceKey])) {
+            Q[sourceKey] = 0;
+        }
+        if (Q[sourceKey] > 0) {
+            sourceTotal += Q[sourceKey];
+        }
+    }
+    if (sourceTotal <= 0) {
+        return;
+    }
+    var actualTransfer = Math.min(totalTransfer, sourceTotal);
+    for (var targetParty of targetParties) {
+        var targetKey = className + '_' + targetParty;
+        if (Q[targetKey] === undefined || isNaN(Q[targetKey])) {
+            Q[targetKey] = 0;
+        }
+    }
+    for (var drainParty of sourceParties) {
+        var drainKey = className + '_' + drainParty;
+        var drainAmount = actualTransfer*(Math.max(0, Q[drainKey])/sourceTotal);
+        Q[drainKey] = Math.max(0, Q[drainKey] - drainAmount);
+    }
+    for (var gainParty of targetParties) {
+        var gainKey = className + '_' + gainParty;
+        Q[gainKey] += actualTransfer/targetParties.length;
+    }
+}
+if (Q.month_actions >= 1) {
+    var republicanismDriftScale = (Q.pro_republic - 50)/50;
+    var republicanismMonthlyDrift = Math.abs(republicanismDriftScale)*REPUBLICANISM_MONTHLY_DRIFT_RATE;
+    var antiRepublicanParties = ['nsdap', 'dnvp', 'kpd'];
+    // TODO: future DNVP/DVP leader ideology can alter which parties benefit.
+    var republicanParties = ['ddp', 'spd', 'z', 'bvp', 'dvp'];
+    if (republicanismMonthlyDrift > 0) {
+        for (var republicanismClass of ['workers', 'unemployed', 'catholics', 'old_middle', 'new_middle', 'rural']) {
+            if (Q.classes.indexOf(republicanismClass) >= 0) {
+                if (republicanismDriftScale > 0) {
+                    transferVoteSupport(republicanismClass, antiRepublicanParties, republicanParties, republicanismMonthlyDrift);
+                } else {
+                    transferVoteSupport(republicanismClass, republicanParties, antiRepublicanParties, republicanismMonthlyDrift);
+                }
+            }
+        }
+    }
+}
+
 // re-calculate party support
 // calculate normalized class voting for the achievements
 for (var c of Q.classes) {
