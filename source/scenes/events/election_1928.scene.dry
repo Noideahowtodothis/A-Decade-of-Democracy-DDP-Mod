@@ -358,6 +358,8 @@ Q.confirmCoalitionParty = function() {
     if (Q.coalition_members.indexOf(Q.coalition_selected_party) < 0) {
         Q.coalition_members.push(Q.coalition_selected_party);
     }
+    Q.coalition_last_negotiated_party = Q.coalition_selected_party;
+    Q.coalition_last_negotiated_party_label = Q.coalition_selected_party_label;
     Q.coalitionEnsureState();
     Q.coalition_negotiation_active = 0;
 };
@@ -695,6 +697,8 @@ Blocked/incompatible parties: [+ coalition_blocked_parties_text +]
 
 Unavailable parties: [+ coalition_unavailable_parties_text +]
 
+[? if coalition_last_negotiated_party_label : DEBUG: returned after coalition negotiation{!<br>!}Current coalition parties: **[+ coalition_member_list_text +]**{!<br>!}Coalition seats: **[+ coalition_total_seats +]**{!<br>!}Last negotiated party: **[+ coalition_last_negotiated_party_label +]** ?]
+
 - @coalition_negotiate_spd
 - @coalition_negotiate_dvp
 - @coalition_negotiate_dnvp
@@ -702,6 +706,7 @@ Unavailable parties: [+ coalition_unavailable_parties_text +]
 - @coalition_negotiate_bvp
 - @coalition_negotiate_wp
 - @coalition_form_government
+- @coalition_fallback_new_elections
 
 @coalition_negotiate_spd
 title: Negotiate with SPD.
@@ -1011,9 +1016,11 @@ go-to: coalition_negotiation_party
 
 @coalition_no_possible
 title: No possible coalition can reach a majority.
-on-arrival: next_election_time = time+3; next_election_month = month + 3; next_election_year = year; next_election_year = year + 1 if next_election_month > 12; next_election_month = next_election_month - 12 if next_election_month > 12; in_election = 1
 
-No compatible DDP-led coalition can reach 251 seats. New elections have been called for [+ next_election_month : month +] [+ next_election_year +].
+No compatible DDP-led coalition can reach 251 seats with the currently available parties and compatibility rules. You can return to the party-selection screen to review the situation, or explicitly give up and call new elections.
+
+- @coalition_negotiation_start_screen: Return to party selection.
+- @coalition_fallback_new_elections
 
 @coalition_confirm_party
 title: Accept concessions and add party to coalition.
@@ -1027,7 +1034,7 @@ go-to: coalition_after_party_accept
 
 @coalition_after_party_accept
 on-arrival: {! Q.coalitionEnsureState(); Q.coalitionCanStillReachMajority(); !}
-go-to: coalition_negotiation_start_screen if coalition_total_seats < 251 and coalition_possible_majority = 1; coalition_no_possible if coalition_total_seats < 251 and coalition_possible_majority = 0; coalition_negotiation_start_screen if coalition_total_seats >= 251
+go-to: coalition_negotiation_start_screen
 
 @coalition_cancel_party
 title: Return to party selection.
@@ -1125,9 +1132,8 @@ go-to: coalition_fallback
 
 @coalition_fallback
 on-arrival: {! Q.coalitionRefreshTolerationOptions(); !}
-go-to: coalition_fallback_new_elections if coalition_viable_tolerations = 0
 
-No custom coalition will be formed. If another viable grouping can be tolerated, choose it here; otherwise new elections are triggered.
+No custom coalition will be formed. If another viable grouping can be tolerated, choose it here; otherwise you can explicitly give up and call new elections.
 
 - @tolerate_dnvp_z_bvp_wp_dvp
 - @tolerate_nsdap_dnvp
@@ -1135,7 +1141,7 @@ No custom coalition will be formed. If another viable grouping can be tolerated,
 - @tolerate_dvp_z_bvp_wp
 - @tolerate_z_spd
 - @tolerate_spd_kpd
-- @coalition_fallback_new_elections: Trigger new elections.
+- @coalition_fallback_new_elections
 - @coalition_negotiation_start: Return to negotiations.
 
 @tolerate_dnvp_z_bvp_wp_dvp
@@ -1187,7 +1193,7 @@ on-arrival: {! Q.acceptCoalitionToleration('spd-kpd', 'SPD'); !}
 Placeholder toleration accepted.
 
 @coalition_fallback_new_elections
-title: Trigger new elections.
+title: Give up and call new elections.
 go-to: new_elections
 
 # TODO: black-brown coalition
