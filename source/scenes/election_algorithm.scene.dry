@@ -396,6 +396,67 @@ window.updateThuringiaCoalitionOptions = function(qualities) {
 window.calculateThuringiaLandtagResults(Q);
 
 // Calculate Oldenburg Landtag support from federal party support using Oldenburg party weights and DNVP/CNBL split.
+
+window.calculateMecklenburgSchwerinLandtagResults = function(qualities) {
+    var q = qualities || Q;
+    var parties = ['spd', 'ddp', 'dvp', 'wp', 'dnvp', 'kpd', 'nsdap', 'z'];
+    var seatCount = 51;
+    var majority = 26;
+    q.mecklenburg_schwerin_landtag_seat_count = seatCount;
+    q.mecklenburg_schwerin_majority_threshold = majority;
+    var weights = {nsdap: 2.93, wp: 2.61, dnvp: 1.84, spd: 1.23, kpd: 0.95, dvp: 0.76, ddp: 0.56, z: 0};
+    q.mecklenburg_schwerin_party_weights = weights;
+
+    function fed(party){
+        var share = Number(q[party + '_votes_raw']);
+        if (isNaN(share)) { share = 100 * (Number(q[party + '_normalized']) || 0); }
+        return isNaN(share) || share < 0 ? 0 : share;
+    }
+
+    var weightedVotes = {};
+    for (var i = 0; i < parties.length; i++) {
+        var party = parties[i];
+        weightedVotes[party] = fed(party) * (weights[party] || 0);
+    }
+    weightedVotes.z = 0;
+
+    var total = 0;
+    for (var p in weightedVotes) { total += weightedVotes[p] || 0; }
+
+    var voteShares = {};
+    var missingVars = [];
+    for (var j = 0; j < parties.length; j++) {
+        var partyKey = parties[j];
+        var share = total > 0 ? (100 * (weightedVotes[partyKey] || 0) / total) : 0;
+        if (partyKey === 'z') { share = 0; }
+        voteShares[partyKey] = share;
+
+        var voteVar = 'mecklenburg_schwerin_' + partyKey + '_votes';
+        var voteDispVar = 'mecklenburg_schwerin_' + partyKey + '_votes_disp';
+        if (voteVar in q) { q[voteVar] = Math.round(share * 10) / 10; } else { missingVars.push(voteVar); }
+        if (voteDispVar in q) { q[voteDispVar] = (Math.round(share * 10) / 10).toFixed(1); } else { missingVars.push(voteDispVar); }
+    }
+
+    var banned = {};
+    for (var k = 0; k < parties.length; k++) { banned[parties[k]] = q[parties[k] + '_banned']; }
+    var threshold = q.mecklenburg_schwerin_electoral_threshold || q.electoral_threshold || 0;
+    var seats = window.allocateDhondtSeats(voteShares, seatCount, threshold, {parties: parties, banned: banned});
+
+    var seatTotal = 0;
+    for (var n = 0; n < parties.length; n++) {
+        var seatParty = parties[n];
+        if (seatParty === 'z') { seats.z = 0; }
+        var seatVar = 'mecklenburg_schwerin_' + seatParty + '_r';
+        if (seatVar in q) { q[seatVar] = seats[seatParty] || 0; } else { missingVars.push(seatVar); }
+        seatTotal += seats[seatParty] || 0;
+    }
+
+    q.mecklenburg_schwerin_landtag_total_seats = seatTotal;
+    q.mecklenburg_schwerin_landtag_seat_allocation_valid = seatTotal === seatCount ? 1 : 0;
+    // TODO(mecklenburg-schwerin): define missing mecklenburg_schwerin_* vote/seat display variables before exposing them in UI.
+};
+window.calculateMecklenburgSchwerinLandtagResults(Q);
+
 window.calculateOldenburgLandtagResults = function(qualities) {
     var q = qualities || Q;
     var oldenburgParties = ['spd', 'z', 'ddp', 'dvp', 'wp', 'dnvp', 'cnbl', 'kpd', 'nsdap', 'other'];
