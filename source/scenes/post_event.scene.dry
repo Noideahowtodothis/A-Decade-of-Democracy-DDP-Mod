@@ -610,6 +610,56 @@ if (Q.month_actions >= 1) {
     Q.elite_support += Q.elite_support_pressure;
     Q.elite_support = Math.max(0, Math.min(100, Q.elite_support));
 
+    ///////////////////////////// change party support based on secularism
+    // Tiny monthly culture drift: secularism = 50 is neutral; higher secularism shifts
+    // confessional/national-conservative support toward liberal parties, and lower secularism reverses it.
+    // At secularism = 100, this moves about 0.75% of relevant source support per year.
+    var SECULARISM_MONTHLY_VOTE_DRIFT_RATE = 0.000625;
+    var secularismCultureDriftScale = (Q.secularism - 50)/50;
+    var applyMonthlyCultureVoteDrift = function(voterClass, sourceParty, targetParties, driftScale) {
+        var sourceVariable = voterClass + '_' + sourceParty;
+        if (typeof Q[sourceVariable] !== 'number' || Q[sourceVariable] <= 0) {
+            return;
+        }
+
+        var eligibleTargets = [];
+        for (var targetParty of targetParties) {
+            var targetVariable = voterClass + '_' + targetParty;
+            if (typeof Q[targetVariable] === 'number') {
+                eligibleTargets.push(targetVariable);
+            }
+        }
+        if (eligibleTargets.length <= 0) {
+            return;
+        }
+
+        var voteDrift = Q[sourceVariable]*SECULARISM_MONTHLY_VOTE_DRIFT_RATE*driftScale;
+        if (voteDrift <= 0) {
+            return;
+        }
+        voteDrift = Math.min(Q[sourceVariable], voteDrift);
+        Q[sourceVariable] -= voteDrift;
+
+        var voteDriftPerTarget = voteDrift/eligibleTargets.length;
+        for (var eligibleTarget of eligibleTargets) {
+            Q[eligibleTarget] += voteDriftPerTarget;
+        }
+    };
+
+    if (secularismCultureDriftScale > 0) {
+        for (var secularismDriftClass of Q.classes) {
+            // TODO(culture): Refine secularism drift by class/confession once class-specific cultural alignment exists.
+            applyMonthlyCultureVoteDrift(secularismDriftClass, 'z', ['ddp', 'dvp'], secularismCultureDriftScale);
+            applyMonthlyCultureVoteDrift(secularismDriftClass, 'dnvp', ['ddp', 'dvp'], secularismCultureDriftScale);
+        }
+    } else if (secularismCultureDriftScale < 0) {
+        for (var confessionalDriftClass of Q.classes) {
+            // TODO(culture): Refine secularism drift by class/confession once class-specific cultural alignment exists.
+            applyMonthlyCultureVoteDrift(confessionalDriftClass, 'ddp', ['z', 'dnvp'], -secularismCultureDriftScale);
+            applyMonthlyCultureVoteDrift(confessionalDriftClass, 'dvp', ['z', 'dnvp'], -secularismCultureDriftScale);
+        }
+    }
+
     ///////////////////////////// change party support based on pro_republic
     // if pro_republic is less than the support of the Weimar coalition, reduce SPD support...
     if (Q.pro_republic < (Q.spd_votes + Q.ddp_votes + Q.z_votes)) {
