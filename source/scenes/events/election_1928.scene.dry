@@ -217,7 +217,7 @@ Q.coalitionCanStillReachMajority = function() {
     var optional = [];
     for (var i = 0; i < parties.length; i++) {
         var party = parties[i];
-        if (!Q['coalition_' + party + '_member'] && (Number(Q[party + '_r']) || 0) > 0) {
+        if (Q.coalitionCanNegotiate(party)) {
             optional.push(party);
         }
     }
@@ -225,18 +225,25 @@ Q.coalitionCanStillReachMajority = function() {
     var combinations = Math.pow(2, optional.length);
     for (var mask = 0; mask < combinations; mask++) {
         var seats = Q.coalition_total_seats;
-        var hasSpd = Q.coalition_spd_member ? true : false;
-        var hasDnvp = Q.coalition_dnvp_member ? true : false;
+        var testMembers = Q.coalition_members.slice();
         var compatible = true;
         for (var j = 0; j < optional.length; j++) {
             if (mask & (1 << j)) {
                 var candidate = optional[j];
-                if (candidate == 'spd') { hasSpd = true; }
-                if (candidate == 'dnvp') { hasDnvp = true; }
+                testMembers.push(candidate);
                 seats += Number(Q[candidate + '_r']) || 0;
             }
         }
-        if (hasSpd && hasDnvp) { compatible = false; }
+        for (var a = 0; a < testMembers.length && compatible; a++) {
+            for (var b = a + 1; b < testMembers.length; b++) {
+                var aBlocks = Q.coalition_party_blocks[testMembers[a]] || [];
+                var bBlocks = Q.coalition_party_blocks[testMembers[b]] || [];
+                if (aBlocks.indexOf(testMembers[b]) >= 0 || bBlocks.indexOf(testMembers[a]) >= 0) {
+                    compatible = false;
+                    break;
+                }
+            }
+        }
         if (compatible && seats > best) { best = seats; }
     }
     Q.coalition_possible_best_seats = best;
@@ -679,11 +686,7 @@ Choose a party to negotiate coalition entry.
 
 Current DDP seats: **[+ ddp_r +]**
 
-Current coalition parties: **[+ coalition_member_list_text +]**
-
-Current coalition seat total: **[+ coalition_total_seats +] / 500**
-
-Majority threshold: **251**
+Status: **[+ coalition_member_list_text +]** — **[+ coalition_total_seats +] / 500** seats; majority needed: **251**.
 
 Best possible compatible coalition from here: **[+ coalition_possible_best_seats +] / 500**
 
@@ -1017,9 +1020,13 @@ subtitle: Requires [+ coalition_required_points +] concession points.
 choose-if: coalition_negotiation_points >= coalition_required_points
 unavailable-subtitle: Not enough concessions selected.
 on-arrival: {! Q.confirmCoalitionParty(); !}
-go-to: coalition_negotiation_start
+go-to: coalition_after_party_accept
 
 [+ coalition_selected_party_label +] has joined the negotiated coalition.
+
+@coalition_after_party_accept
+on-arrival: {! Q.coalitionEnsureState(); Q.coalitionCanStillReachMajority(); !}
+go-to: coalition_negotiation_start_screen if coalition_total_seats < 251 and coalition_possible_majority = 1; coalition_no_possible if coalition_total_seats < 251 and coalition_possible_majority = 0; coalition_negotiation_start_screen if coalition_total_seats >= 251
 
 @coalition_cancel_party
 title: Return to party selection.
