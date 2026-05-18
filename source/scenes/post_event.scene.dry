@@ -26,6 +26,58 @@ for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap
     }
     Q[relationParty + '_relation'] = Math.max(0, Math.min(100, Q[relationParty + '_relation']));
 }
+
+// Runtime migration/defaults for the DDP congress system.
+if (!Q.ddp_factions) {
+    Q.ddp_factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
+}
+if (!Q.ddp_faction_dissent_variables) {
+    Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
+}
+if (!Q.ddp_ideology_variables) {
+    Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economic_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader'];
+}
+if (!Q.ddp_congress_dates) {
+    Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
+}
+var ddpIdeologyDefaults = {
+    ddp_nationalism_position: 0,
+    ddp_economic_position: 0,
+    ddp_republic_position: 0,
+    ddp_federalism_position: 0,
+    ddp_leader: 0
+};
+var ddpIdeologyMax = {
+    ddp_nationalism_position: 4,
+    ddp_economic_position: 4,
+    ddp_republic_position: 2,
+    ddp_federalism_position: 3,
+    ddp_leader: 6
+};
+for (var ddpIdeologyVariable of Q.ddp_ideology_variables) {
+    if (Q[ddpIdeologyVariable] === undefined || Q[ddpIdeologyVariable] === null || isNaN(Q[ddpIdeologyVariable])) {
+        Q[ddpIdeologyVariable] = ddpIdeologyDefaults[ddpIdeologyVariable] || 0;
+    }
+    Q[ddpIdeologyVariable] = Math.round(Q[ddpIdeologyVariable]);
+    if (Q[ddpIdeologyVariable] < 0) {
+        Q[ddpIdeologyVariable] = 0;
+    }
+    if (Q[ddpIdeologyVariable] > ddpIdeologyMax[ddpIdeologyVariable]) {
+        Q[ddpIdeologyVariable] = ddpIdeologyMax[ddpIdeologyVariable];
+    }
+}
+for (var ddpDissentVariable of Q.ddp_faction_dissent_variables) {
+    if (Q[ddpDissentVariable] === undefined || Q[ddpDissentVariable] === null || isNaN(Q[ddpDissentVariable])) {
+        Q[ddpDissentVariable] = 0;
+    }
+    Q[ddpDissentVariable] = Math.round(Q[ddpDissentVariable]);
+    if (Q[ddpDissentVariable] < 0) {
+        Q[ddpDissentVariable] = 0;
+    }
+    if (Q[ddpDissentVariable] > 100) {
+        Q[ddpDissentVariable] = 100;
+    }
+}
 var bvpMigrationSupport = {'workers': 0, 'old_middle': 2, 'new_middle': 1, 'rural': 3, 'unemployed': 0, 'catholics': 9};
 var wpMigrationSupport = {'workers': 0, 'old_middle': 4, 'new_middle': 4, 'rural': 1, 'unemployed': 0, 'catholics': 2};
 for (var migrationClass of Q.classes) {
@@ -162,7 +214,7 @@ if (!Q.audit_state_variables) {
     Q.audit_state_variables = [];
 }
 var requiredStateVariables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism'];
-requiredStateVariables = requiredStateVariables.concat(Q.ddp_factions || [], Q.simplified_faction_variables || []);
+requiredStateVariables = requiredStateVariables.concat(Q.ddp_factions || [], Q.ddp_faction_dissent_variables || [], Q.ddp_ideology_variables || [], Q.simplified_faction_variables || []);
 for (var requiredStateVariable of requiredStateVariables) {
     if (Q.core_state_variables.indexOf(requiredStateVariable) < 0) {
         Q.core_state_variables.push(requiredStateVariable);

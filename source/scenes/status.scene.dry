@@ -246,3 +246,50 @@ Pacifism: [+ pacifism_disp +]%
 Nationalism: [+ nationalism_disp +]%
 
 Secularism: [+ secularism_disp +]%
+@ddp_ideology
+on-arrival: {!
+var ddpNationalityLabels = ['Not set', 'Oppose Extreme Nationalism', 'Support Liberal Civic Nationalism', 'Use Nationalism for Political Benefit', 'Support German Racial Nationalism'];
+var ddpEconomicLabels = ['Not set', 'Support Interventionist Economics', 'Support a Social Liberal Economy', 'Support Liberal Economics', 'Focus on Agrarian Interests'];
+var ddpRepublicLabels = ['Not set', 'Make Ourselves the Cornerstone of the Republic', 'Support the Republic Quietly'];
+var ddpFederalismLabels = ['Not set', 'Expand Federal Powers', 'Expand Central Power', 'Support a Unitary State'];
+var ddpLeaderLabels = ['Not set', 'Anton Erkelenz', 'Theodor Heuss', 'Theodor Maier', 'Otto Fischbeck', 'Erich Koch-Weser', 'Hermann Dietrich'];
+Q.ddp_nationalism_position_label = ddpNationalityLabels[Q.ddp_nationalism_position || 0] || 'Unknown DDP nationalism code';
+Q.ddp_economic_position_label = ddpEconomicLabels[Q.ddp_economic_position || 0] || 'Unknown DDP economic code';
+Q.ddp_republic_position_label = ddpRepublicLabels[Q.ddp_republic_position || 0] || 'Unknown DDP republic code';
+Q.ddp_federalism_position_label = ddpFederalismLabels[Q.ddp_federalism_position || 0] || 'Unknown DDP federalism code';
+Q.ddp_leader_label = ddpLeaderLabels[Q.ddp_leader || 0] || 'Unknown DDP leader code';
+for (var ddpFactionDisplay of ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist']) {
+    if (Q[ddpFactionDisplay] === undefined || isNaN(Q[ddpFactionDisplay])) {
+        Q[ddpFactionDisplay] = 0;
+    }
+    if (Q[ddpFactionDisplay + '_dissent'] === undefined || isNaN(Q[ddpFactionDisplay + '_dissent'])) {
+        Q[ddpFactionDisplay + '_dissent'] = 0;
+    }
+    Q[ddpFactionDisplay + '_display'] = Math.round(Q[ddpFactionDisplay]*10)/10;
+    Q[ddpFactionDisplay + '_dissent_display'] = Math.round(Q[ddpFactionDisplay + '_dissent']);
+}
+!}
+
+= DDP Ideology
+
+Nationalism: [+ ddp_nationalism_position_label +]
+
+Economics: [+ ddp_economic_position_label +]
+
+The Republic: [+ ddp_republic_position_label +]
+
+Federalism: [+ ddp_federalism_position_label +]
+
+Leader: [+ ddp_leader_label +]
+
+= DDP Faction Strength and Dissent
+
+Left Progressive: [+ ddp_left_progressive_display +] strength, [+ ddp_left_progressive_dissent_display +] dissent
+
+Laborist: [+ ddp_laborist_display +] strength, [+ ddp_laborist_dissent_display +] dissent
+
+Left Liberal: [+ ddp_left_liberal_display +] strength, [+ ddp_left_liberal_dissent_display +] dissent
+
+Left Bourgeois: [+ ddp_left_bourgeois_display +] strength, [+ ddp_left_bourgeois_dissent_display +] dissent
+
+Regionalist: [+ ddp_regionalist_display +] strength, [+ ddp_regionalist_dissent_display +] dissent
