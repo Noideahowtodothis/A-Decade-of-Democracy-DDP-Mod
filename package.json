@@ -4,7 +4,8 @@
   "description": "Building the game:",
   "main": "out/html/index.html",
   "scripts": {
-    "dendrynexus": "dendrynexus"
+    "dendrynexus": "dendrynexus",
+    "build": "dendrynexus make-html --force"
   },
   "repository": {
     "type": "git",
