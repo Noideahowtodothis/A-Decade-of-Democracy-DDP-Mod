@@ -455,6 +455,64 @@ window.calculateMecklenburgSchwerinLandtagResults = function(qualities) {
 
     q.mecklenburg_schwerin_landtag_total_seats = seatTotal;
     q.mecklenburg_schwerin_landtag_seat_allocation_valid = seatTotal === seatCount ? 1 : 0;
+    if (typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') { window.updateMecklenburgSchwerinCoalitionOptions(q); }
+};
+window.updateMecklenburgSchwerinCoalitionOptions = function(qualities) {
+    var q = qualities || Q;
+    var threshold = 26;
+    var seatCount = 51;
+    q.mecklenburg_schwerin_landtag_seat_count = seatCount;
+    q.mecklenburg_schwerin_majority_threshold = threshold;
+    var options = [
+        {id:1,key:'ddp_spd',name:'DDP-SPD',parties:'DDP + SPD',seats:(Number(q.mecklenburg_schwerin_ddp_r)||0)+(Number(q.mecklenburg_schwerin_spd_r)||0)},
+        {id:2,key:'spd_ddp_dvp',name:'SPD-DDP-DVP',parties:'SPD + DDP + DVP',seats:(Number(q.mecklenburg_schwerin_spd_r)||0)+(Number(q.mecklenburg_schwerin_ddp_r)||0)+(Number(q.mecklenburg_schwerin_dvp_r)||0)},
+        {id:3,key:'dvp_ddp_dnvp_wp',name:'DVP-DDP-DNVP-WP',parties:'DVP + DDP + DNVP + WP',seats:(Number(q.mecklenburg_schwerin_dvp_r)||0)+(Number(q.mecklenburg_schwerin_ddp_r)||0)+(Number(q.mecklenburg_schwerin_dnvp_r)||0)+(Number(q.mecklenburg_schwerin_wp_r)||0)},
+        {id:4,key:'dvp_dnvp',name:'DVP-DNVP',parties:'DVP + DNVP',seats:(Number(q.mecklenburg_schwerin_dvp_r)||0)+(Number(q.mecklenburg_schwerin_dnvp_r)||0)},
+        {id:5,key:'dvp_dnvp_wp_nsdap',name:'DVP-DNVP-WP-NSDAP',parties:'DVP + DNVP + WP + NSDAP',seats:(Number(q.mecklenburg_schwerin_dvp_r)||0)+(Number(q.mecklenburg_schwerin_dnvp_r)||0)+(Number(q.mecklenburg_schwerin_wp_r)||0)+(Number(q.mecklenburg_schwerin_nsdap_r)||0)},
+        {id:6,key:'dnvp_nsdap',name:'DNVP-NSDAP',parties:'DNVP + NSDAP',seats:(Number(q.mecklenburg_schwerin_dnvp_r)||0)+(Number(q.mecklenburg_schwerin_nsdap_r)||0)},
+        {id:7,key:'nsdap_alone',name:'NSDAP alone',parties:'NSDAP',seats:(Number(q.mecklenburg_schwerin_nsdap_r)||0)}
+    ];
+    var anyMajority = 0;
+    for (var i = 0; i < options.length; i++) { if (options[i].seats >= threshold) { anyMajority = 1; } }
+    for (var j = 0; j < options.length; j++) {
+        var option = options[j];
+        var prefix = 'mecklenburg_schwerin_' + option.key + '_coalition';
+        var hasMajority = option.seats >= threshold;
+        var isIncumbent = Number(q.mecklenburg_schwerin_government) === option.id;
+        q[prefix + '_name'] = option.name;
+        q[prefix + '_parties'] = option.parties;
+        q[prefix + '_seats'] = option.seats;
+        q[prefix + '_majority'] = hasMajority ? 1 : 0;
+        q[prefix + '_status'] = hasMajority ? 'Majority' : 'Minority';
+        q[prefix + '_selectable'] = (hasMajority || (!anyMajority && isIncumbent)) ? 1 : 0;
+    }
+    q.mecklenburg_schwerin_any_majority_coalition = anyMajority;
+    var selected = options[(Number(q.mecklenburg_schwerin_government) || 1) - 1] || options[0];
+    q.mecklenburg_schwerin_current_government_name = selected.name;
+    q.mecklenburg_schwerin_current_government_parties = selected.parties;
+    q.mecklenburg_schwerin_current_government_seats = selected.seats;
+    q.mecklenburg_schwerin_majority_cabinet = selected.seats >= threshold ? 1 : 0;
+    q.mecklenburg_schwerin_current_government_status = q.mecklenburg_schwerin_majority_cabinet ? 'Majority' : 'Minority';
+    q.mecklenburg_schwerin_spd_in_government = selected.parties.indexOf('SPD') >= 0 ? 1 : 0;
+    q.mecklenburg_schwerin_ddp_in_government = selected.parties.indexOf('DDP') >= 0 ? 1 : 0;
+    q.mecklenburg_schwerin_dvp_in_government = selected.parties.indexOf('DVP') >= 0 ? 1 : 0;
+    q.mecklenburg_schwerin_dnvp_in_government = selected.parties.indexOf('DNVP') >= 0 ? 1 : 0;
+    q.mecklenburg_schwerin_wp_in_government = selected.parties.indexOf('WP') >= 0 ? 1 : 0;
+    q.mecklenburg_schwerin_nsdap_in_government = selected.parties.indexOf('NSDAP') >= 0 ? 1 : 0;
+    var before1929 = Number(q.year) < 1929;
+    var before1932 = Number(q.year) < 1932;
+    q.mecklenburg_schwerin_leader_johannes_stelling_available = q.mecklenburg_schwerin_spd_in_government;
+    q.mecklenburg_schwerin_leader_paul_schroder_available = q.mecklenburg_schwerin_spd_in_government && before1932 ? 1 : 0;
+    q.mecklenburg_schwerin_leader_hermann_reincke_bloch_available = q.mecklenburg_schwerin_dvp_in_government && before1929 ? 1 : 0;
+    q.mecklenburg_schwerin_leader_walter_granzow_available = q.mecklenburg_schwerin_nsdap_in_government;
+    q.mecklenburg_schwerin_leader_karl_eschenburg_available = q.mecklenburg_schwerin_dnvp_in_government;
+    q.mecklenburg_schwerin_leader_joachim_von_brandenstein_available = q.mecklenburg_schwerin_dnvp_in_government;
+    if (q.mecklenburg_schwerin_nsdap_in_government) { q.mecklenburg_schwerin_leader = 'Walter Granzow'; }
+    else if (q.mecklenburg_schwerin_spd_in_government && before1932) { q.mecklenburg_schwerin_leader = 'Paul Schröder'; }
+    else if (q.mecklenburg_schwerin_spd_in_government) { q.mecklenburg_schwerin_leader = 'Johannes Stelling'; }
+    else if (q.mecklenburg_schwerin_dvp_in_government && before1929) { q.mecklenburg_schwerin_leader = 'Hermann Reincke-Bloch'; }
+    else if (q.mecklenburg_schwerin_dnvp_in_government) { q.mecklenburg_schwerin_leader = 'Karl Eschenburg'; }
+    else if (q.mecklenburg_schwerin_dnvp_in_government) { q.mecklenburg_schwerin_leader = 'Joachim von Brandenstein'; }
 };
 window.calculateMecklenburgSchwerinLandtagResults(Q);
 
