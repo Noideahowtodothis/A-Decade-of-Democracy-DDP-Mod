@@ -1,0 +1,131 @@
+title: Bavarian Landtag Elections
+new-page: true
+tags: event
+priority: -2
+view-if: (year = bavaria_election_year and month >= bavaria_election_month) or (year > bavaria_election_year)
+on-departure: month_actions += 1; bavaria_election_year = year + 4; bavaria_election_month = month
+set-jump: bavarian_landtag_results
+
+= Bavarian Landtag Elections, [+ month : month +] [+ year +]
+
+Bavaria holds Landtag elections. This system reuses the federal party-support system, applies Bavarian party weights, normalizes the result, and allocates **128** Landtag seats with D’Hondt.
+
+- @calculate_bavarian_landtag: Count the votes.
+
+@calculate_bavarian_landtag
+on-arrival: bavaria_government = 2 if bavaria_government == undefined; bavaria_leader = "Heinrich Held" if bavaria_leader == undefined; bavaria_majority_cabinet = 1 if bavaria_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: bavarian_landtag_results
+
+@bavarian_landtag_results
+on-arrival: {! Q.bavaria_next_election_year_preview = (Number(Q.year) || 0) + 4; Q.bavaria_next_election_month_preview = Q.month; if (typeof window !== 'undefined' && typeof window.calculateBavarianLandtagResults === 'function') { window.calculateBavarianLandtagResults(Q); } !}
+
+= Bavarian Landtag election results
+
+Next Bavarian election after this Landtag is due in **[+ bavaria_next_election_month_preview : month +] [+ bavaria_next_election_year_preview +]**.
+
+Bavarian Landtag seats: **[+ bavaria_landtag_total_seats +] / 128**
+
+Current Bavarian government: **[+ bavaria_current_government_name +]** ([+ bavaria_current_government_parties +]) led by **[+ bavaria_leader +]**.
+
+Current government seats: **[+ bavaria_current_government_seats +] / 128**. Status: **[+ bavaria_current_government_status +]**. Majority cabinet: **[+ bavaria_majority_cabinet +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Bavarian vote share</td><td>Seats (out of 128)</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ bavaria_spd_votes_disp +]% {!</td><td>!} [+ bavaria_spd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#8B0000'> </div> !} KPD{!</td><td>!} [+ bavaria_kpd_votes_disp +]% {!</td><td>!} [+ bavaria_kpd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#000'> </div> !} BVP/Z{!</td><td>!} [+ bavaria_bvp_z_votes_disp +]% {!</td><td>!} [+ bavaria_bvp_z_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]{!</td><td>!} [+ bavaria_ddp_votes_disp +]% {!</td><td>!} [+ bavaria_ddp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP{!</td><td>!} [+ bavaria_dvp_votes_disp +]% {!</td><td>!} [+ bavaria_dvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP{!</td><td>!} [+ bavaria_dnvp_votes_disp +]% {!</td><td>!} [+ bavaria_dnvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP{!</td><td>!} [+ bavaria_nsdap_votes_disp +]% {!</td><td>!} [+ bavaria_nsdap_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#5E8C31'> </div> !} Bavarian Peasant Party{!</td><td>!} [+ bavaria_peasant_votes_disp +]% {!</td><td>!} [+ bavaria_peasant_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#a0a0a0'> </div> !} Others{!</td><td>!} [+ bavaria_other_votes_disp +]% {!</td><td>!} [+ bavaria_other_r +] {!</td></tr>!}
+{!</table>!}
+
+= Choose a Bavarian coalition
+
+A coalition is selectable if it controls at least **65** of the **128** Landtag seats. If no listed coalition has a majority, the incumbent Bavarian government may continue as a minority cabinet.
+
+- @bavaria_select_traffic_light
+- @bavaria_select_bvp_peasant_dnvp
+- @bavaria_select_bvp_dnvp
+- @bavaria_select_bvp_ddp_peasant
+- @new_bavarian_elections: Call new Bavarian Landtag elections.
+- @root: Continue without changing the Bavarian government.
+
+@bavaria_select_traffic_light
+title: Traffic Light
+subtitle: DDP + Peasant + SPD — [+ bavaria_traffic_light_coalition_seats +] / 128 — [+ bavaria_traffic_light_coalition_status +]
+view-if: bavaria_traffic_light_coalition_selectable = 1
+on-arrival: {! Q.bavaria_government = 1; if (typeof window !== 'undefined' && typeof window.updateBavarianCoalitionOptions === 'function') { window.updateBavarianCoalitionOptions(Q); } !}
+go-to: bavaria_leader_selection
+
+@bavaria_select_bvp_peasant_dnvp
+title: BVP-Peasant-DNVP
+subtitle: BVP/Z + Peasant + DNVP — [+ bavaria_bvp_peasant_dnvp_coalition_seats +] / 128 — [+ bavaria_bvp_peasant_dnvp_coalition_status +]
+view-if: bavaria_bvp_peasant_dnvp_coalition_selectable = 1
+on-arrival: {! Q.bavaria_government = 2; if (typeof window !== 'undefined' && typeof window.updateBavarianCoalitionOptions === 'function') { window.updateBavarianCoalitionOptions(Q); } !}
+go-to: bavaria_leader_selection
+
+@bavaria_select_bvp_dnvp
+title: BVP-DNVP
+subtitle: BVP/Z + DNVP — [+ bavaria_bvp_dnvp_coalition_seats +] / 128 — [+ bavaria_bvp_dnvp_coalition_status +]
+view-if: bavaria_bvp_dnvp_coalition_selectable = 1
+on-arrival: {! Q.bavaria_government = 3; if (typeof window !== 'undefined' && typeof window.updateBavarianCoalitionOptions === 'function') { window.updateBavarianCoalitionOptions(Q); } !}
+go-to: bavaria_leader_selection
+
+@bavaria_select_bvp_ddp_peasant
+title: BVP-DDP-Peasant
+subtitle: BVP/Z + DDP + Peasant — [+ bavaria_bvp_ddp_peasant_coalition_seats +] / 128 — [+ bavaria_bvp_ddp_peasant_coalition_status +]
+view-if: bavaria_bvp_ddp_peasant_coalition_selectable = 1
+on-arrival: {! Q.bavaria_government = 4; if (typeof window !== 'undefined' && typeof window.updateBavarianCoalitionOptions === 'function') { window.updateBavarianCoalitionOptions(Q); } !}
+go-to: bavaria_leader_selection
+
+@new_bavarian_elections
+title: Call new Bavarian Landtag elections.
+on-arrival: bavaria_election_year = year; bavaria_election_month = month
+go-to: calculate_bavarian_landtag
+
+@bavaria_leader_selection
+
+= Choose the Bavarian leader
+
+Selected coalition: **[+ bavaria_current_government_name +]** ([+ bavaria_current_government_parties +]).
+
+Coalition seats: **[+ bavaria_current_government_seats +] / 128**. Status: **[+ bavaria_current_government_status +]**.
+
+- @bavaria_leader_vogel
+- @bavaria_leader_held
+
+@bavaria_leader_vogel
+title: Kurt Vogel
+subtitle: Available because the SPD is in the Bavarian cabinet.
+view-if: bavaria_government = 1
+on-arrival: bavaria_leader = "Kurt Vogel"
+go-to: bavarian_government_confirmed
+
+@bavaria_leader_held
+title: Heinrich Held
+subtitle: Available because BVP/Z is in the Bavarian cabinet.
+view-if: bavaria_government = 2 or bavaria_government = 3 or bavaria_government = 4
+on-arrival: bavaria_leader = "Heinrich Held"
+go-to: bavarian_government_confirmed
+
+@bavarian_government_confirmed
+
+= Bavarian government formed
+
+Coalition: **[+ bavaria_current_government_name +]**
+
+Parties: **[+ bavaria_current_government_parties +]**
+
+Seats: **[+ bavaria_current_government_seats +] / 128**
+
+Status: **[+ bavaria_current_government_status +]**
+
+Leader: **[+ bavaria_leader +]**
+
+Next Bavarian election: **[+ bavaria_next_election_year_preview +]**, in **[+ bavaria_next_election_month_preview : month +]**.
+
+- @root: Continue.
