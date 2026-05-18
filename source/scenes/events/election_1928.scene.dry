@@ -391,6 +391,7 @@ Q.formNegotiatedCoalitionGovernment = function() {
     Q.finance_minister_party = '';
     Q.agriculture_minister_party = '';
 };
+// TODO(coalition chancellor): make the Chancellor system more elaborate later.
 Q.prepareNegotiatedChancellorOptions = function() {
     Q.coalitionEnsureState();
     var beforeMarch1931 = (Number(Q.year) || 0) < 1931 || ((Number(Q.year) || 0) == 1931 && (Number(Q.month) || 0) < 3);
