@@ -610,16 +610,47 @@ if (Q.month_actions >= 1) {
     Q.elite_support += Q.elite_support_pressure;
     Q.elite_support = Math.max(0, Math.min(100, Q.elite_support));
 
-    ///////////////////////////// change party support based on secularism
-    // Tiny monthly culture drift: secularism = 50 is neutral; higher secularism shifts
-    // confessional/national-conservative support toward liberal parties, and lower secularism reverses it.
-    // At secularism = 100, this moves about 0.75% of relevant source support per year.
-    var SECULARISM_MONTHLY_VOTE_DRIFT_RATE = 0.000625;
-    var secularismCultureDriftScale = (Q.secularism - 50)/50;
-    var applyMonthlyCultureVoteDrift = function(voterClass, sourceParty, targetParties, driftScale) {
-        var sourceVariable = voterClass + '_' + sourceParty;
-        if (typeof Q[sourceVariable] !== 'number' || Q[sourceVariable] <= 0) {
-            return;
+    ///////////////////////////// future culture-to-vote-share drift helpers
+    // Future monthly culture drift should use cultureDriftStrength() to convert a
+    // 0-100 culture variable into a -1..1 strength where 50 is neutral.
+    // Then compute a tiny positive transfer amount and pass it to
+    // moveTinySupportWithinVoterGroup() for each voter group. Do not call these
+    // helpers until a later balance pass defines specific republicanism,
+    // pacifism, feminism, nationalism, or secularism effects.
+    var cultureDriftStrength = function(cultureVariable) {
+        var cultureValue = typeof cultureVariable === 'number' ? cultureVariable : Q[cultureVariable];
+        if (typeof cultureValue !== 'number' || isNaN(cultureValue)) {
+            return 0;
+        }
+        cultureValue = Math.max(0, Math.min(100, cultureValue));
+        return (cultureValue - 50)/50;
+    };
+
+    var moveTinySupportWithinVoterGroup = function(voterClass, sourceParties, targetParties, requestedTransfer) {
+        if (typeof requestedTransfer !== 'number' || isNaN(requestedTransfer) || requestedTransfer <= 0) {
+            return 0;
+        }
+        if (typeof sourceParties === 'string') {
+            sourceParties = [sourceParties];
+        }
+        if (typeof targetParties === 'string') {
+            targetParties = [targetParties];
+        }
+        if (!sourceParties || !targetParties || targetParties.length <= 0) {
+            return 0;
+        }
+
+        var eligibleSources = [];
+        var totalSourceSupport = 0;
+        for (var sourceParty of sourceParties) {
+            var sourceVariable = voterClass + '_' + sourceParty;
+            if (typeof Q[sourceVariable] === 'number' && Q[sourceVariable] > 0) {
+                eligibleSources.push({variable: sourceVariable, support: Q[sourceVariable]});
+                totalSourceSupport += Q[sourceVariable];
+            }
+        }
+        if (totalSourceSupport <= 0) {
+            return 0;
         }
 
         var eligibleTargets = [];
@@ -630,35 +661,27 @@ if (Q.month_actions >= 1) {
             }
         }
         if (eligibleTargets.length <= 0) {
-            return;
+            return 0;
         }
 
-        var voteDrift = Q[sourceVariable]*SECULARISM_MONTHLY_VOTE_DRIFT_RATE*driftScale;
-        if (voteDrift <= 0) {
-            return;
+        // Cap the transfer at available source support so no party can go negative.
+        // Because every subtracted point is re-added to eligible targets, the voter
+        // group's total support is preserved apart from normal floating-point noise.
+        var transfer = Math.min(requestedTransfer, totalSourceSupport);
+        var movedSupport = 0;
+        for (var eligibleSource of eligibleSources) {
+            var sourceTransfer = transfer*(eligibleSource.support/totalSourceSupport);
+            sourceTransfer = Math.min(Q[eligibleSource.variable], sourceTransfer);
+            Q[eligibleSource.variable] -= sourceTransfer;
+            movedSupport += sourceTransfer;
         }
-        voteDrift = Math.min(Q[sourceVariable], voteDrift);
-        Q[sourceVariable] -= voteDrift;
 
-        var voteDriftPerTarget = voteDrift/eligibleTargets.length;
+        var supportPerTarget = movedSupport/eligibleTargets.length;
         for (var eligibleTarget of eligibleTargets) {
-            Q[eligibleTarget] += voteDriftPerTarget;
+            Q[eligibleTarget] += supportPerTarget;
         }
+        return movedSupport;
     };
-
-    if (secularismCultureDriftScale > 0) {
-        for (var secularismDriftClass of Q.classes) {
-            // TODO(culture): Refine secularism drift by class/confession once class-specific cultural alignment exists.
-            applyMonthlyCultureVoteDrift(secularismDriftClass, 'z', ['ddp', 'dvp'], secularismCultureDriftScale);
-            applyMonthlyCultureVoteDrift(secularismDriftClass, 'dnvp', ['ddp', 'dvp'], secularismCultureDriftScale);
-        }
-    } else if (secularismCultureDriftScale < 0) {
-        for (var confessionalDriftClass of Q.classes) {
-            // TODO(culture): Refine secularism drift by class/confession once class-specific cultural alignment exists.
-            applyMonthlyCultureVoteDrift(confessionalDriftClass, 'ddp', ['z', 'dnvp'], -secularismCultureDriftScale);
-            applyMonthlyCultureVoteDrift(confessionalDriftClass, 'dvp', ['z', 'dnvp'], -secularismCultureDriftScale);
-        }
-    }
 
     ///////////////////////////// change party support based on pro_republic
     // if pro_republic is less than the support of the Weimar coalition, reduce SPD support...
