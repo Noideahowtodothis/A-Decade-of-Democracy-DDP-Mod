@@ -247,15 +247,10 @@ Q.dissent_percent = 5;
 // DDP factions
 Q.factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
 Q.ddp_factions = Q.factions;
-// Left Progressive = culturally progressive republican liberals
 Q.ddp_left_progressive = 0;
-// Laborist = labor-aligned social liberals
 Q.ddp_laborist = 0;
-// Left Liberal = civil-libertarian/liberal reformers
 Q.ddp_left_liberal = 0;
-// Left Bourgeois = moderate bourgeois republicans
 Q.ddp_left_bourgeois = 0;
-// Regionalist = federalist/regional autonomy liberals
 Q.ddp_regionalist = 0;
 Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
 Q.ddp_left_progressive_dissent = 0;
