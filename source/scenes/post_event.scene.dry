@@ -154,6 +154,31 @@ if (Q.mecklenburg_schwerin_landtag_total_seats == undefined) {
 if (Q.mecklenburg_schwerin_landtag_seat_allocation_valid == undefined) {
     Q.mecklenburg_schwerin_landtag_seat_allocation_valid = 1;
 }
+if (Q.mecklenburg_schwerin_parties == undefined) {
+    Q.mecklenburg_schwerin_parties = ['spd', 'ddp', 'dvp', 'wp', 'dnvp', 'kpd', 'nsdap', 'z'];
+}
+for (var mecklenburgSchwerinParty of Q.mecklenburg_schwerin_parties) {
+    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_raw'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_raw'] = 0; }
+    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes'] = 0; }
+    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_disp'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_disp'] = '0.0'; }
+    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_display'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_display'] = '0.0'; }
+    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_result_votes'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_result_votes'] = 0; }
+    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_r'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_r'] = 0; }
+    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seats'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seats'] = 0; }
+    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seat_share_disp'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seat_share_disp'] = '0.0'; }
+}
+if (Q.mecklenburg_schwerin_current_government_name == undefined) {
+    Q.mecklenburg_schwerin_current_government_name = '';
+}
+if (Q.mecklenburg_schwerin_current_government_parties == undefined) {
+    Q.mecklenburg_schwerin_current_government_parties = '';
+}
+if (Q.mecklenburg_schwerin_current_government_seats == undefined) {
+    Q.mecklenburg_schwerin_current_government_seats = 0;
+}
+if (Q.mecklenburg_schwerin_current_government_status == undefined) {
+    Q.mecklenburg_schwerin_current_government_status = 'Minority';
+}
 
 for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap']) {
     if (Q[relationParty + '_relation'] == undefined) {

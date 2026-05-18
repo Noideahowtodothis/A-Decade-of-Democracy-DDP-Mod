@@ -424,17 +424,18 @@ window.calculateMecklenburgSchwerinLandtagResults = function(qualities) {
     for (var p in weightedVotes) { total += weightedVotes[p] || 0; }
 
     var voteShares = {};
-    var missingVars = [];
     for (var j = 0; j < parties.length; j++) {
         var partyKey = parties[j];
         var share = total > 0 ? (100 * (weightedVotes[partyKey] || 0) / total) : 0;
         if (partyKey === 'z') { share = 0; }
-        voteShares[partyKey] = share;
+        var roundedShare = Math.round(share * 10) / 10;
+        voteShares[partyKey] = roundedShare;
 
-        var voteVar = 'mecklenburg_schwerin_' + partyKey + '_votes';
-        var voteDispVar = 'mecklenburg_schwerin_' + partyKey + '_votes_disp';
-        if (voteVar in q) { q[voteVar] = Math.round(share * 10) / 10; } else { missingVars.push(voteVar); }
-        if (voteDispVar in q) { q[voteDispVar] = (Math.round(share * 10) / 10).toFixed(1); } else { missingVars.push(voteDispVar); }
+        q['mecklenburg_schwerin_' + partyKey + '_votes_raw'] = share;
+        q['mecklenburg_schwerin_' + partyKey + '_votes'] = roundedShare;
+        q['mecklenburg_schwerin_' + partyKey + '_votes_disp'] = roundedShare.toFixed(1);
+        q['mecklenburg_schwerin_' + partyKey + '_votes_display'] = q['mecklenburg_schwerin_' + partyKey + '_votes_disp'];
+        q['mecklenburg_schwerin_' + partyKey + '_result_votes'] = roundedShare;
     }
 
     var banned = {};
@@ -446,14 +447,14 @@ window.calculateMecklenburgSchwerinLandtagResults = function(qualities) {
     for (var n = 0; n < parties.length; n++) {
         var seatParty = parties[n];
         if (seatParty === 'z') { seats.z = 0; }
-        var seatVar = 'mecklenburg_schwerin_' + seatParty + '_r';
-        if (seatVar in q) { q[seatVar] = seats[seatParty] || 0; } else { missingVars.push(seatVar); }
+        q['mecklenburg_schwerin_' + seatParty + '_r'] = seats[seatParty] || 0;
+        q['mecklenburg_schwerin_' + seatParty + '_seats'] = q['mecklenburg_schwerin_' + seatParty + '_r'];
+        q['mecklenburg_schwerin_' + seatParty + '_seat_share_disp'] = (Math.round((100 * q['mecklenburg_schwerin_' + seatParty + '_r'] / seatCount) * 10) / 10).toFixed(1);
         seatTotal += seats[seatParty] || 0;
     }
 
     q.mecklenburg_schwerin_landtag_total_seats = seatTotal;
     q.mecklenburg_schwerin_landtag_seat_allocation_valid = seatTotal === seatCount ? 1 : 0;
-    // TODO(mecklenburg-schwerin): define missing mecklenburg_schwerin_* vote/seat display variables before exposing them in UI.
 };
 window.calculateMecklenburgSchwerinLandtagResults(Q);
 
