@@ -116,21 +116,22 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.old_sapd_r = 0;
     Q.ddp_name = "DDP";
 
-    var startupReichstag = {spd: 26, kpd: 9, z: 14, bvp: 3, ddp: 6, dvp: 10, wp: 4, dnvp: 20, nsdap: 3, other: 5, sapd: 0};
+    var startupReichstag = {spd: 130, kpd: 45, z: 70, bvp: 15, ddp: 30, dvp: 50, wp: 20, dnvp: 100, nsdap: 15, other: 25, sapd: 0};
+    var startupVoteShare = {spd: 26, kpd: 9, z: 14, bvp: 3, ddp: 6, dvp: 10, wp: 4, dnvp: 20, nsdap: 3, other: 5, sapd: 0};
     for (var startupParty in startupReichstag) {
         Q[startupParty + '_r'] = startupReichstag[startupParty];
         Q['old_' + startupParty + '_r'] = startupReichstag[startupParty];
-        Q[startupParty + '_result_votes'] = startupReichstag[startupParty];
-        Q[startupParty + '_r_disp'] = startupReichstag[startupParty].toFixed(1);
-        Q[startupParty + '_seat_share_disp'] = startupReichstag[startupParty].toFixed(1);
-        Q['old_' + startupParty + '_votes'] = startupReichstag[startupParty];
-        Q['old_' + startupParty + '_votes_disp'] = startupReichstag[startupParty].toFixed(1);
-        Q[startupParty + '_votes'] = startupReichstag[startupParty];
-        Q[startupParty + '_votes_disp'] = startupReichstag[startupParty].toFixed(1);
-        Q[startupParty + '_votes_display'] = startupReichstag[startupParty].toFixed(1);
+        Q[startupParty + '_result_votes'] = startupVoteShare[startupParty];
+        Q[startupParty + '_r_disp'] = startupVoteShare[startupParty].toFixed(1);
+        Q[startupParty + '_seat_share_disp'] = (startupReichstag[startupParty]/5).toFixed(1);
+        Q['old_' + startupParty + '_votes'] = startupVoteShare[startupParty];
+        Q['old_' + startupParty + '_votes_disp'] = startupVoteShare[startupParty].toFixed(1);
+        Q[startupParty + '_votes'] = startupVoteShare[startupParty];
+        Q[startupParty + '_votes_disp'] = startupVoteShare[startupParty].toFixed(1);
+        Q[startupParty + '_votes_display'] = startupVoteShare[startupParty].toFixed(1);
     }
-    Q.reichstag_seat_count = 100;
-    Q.reichstag_total_seats = 100;
+    Q.reichstag_seat_count = 500;
+    Q.reichstag_total_seats = 500;
     Q.reichstag_seat_allocation_valid = 1;
 
     Q.coalition_members = ['ddp'];
@@ -503,9 +504,9 @@ Q.emergency_rule = 0;
 
 // minimum percentage of votes to be represented in the Reichstag
 Q.electoral_threshold = 0;
-// Seat allocation uses a 100-seat normalized Reichstag so existing coalition percentage checks remain valid.
-Q.reichstag_seat_count = 100;
-Q.reichstag_total_seats = 100;
+// Seat allocation uses a simplified 500-seat Reichstag for election and coalition mechanics.
+Q.reichstag_seat_count = 500;
+Q.reichstag_total_seats = 500;
 Q.reichstag_seat_allocation_valid = 1;
 // constitutional reform level
 Q.constitutional_reform = 0;

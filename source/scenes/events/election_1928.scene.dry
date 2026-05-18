@@ -42,7 +42,7 @@ Let us hope this does not backfire.
 on-arrival: {!
 // Set old results and allocate Reichstag seats with the shared D'Hondt helper.
 // Q[party + '_votes'] remains the one-decimal vote share and is not mutated by seat allocation.
-var reichstagSeatCount = Q.reichstag_seat_count || 100;
+var reichstagSeatCount = Q.reichstag_seat_count || 500;
 var threshold = Q.electoral_threshold || 0;
 var partyVoteShares = {};
 var bannedParties = {};
@@ -112,12 +112,13 @@ if (Q.kpd_relation >= 30) {
     Q.weimar_coalition += Q.sapd_r;
 }
 
-Q.leverage = Q.spd_r;
+Q.leverage = Q.ddp_r;
 
 // Coalition negotiation data and helpers are intentionally mechanical placeholder systems.
 Q.coalition_party_labels = {"spd": "SPD", "dvp": "DVP", "dnvp": "DNVP", "z": "Z", "bvp": "BVP", "wp": "WP", "kpd": "KPD", "nsdap": "NSDAP", "ddp": "DDP"};
-Q.coalition_party_blocks = {"spd": ["dnvp", "nsdap"], "dnvp": ["spd", "kpd"], "nsdap": ["spd", "kpd"], "kpd": ["dnvp", "dvp", "nsdap"], "dvp": [], "z": [], "bvp": [], "wp": []};
-// TODO(coalition): refine incompatibilities by party leader, presidential pressure, and scenario-specific toleration exceptions.
+Q.coalition_party_blocks = {"spd": ["dnvp"], "dnvp": ["spd"], "dvp": [], "z": [], "bvp": [], "wp": []};
+// TODO(coalition): add future NSDAP incompatibility rules once NSDAP negotiations are implemented.
+// TODO(coalition): add future KPD incompatibility rules once KPD negotiations are implemented.
 Q.coalition_concessions = [
     {id: 'spd_expand_welfare', party: 'spd', label: 'Expand Welfare', isMajor: true, points: 2, effects: '-1 budget; increase SPD worker support; increase ddp_left_bourgeois dissent; damage DVP relations.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
     {id: 'spd_expand_unemployment_insurance', party: 'spd', label: 'Expand Unemployment Insurance', isMajor: true, points: 2, effects: '-1 budget; increase SPD unemployed support; increase ddp_left_bourgeois dissent; damage DVP relations.', blockedParties: Q.coalition_party_blocks['spd'] || [], conditions: '', todo: 'Placeholder mechanical effect values; tune after playtesting.'},
@@ -205,36 +206,41 @@ Q.coalitionEnsureState = function() {
     Q.coalition_unavailable_parties_text = unavailableNames.length ? unavailableNames.join('; ') : 'None';
 };
 Q.coalitionGetThreshold = function(party) {
-    var share = Number(Q[party + '_r']) || 0;
-    if (party == 'spd') {
-        if (share < 25) { return 4; }
-        if (share < 30) { return 5; }
-        if (share < 35) { return 6; }
-        return 7;
+    var seats = Number(Q[party + '_r']) || 0;
+    if (['spd','dvp','dnvp','z','bvp','wp'].indexOf(party) < 0) { return 99; }
+    return Math.max(1, Math.min(7, Math.round(seats / 50)));
+};
+Q.coalitionCanStillReachMajority = function() {
+    Q.coalitionEnsureState();
+    var parties = ['spd','dvp','dnvp','z','bvp','wp'];
+    var optional = [];
+    for (var i = 0; i < parties.length; i++) {
+        var party = parties[i];
+        if (!Q['coalition_' + party + '_member'] && (Number(Q[party + '_r']) || 0) > 0) {
+            optional.push(party);
+        }
     }
-    if (party == 'dvp') {
-        if (share < 5) { return 1; }
-        if (share < 10) { return 2; }
-        if (share < 15) { return 3; }
-        if (share < 20) { return 4; }
-        return 5;
+    var best = Q.coalition_total_seats;
+    var combinations = Math.pow(2, optional.length);
+    for (var mask = 0; mask < combinations; mask++) {
+        var seats = Q.coalition_total_seats;
+        var hasSpd = Q.coalition_spd_member ? true : false;
+        var hasDnvp = Q.coalition_dnvp_member ? true : false;
+        var compatible = true;
+        for (var j = 0; j < optional.length; j++) {
+            if (mask & (1 << j)) {
+                var candidate = optional[j];
+                if (candidate == 'spd') { hasSpd = true; }
+                if (candidate == 'dnvp') { hasDnvp = true; }
+                seats += Number(Q[candidate + '_r']) || 0;
+            }
+        }
+        if (hasSpd && hasDnvp) { compatible = false; }
+        if (compatible && seats > best) { best = seats; }
     }
-    if (party == 'dnvp') {
-        if (share < 15) { return 3; }
-        if (share < 20) { return 4; }
-        if (share < 25) { return 5; }
-        if (share < 30) { return 6; }
-        return 7;
-    }
-    if (party == 'z') {
-        if (share < 10) { return 2; }
-        if (share < 15) { return 3; }
-        if (share < 20) { return 4; }
-        return 5;
-    }
-    if (party == 'bvp') { return 1; }
-    if (party == 'wp') { return Q.coalition_dvp_member ? 1 : 2; }
-    return 99;
+    Q.coalition_possible_best_seats = best;
+    Q.coalition_possible_majority = best >= 251 ? 1 : 0;
+    return Q.coalition_possible_majority;
 };
 Q.coalitionPartyLockedReason = function(party) {
     Q.coalitionEnsureState();
@@ -258,6 +264,7 @@ Q.coalitionBeginParty = function(party) {
     Q.coalitionEnsureState();
     Q.coalition_selected_party = party;
     Q.coalition_selected_party_label = Q.coalition_party_labels[party] || party.toUpperCase();
+    Q.coalition_selected_party_seats = Number(Q[party + '_r']) || 0;
     Q.coalition_required_points = Q.coalitionGetThreshold(party);
     Q.coalition_negotiation_points = 0;
     Q.coalition_negotiation_active = 1;
@@ -354,19 +361,58 @@ Q.formNegotiatedCoalitionGovernment = function() {
     Q.in_popular_front = 0;
     Q.in_left_front = 0;
     Q.in_minority_government = 0;
+    Q.ddp_in_government = 1;
     Q.spd_in_government = Q.coalition_spd_member ? 1 : 0;
     Q.z_in_government = Q.coalition_z_member ? 1 : 0;
+    Q.bvp_in_government = Q.coalition_bvp_member ? 1 : 0;
     Q.dvp_in_government = Q.coalition_dvp_member ? 1 : 0;
+    Q.wp_in_government = Q.coalition_wp_member ? 1 : 0;
     Q.dnvp_in_government = Q.coalition_dnvp_member ? 1 : 0;
-    Q.kpd_in_government = Q.coalition_kpd_member ? 1 : 0;
-    Q.nsdap_in_government = Q.coalition_nsdap_member ? 1 : 0;
+    Q.kpd_in_government = 0;
+    Q.nsdap_in_government = 0;
     var largest = 'ddp';
     for (var member of Q.coalition_members) {
         if ((Number(Q[member + '_r']) || 0) > (Number(Q[largest + '_r']) || 0)) { largest = member; }
     }
     Q.chancellor_party = (Q.coalition_party_labels[largest] || largest.toUpperCase());
     Q.chancellor = Q.chancellor_party;
-    Q.leverage = Math.max(10, Number(Q.ddp_r) || 0);
+    Q.total_ministries = 8;
+    Q.ddp_ministry_picks = Math.max(1, Math.round(Q.total_ministries * (Number(Q.ddp_r) || 0) / Math.max(1, Q.coalition_total_seats)));
+    Q.ddp_ministry_picks_remaining = Q.ddp_ministry_picks;
+    Q.leverage = Q.ddp_ministry_picks;
+    Q.foreign_minister_party = '';
+    Q.interior_minister_party = '';
+    Q.justice_minister_party = '';
+    Q.labor_minister_party = '';
+    Q.reichswehr_minister_party = '';
+    Q.economic_minister_party = '';
+    Q.finance_minister_party = '';
+    Q.agriculture_minister_party = '';
+};
+Q.assignRemainingNegotiatedMinistries = function() {
+    if (!Q.in_custom_negotiated_coalition) { return; }
+    Q.coalitionEnsureState();
+    var partners = [];
+    for (var i = 0; i < Q.coalition_members.length; i++) {
+        var member = Q.coalition_members[i];
+        if (member != 'ddp') { partners.push(member); }
+    }
+    partners.sort(function(a, b) { return (Number(Q[b + '_r']) || 0) - (Number(Q[a + '_r']) || 0); });
+    if (!partners.length) { partners = ['ddp']; }
+    var ministries = ['labor','interior','finance','economic','justice','foreign','agriculture','reichswehr'];
+    var names = {'spd': 'SPD', 'z': 'Z', 'bvp': 'BVP', 'dvp': 'DVP', 'wp': 'WP', 'dnvp': 'DNVP', 'ddp': Q.ddp_name || 'DDP'};
+    var partnerIndex = 0;
+    for (var m = 0; m < ministries.length; m++) {
+        var ministry = ministries[m];
+        if (!Q[ministry + '_minister_party']) {
+            var partner = partners[partnerIndex % partners.length];
+            Q[ministry + '_minister_party'] = names[partner] || partner.toUpperCase();
+            Q[ministry + '_minister'] = Q[ministry + '_minister_party'];
+            partnerIndex += 1;
+        }
+    }
+    Q.ddp_ministry_picks_remaining = 0;
+    Q.leverage = 0;
 };
 Q.coalitionTolerationSeats = function(parties) {
     var seats = 0;
@@ -380,12 +426,12 @@ Q.coalitionRefreshTolerationOptions = function() {
     Q.coalition_tolerate_dvp_z_bvp_wp_seats = Q.coalitionTolerationSeats(['dvp','z','bvp','wp']);
     Q.coalition_tolerate_z_spd_seats = Q.coalitionTolerationSeats(['z','spd']);
     Q.coalition_tolerate_spd_kpd_seats = Q.coalitionTolerationSeats(['spd','kpd']);
-    Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_viable = Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_seats >= 50 ? 1 : 0;
-    Q.coalition_tolerate_nsdap_dnvp_viable = Q.coalition_tolerate_nsdap_dnvp_seats >= 50 ? 1 : 0;
-    Q.coalition_tolerate_nsdap_dnvp_dvp_viable = Q.coalition_tolerate_nsdap_dnvp_dvp_seats >= 50 ? 1 : 0;
-    Q.coalition_tolerate_dvp_z_bvp_wp_viable = Q.coalition_tolerate_dvp_z_bvp_wp_seats >= 50 ? 1 : 0;
-    Q.coalition_tolerate_z_spd_viable = Q.coalition_tolerate_z_spd_seats >= 50 ? 1 : 0;
-    Q.coalition_tolerate_spd_kpd_viable = Q.coalition_tolerate_spd_kpd_seats >= 50 ? 1 : 0;
+    Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_viable = Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_seats >= 251 ? 1 : 0;
+    Q.coalition_tolerate_nsdap_dnvp_viable = Q.coalition_tolerate_nsdap_dnvp_seats >= 251 ? 1 : 0;
+    Q.coalition_tolerate_nsdap_dnvp_dvp_viable = Q.coalition_tolerate_nsdap_dnvp_dvp_seats >= 251 ? 1 : 0;
+    Q.coalition_tolerate_dvp_z_bvp_wp_viable = Q.coalition_tolerate_dvp_z_bvp_wp_seats >= 251 ? 1 : 0;
+    Q.coalition_tolerate_z_spd_viable = Q.coalition_tolerate_z_spd_seats >= 251 ? 1 : 0;
+    Q.coalition_tolerate_spd_kpd_viable = Q.coalition_tolerate_spd_kpd_seats >= 251 ? 1 : 0;
     Q.coalition_viable_tolerations = Q.coalition_tolerate_dnvp_z_bvp_wp_dvp_viable + Q.coalition_tolerate_nsdap_dnvp_viable + Q.coalition_tolerate_nsdap_dnvp_dvp_viable + Q.coalition_tolerate_dvp_z_bvp_wp_viable + Q.coalition_tolerate_z_spd_viable + Q.coalition_tolerate_spd_kpd_viable;
 };
 Q.coalitionViableTolerationCount = function() {
@@ -401,7 +447,9 @@ Q.acceptCoalitionToleration = function(id, chancellorParty) {
     Q.chancellor_party = chancellorParty;
     Q.chancellor = chancellorParty;
 };
+Q.coalition_members = ['ddp'];
 Q.coalitionEnsureState();
+Q.coalitionCanStillReachMajority();
 
 Q.grand_coalition_failed = 0;
 // Reset government and ministers... Based on Brüning's 1930 govt
@@ -468,7 +516,7 @@ data = [
         "id": "kpd",
         "legend": "KPD",
         "name": "KPD",
-        "seats": Math.round(Q.kpd_r*5),
+        "seats": Q.kpd_r,
     }
 ];
 if (Q.sapd_formed && Q.sapd_r) {
@@ -476,7 +524,7 @@ if (Q.sapd_formed && Q.sapd_r) {
             "id": "sapd",
             "legend": "SAPD",
             "name": "SAPD",
-            "seats": Math.round(Q.sapd_r*5),
+            "seats": Q.sapd_r,
             });
 }
 data = data.concat([
@@ -484,55 +532,55 @@ data = data.concat([
         "id": "spd",
         "legend": "SPD",
         "name": "SPD",
-        "seats": Math.round(Q.spd_r*5),
+        "seats": Q.spd_r,
     },
     {
         "id": "ddp",
         "legend": Q.ddp_name,
         "name": Q.ddp_name,
-        "seats": Math.round(Q.ddp_r*5),
+        "seats": Q.ddp_r,
     },
     {
         "id": "z",
         "legend": "Center",
         "name": "Center",
-        "seats": Math.round(Q.z_r*5),
+        "seats": Q.z_r,
     },
     {
         "id": "bvp",
         "legend": "BVP",
         "name": "BVP",
-        "seats": Math.round(Q.bvp_r*5),
+        "seats": Q.bvp_r,
     },
     {
         "id": "dvp",
         "legend": "DVP",
         "name": "DVP",
-        "seats": Math.round(Q.dvp_r*5),
+        "seats": Q.dvp_r,
     },
     {
         "id": "wp",
         "legend": "WP",
         "name": "WP",
-        "seats": Math.round(Q.wp_r*5),
+        "seats": Q.wp_r,
     },
     {
         "id": "other",
         "legend": "Other",
         "name": "Other",
-        "seats": Math.round(Q.other_r*5),
+        "seats": Q.other_r,
     },
     {
         "id": "dnvp",
         "legend": "DNVP",
         "name": "DNVP",
-        "seats": Math.round(Q.dnvp_r*5),
+        "seats": Q.dnvp_r,
     },
     {
         "id": "nsdap",
         "legend": "NSDAP",
         "name": "NSDAP",
-        "seats": Math.round(Q.nsdap_r*5),
+        "seats": Q.nsdap_r,
     },
 ]);
 
@@ -557,10 +605,12 @@ go-to: coalition_menu
 
 = Election results
 
+Reichstag seats: **[+ reichstag_total_seats +] / 500**
+
 {!<svg id="reichstag" style="width: 500px; height: 250px;"> </svg>!}
 
 {!<table>!} 
-{!<tr><td>Party</td><td>Vote share</td><td>Seats</td><td>Seat share</td><td>% Change</td></tr>!}
+{!<tr><td>Party</td><td>Vote share</td><td>Seats (out of 500)</td><td>Seat share</td><td>% Change</td></tr>!}
 {!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} **SPD:** {!</td><td>!} **[+ spd_r_disp +]%** {!</td><td>!} **[+ spd_r +]** {!</td><td>!} **[+ spd_seat_share_disp +]%** {!</td><td>!} **[+ str_change_spd +]** {!</td></tr>!}
 
 [? if sapd_formed : {!<tr><td><div class="box" style='background-color:#C40000'> </div> !}SAPD: {!</td><td>!} [+ sapd_r_disp +]% {!</td><td>!} [+ sapd_r +] {!</td><td>!} [+ sapd_seat_share_disp +]% {!</td><td>!} [+ str_change_sapd +] {!</td></tr>!} ?]
@@ -586,17 +636,17 @@ go-to: coalition_menu
 
 **Potential coalitions:**
 
-Weimar Coalition (SPD + Z + [+ ddp_name +]): [+ weimar_coalition +]%
+Weimar Coalition (SPD + Z + [+ ddp_name +]): [+ weimar_coalition +] / 500 seats
 
-Grand Coalition (SPD + Z + BVP + [+ ddp_name +] + DVP): [+ grand_coalition +]%
+Grand Coalition (SPD + Z + BVP + [+ ddp_name +] + DVP): [+ grand_coalition +] / 500 seats
 
-Bourgeois Coalition (Z + BVP + [+ ddp_name +] + DVP + WP + Others): [+ bourgeois_coalition +]%
+Bourgeois Coalition (Z + BVP + [+ ddp_name +] + DVP + WP + Others): [+ bourgeois_coalition +] / 500 seats
 
-Right-wing Coalition (Z + BVP + DVP + WP + Others + DNVP): [+ right_coalition +]%
+Right-wing Coalition (Z + BVP + DVP + WP + Others + DNVP): [+ right_coalition +] / 500 seats
 
 [? if nazi_urgency <= 1 and nsdap_r >= 15 : The rapid rise in NSDAP votes is extremely worrying. Many had believed that the party was moribund; now, some of us consider it to be the greatest threat to democracy in Germany. ?]
 
-[? if anti_democratic_coalition >= 50 : Together, the anti-democratic KPD, DNVP, and NSDAP have a majority in the Reichstag. A stable governing majority will be almost impossible. ?]
+[? if anti_democratic_coalition >= 251 : Together, the anti-democratic KPD, DNVP, and NSDAP have a majority in the Reichstag. A stable governing majority will be almost impossible. ?]
 
 There are some potential coalition arrangements.
 
@@ -617,15 +667,26 @@ There are some potential coalition arrangements.
 
 
 @coalition_negotiation_start
-title: Negotiate a custom coalition.
-subtitle: Mechanical placeholder coalition negotiation system.
-on-arrival: {! Q.coalitionEnsureState(); !}
+title: Coalition formation.
+on-arrival: {! Q.coalitionEnsureState(); Q.coalitionCanStillReachMajority(); !}
+go-to: coalition_no_possible if coalition_possible_majority = 0; coalition_negotiation_start_screen if coalition_possible_majority = 1
 
-Choose a party to negotiate coalition entry. DDP is treated as the current anchor party for this placeholder system.
+@coalition_negotiation_start_screen
+title: Coalition formation.
+subtitle: Negotiate by seats, concessions, and party compatibility.
+on-arrival: {! Q.coalitionEnsureState(); Q.coalitionCanStillReachMajority(); !}
 
-Current proposed coalition: **[+ coalition_member_list_text +]**
+Choose a party to negotiate coalition entry.
 
-Current coalition seats: [+ coalition_total_seats +]%
+Current DDP seats: **[+ ddp_r +]**
+
+Current coalition parties: **[+ coalition_member_list_text +]**
+
+Current coalition seat total: **[+ coalition_total_seats +] / 500**
+
+Majority threshold: **251**
+
+Best possible compatible coalition from here: **[+ coalition_possible_best_seats +] / 500**
 
 Blocked/incompatible parties: [+ coalition_blocked_parties_text +]
 
@@ -643,7 +704,7 @@ Unavailable parties: [+ coalition_unavailable_parties_text +]
 
 @coalition_negotiate_spd
 title: Negotiate with SPD.
-subtitle: SPD seats: [+ spd_r +]%. [? if coalition_spd_member: Already in coalition. ?]
+subtitle: SPD seats: [+ spd_r +]. [? if coalition_spd_member: Already in coalition. ?]
 choose-if: coalition_can_spd = 1
 unavailable-subtitle: [+ coalition_lock_reason_spd +]
 on-arrival: {! Q.coalitionBeginParty('spd'); !}
@@ -651,7 +712,7 @@ go-to: coalition_negotiation_party
 
 @coalition_negotiate_dvp
 title: Negotiate with DVP.
-subtitle: DVP seats: [+ dvp_r +]%. [? if coalition_dvp_member: Already in coalition. ?]
+subtitle: DVP seats: [+ dvp_r +]. [? if coalition_dvp_member: Already in coalition. ?]
 choose-if: coalition_can_dvp = 1
 unavailable-subtitle: [+ coalition_lock_reason_dvp +]
 on-arrival: {! Q.coalitionBeginParty('dvp'); !}
@@ -659,7 +720,7 @@ go-to: coalition_negotiation_party
 
 @coalition_negotiate_dnvp
 title: Negotiate with DNVP.
-subtitle: DNVP seats: [+ dnvp_r +]%. [? if coalition_dnvp_member: Already in coalition. ?]
+subtitle: DNVP seats: [+ dnvp_r +]. [? if coalition_dnvp_member: Already in coalition. ?]
 choose-if: coalition_can_dnvp = 1
 unavailable-subtitle: [+ coalition_lock_reason_dnvp +]
 on-arrival: {! Q.coalitionBeginParty('dnvp'); !}
@@ -667,7 +728,7 @@ go-to: coalition_negotiation_party
 
 @coalition_negotiate_z
 title: Negotiate with Z.
-subtitle: Z seats: [+ z_r +]%. [? if coalition_z_member: Already in coalition. ?]
+subtitle: Z seats: [+ z_r +]. [? if coalition_z_member: Already in coalition. ?]
 choose-if: coalition_can_z = 1
 unavailable-subtitle: [+ coalition_lock_reason_z +]
 on-arrival: {! Q.coalitionBeginParty('z'); !}
@@ -675,7 +736,7 @@ go-to: coalition_negotiation_party
 
 @coalition_negotiate_bvp
 title: Negotiate with BVP.
-subtitle: BVP seats: [+ bvp_r +]%. [? if coalition_bvp_member: Already in coalition. ?]
+subtitle: BVP seats: [+ bvp_r +]. [? if coalition_bvp_member: Already in coalition. ?]
 choose-if: coalition_can_bvp = 1
 unavailable-subtitle: [+ coalition_lock_reason_bvp +]
 on-arrival: {! Q.coalitionBeginParty('bvp'); !}
@@ -683,7 +744,7 @@ go-to: coalition_negotiation_party
 
 @coalition_negotiate_wp
 title: Negotiate with WP.
-subtitle: WP seats: [+ wp_r +]%. [? if coalition_wp_member: Already in coalition. ?]
+subtitle: WP seats: [+ wp_r +]. [? if coalition_wp_member: Already in coalition. ?]
 choose-if: coalition_can_wp = 1
 unavailable-subtitle: [+ coalition_lock_reason_wp +]
 on-arrival: {! Q.coalitionBeginParty('wp'); !}
@@ -694,15 +755,19 @@ on-arrival: {! Q.coalitionRecountPoints(); !}
 
 = Coalition negotiation: [+ coalition_selected_party_label +]
 
-Placeholder concession screen. Select concessions until the current point total meets the party threshold.
+Select concessions until the selected point total meets the party threshold. Effects apply only if the party joins.
 
-Current concession points: **[+ coalition_negotiation_points +]**
+Party seats: **[+ coalition_selected_party_seats +]**
+
+Current coalition total: **[+ coalition_total_seats +] / 500**
+
+Selected concession points: **[+ coalition_negotiation_points +]**
 
 Required concession points: **[+ coalition_required_points +]**
 
 Selected concessions: **[+ coalition_selected_concessions_text +]**
 
-Current proposed coalition: **[+ coalition_member_list_text +]** ([+ coalition_total_seats +]% seats)
+Current coalition parties: **[+ coalition_member_list_text +]**
 
 Blocked/incompatible parties: **[+ coalition_blocked_parties_text +]**
 
@@ -943,8 +1008,14 @@ view-if: coalition_selected_party = "wp"
 on-arrival: {! Q.toggleCoalitionConcession('wp_promote_landlord_interests'); !}
 go-to: coalition_negotiation_party
 
+@coalition_no_possible
+title: No possible coalition can reach a majority.
+on-arrival: next_election_time = time+3; next_election_month = month + 3; next_election_year = year; next_election_year = year + 1 if next_election_month > 12; next_election_month = next_election_month - 12 if next_election_month > 12; in_election = 1
+
+No compatible DDP-led coalition can reach 251 seats. New elections have been called for [+ next_election_month : month +] [+ next_election_year +].
+
 @coalition_confirm_party
-title: Confirm concessions and add party to coalition.
+title: Accept concessions and add party to coalition.
 subtitle: Requires [+ coalition_required_points +] concession points.
 choose-if: coalition_negotiation_points >= coalition_required_points
 unavailable-subtitle: Not enough concessions selected.
@@ -954,24 +1025,25 @@ go-to: coalition_negotiation_start
 [+ coalition_selected_party_label +] has joined the negotiated coalition.
 
 @coalition_cancel_party
-title: Cancel this negotiation.
+title: Return to party selection.
 go-to: coalition_negotiation_start
 
 No concessions are finalized.
 
 @coalition_form_government
 title: Form the negotiated coalition government.
-subtitle: Current coalition seats: [+ coalition_total_seats +]%.
-view-if: coalition_total_seats >= 50
+subtitle: Current coalition seats: [+ coalition_total_seats +] / 500. Majority threshold: 251.
+view-if: coalition_total_seats >= 251
 on-arrival: {! Q.formNegotiatedCoalitionGovernment(); !}
 go-to: coalition_custom_formed
 
 @coalition_custom_formed
 
-The negotiated coalition has been formed. Placeholder text: update ministries and cabinet distribution in a later content pass.
+The negotiated coalition has been formed. Continue to ministry selection.
+
+DDP ministry picks: **[+ ddp_ministry_picks +]**
 
 - @ministries: Continue to ministry selection.
-- @root: Continue.
 
 @coalition_reject_formation
 title: Reject coalition formation.
@@ -1051,7 +1123,7 @@ go-to: new_elections
 title: A new "Popular Front" coalition?
 subtitle: SPD + KPD + Z + [+ ddp_name +]  [? if sapd_formed: + SAPD ?]([+ popular_front_coalition +]%)
 unavailable-subtitle: SPD + KPD + Z + [+ ddp_name +] [? if sapd_formed: + SAPD ?]([+ popular_front_coalition +]%) - [? if ((kpd_relation < 65 and kpd_party_leader == "Thälmann") or (kpd_relation < 45 and kpd_party_leader == "Conciliators")): We do not have good enough relations with the KPD. ?][? if (z_relation < 45 and z_party_leader == "Joos") or (z_relation < 65 and z_party_leader != "Joos" and kpd_party_leader != "Conciliators") or (z_relation < 55 and z_party_leader != "Joos" and kpd_party_leader == "Conciliators"): We do not have good enough relations with the Center Party. ?][? if communist_coalition < 3 : The Communists are unwilling to compromise at all. ?]
-view-if: popular_front_coalition >= 50
+view-if: popular_front_coalition >= 251
 choose-if: (((kpd_relation >= 65 and kpd_party_leader == "Thälmann") or (kpd_relation >= 45 and kpd_party_leader == "Conciliators")) and ((z_relation >= 45 and z_party_leader == "Joos") or (z_relation >= 65 and z_party_leader != "Joos" and kpd_party_leader != "Conciliators") or (z_relation >= 55 and z_party_leader != "Joos" and kpd_party_leader == "Conciliators")) and ddp_relation >= 50 and communist_coalition >= 3) or (z_party_leader == "Joos" and kpd_party_leader == "Conciliators" and z_relation >= 30 and kpd_relation >= 30)
 
 Could we really form a coalition that included both the Center and the Communists? It seems like an absurd concept, but given our good relationships with both sides, it is not an impossibility.
@@ -1097,14 +1169,14 @@ on-arrival: spd_in_government = 1; in_popular_front = 1; chancellor = "Breitsche
 achievement: grosse_volksfront
 go-to: popular_front_civil_war if coup_progress >= 10; popular_front_no_civil_war if coup_progress < 10
 
-Somehow, the coalition is successfully formed! The conciliatory leadership of the Center Party and KPD helped make the negotiations possible. We still need a chancellor; the only acceptable choice among the parties was Rudolf Breitscheid of the SPD, acceptable to the Center and KPD [? if president == "Hindenburg" : as well as President Hindenburg, albeit extremely reluctantly ?].
+Somehow, the coalition is successfully formed! The conciliatory leadership of the Center Party and KPD helped make the negotiations possible. We still need a chancellor; the only acceptable choice among the parties was Eugen Schiffer of the SPD, acceptable to the Center and KPD [? if president == "Hindenburg" : as well as President Hindenburg, albeit extremely reluctantly ?].
 
 @popular_front_success
 on-arrival: spd_in_government = 1; in_popular_front = 1; chancellor = "Breitscheid"; chancellor_party = "SPD"; kpd_relation += 10; coup_progress += 2; in_left_front = 0; in_weimar_coalition = 0; in_grand_coalition = 0; coalition_dissent = 0;
 go-to: popular_front_civil_war if coup_progress >= 10; popular_front_no_civil_war if coup_progress < 10
 achievement: volksfront
 
-Somehow, surprisingly, the coalition is successfully formed! We still need a chancellor; the only acceptable choice among the parties was Rudolf Breitscheid of the SPD, acceptable to the Center and KPD [? if president == "Hindenburg" : as well as President Hindenburg, albeit extremely reluctantly ?].
+Somehow, surprisingly, the coalition is successfully formed! We still need a chancellor; the only acceptable choice among the parties was Eugen Schiffer of the SPD, acceptable to the Center and KPD [? if president == "Hindenburg" : as well as President Hindenburg, albeit extremely reluctantly ?].
 
 @popular_front_no_civil_war
 on-arrival: kpd_goals_seen = 0; finance_minister_party = "Z"; interior_minister_party = "Z"; economic_minister_party = "Z"; labor_minister_party = "Z"; foreign_minister_party = "Z"; agriculture_minister_party = "Z"; reichswehr_minister = "I"; leverage = spd_r + kpd_r;
@@ -1131,7 +1203,7 @@ The Center manages to diffuse some of the hostility from the Reichswehr and the 
 @far_right_coalition
 title: Far-right coalition
 subtitle: NSDAP + DNVP ([+ far_right_coalition +]%)
-view-if: far_right_coalition >= 50
+view-if: far_right_coalition >= 251
 go-to: far_right_win if (year >= 1932 or nsdap_r >= 44) and president != "Braun"; far_right_fail if (year < 1932 and nsdap_r < 44) and president != "Braun"; far_right_braun if president == "Braun"
 priority: 2
 
@@ -1170,7 +1242,7 @@ Alternatively, Braun could use the emergency powers of the presidency. Article 4
 title: Is a United Left coalition possible?
 subtitle: SPD + KPD [? if sapd_formed: + SAPD ?] ([+ left_coalition +]%)
 unavailable-subtitle: SPD + KPD [? if sapd_formed: + SAPD ?] ([+ left_coalition +]%). [? if kpd_relation < 50 : We do not have adequate relations with the KPD. ?][? if communist_coalition < 3 : The Communists are too committed to their radical ways to partake in government. ?]
-view-if: left_coalition >= 50
+view-if: left_coalition >= 251
 choose-if: (kpd_relation >= 50 or (kpd_party_leader == "Conciliators" and kpd_relation >= 40)) and communist_coalition >= 3
 
 There are enough votes for a SPD + KPD coalition government, if such a thing were actually possible.
@@ -1229,7 +1301,7 @@ on-arrival: spd_in_government = 1; in_left_front = 1; chancellor = "Breitscheid"
 go-to: left_coalition_civil_war if coup_progress >= 10; left_coalition_no_civil_war if coup_progress < 10
 achievement: einheitsfront
 
-Somehow, surprisingly, the left coalition is successfully formed, without appointing Thälmann as chancellor. The consensus choice for chancellor, accepted by the SPD, KPD, and President [+ president +], is Rudolf Breitscheid, who belongs to the centrist faction of the SPD, but was acceptable to the left due to his previous membership in the left-wing anti-war USPD.
+Somehow, surprisingly, the left coalition is successfully formed, without appointing Thälmann as chancellor. The consensus choice for chancellor, accepted by the SPD, KPD, and President [+ president +], is Eugen Schiffer, who belongs to the centrist faction of the SPD, but was acceptable to the left due to his previous membership in the left-wing anti-war USPD.
 
 # just raise the coup limit, don't immediately go to civil war
 
@@ -1255,7 +1327,7 @@ In response to the KPD's entrance into the government, the right-wing immediatel
 title: Refuse to form a government, so that a right-wing coalition may be formed.
 subtitle: Z + BVP + DVP + WP + DNVP + Others ([+ right_coalition +]%)
 unavailable-subtitle: The DNVP is not interested in a coalition with the Center.
-view-if: right_coalition >= 50
+view-if: right_coalition >= 251
 choose-if: year < 1929
 
 There are enough votes for a right-wing coalition of the Center, BVP, DVP, WP, DNVP, and minor conservative parties. [? if largest_party == "SPD": However, this will be seen as abdicating responsibility for government, as we are the largest party. ?]
@@ -1276,7 +1348,7 @@ go-to: right_coalition_2
 
 @right_coalition_2
 unavailable-subtitle: The DNVP is not interested in a coalition with the Center.
-view-if: right_coalition >= 50
+view-if: right_coalition >= 251
 choose-if: year < 1929
 on-arrival: spd_in_government = 0; spd_toleration = 0; chancellor = "Brüning"; chancellor_party = "Z"; foreign_minister_party = "DVP"; interior_minister_party = "DNVP"; justice_minister_party = "DNVP"; labor_minister_party = "Z"; reichswehr_minister_party = "I"; economic_minister_party = "DVP"; finance_minister_party = "Z"; agriculture_minister_party = "DNVP"; in_right_coalition = 1;
 
@@ -1286,7 +1358,7 @@ Even though the DNVP is very reluctant to participate in such a coalition, they 
 
 @no_majority
 title: There is no clear governing majority.
-view-if: weimar_coalition < 50 and (grand_coalition < 50 or grand_coalition_failed == 1) and president = "Hindenburg" and far_right_coalition < 50
+view-if: weimar_coalition < 251 and (grand_coalition < 251 or grand_coalition_failed == 1) and president = "Hindenburg" and far_right_coalition < 251
 on-arrival: no_majority_elections += 1
 go-to: no_majority_bruning if chancellor = "Brüning" or chancellor = "Wirth"; no_majority_papen if chancellor = "Papen" and no_majority_papen_elections == 0; no_majority_papen_2 if chancellor == "Papen" and no_majority_papen_elections > 0; no_majority_schleicher if chancellor = "Schleicher"; no_majority_spd if chancellor_party = "SPD" or chancellor == "Marx"
 
@@ -1336,7 +1408,7 @@ The third option is to have new elections.
 @new_grand_coalition
 title: A "New Grand Coalition" of all the constitutional parties?
 subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + WP + Others ([+ neo_weimar_coalition +]%)
-view-if: neo_weimar_coalition >= 50 and grand_coalition < 50
+view-if: neo_weimar_coalition >= 251 and grand_coalition < 251
 choose-if: z_relation >= 50 and bvp_relation >= 40 and dvp_relation >= 30
 unavailable-subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + WP + Others ([+ neo_weimar_coalition +]%) - [? if z_relation < 50 : We do not have adequate relations with the Center Party. ?][? if bvp_relation < 40 : We do not have adequate relations with the BVP. ?][? if dvp_relation < 30 : We do not have adequate relations with the DVP. ?]
 
@@ -1377,7 +1449,7 @@ We have assembled a new coalition under Otto Braun.
 @unity_government
 title: The Center Party offers a "Government of National Unity" under Chancellor Joseph Wirth.
 subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP + WP + Others ([+ neo_weimar_coalition +]%)
-view-if: z_party_leader == "Joos" and neo_weimar_coalition >= 50 and weimar_coalition < 50 and z_relation >= 10
+view-if: z_party_leader == "Joos" and neo_weimar_coalition >= 251 and weimar_coalition < 251 and z_relation >= 10
 
 The Center Party leader, Joseph Joos, clearly sees the threat from the ascension of the anti-democratic extremist parties, and thus tries to negotiate a "Government of National Unity" to save the republic. This coalition would be led by Joseph Wirth, a left-leaning member of the Center Party and former chancellor, and would encompass all of the constitutional parties. Our role in this government might be limited, however.
 
@@ -1450,7 +1522,7 @@ There is no path to a majority government for now. The scheming around President
 @spd_majority
 title: SPD majority alone
 subtitle: SPD: [+ spd_r_disp +]%
-view-if: spd_r >= 50
+view-if: spd_r >= 251
 on-arrival: chancellor = "Empty"; chancellor_party = "SPD"; spd_in_government = 1; in_spd_majority = 1; pro_republic += 5; foreign_minister_party = "SPD"; foreign_minister = "Breitscheid"; interior_minister_party = "SPD"; interior_minister = "Severing"; justice_minister_party = "SPD"; justice_minister = "Radbruch"; labor_minister_party = "SPD"; labor_minister = "Wissell"; reichswehr_minister_party = "SPD"; reichswehr_minister = "Leber"; economic_minister_party = "SPD"; economic_minister = "Schmidt"; finance_minister_party = "SPD"; finance_minister = "Hilferding"; agriculture_minister_party = "SPD"; agriculture_minister = "Baade"; reichswehr_loyalty -= 0.05; 
 achievement: majority_party
 
@@ -1459,7 +1531,7 @@ Finally, the SPD can govern alone! Our long campaign of electioneering has paid 
 Who should be chancellor?
 
 - @braun_majority_chancellor: Otto Braun for Chancellor.
-- @breitscheid_majority_chancellor: Rudolf Breitscheid for Chancellor.
+- @breitscheid_majority_chancellor: Eugen Schiffer for Chancellor.
 - @muller_majority_chancellor: Hermann Müller for Chancellor.
 - @wels_majority_chancellor: Otto Wels for Chancellor.
 
@@ -1473,7 +1545,7 @@ on-arrival: chancellor = "Braun"
 @breitscheid_majority_chancellor
 on-arrival: chancellor = "Breitscheid"
 
-Rudolf Breitscheid has become chancellor of the SPD majority.
+Eugen Schiffer has become chancellor of the SPD majority.
 
 @muller_majority_chancellor
 view-if: muller_dead = 0
@@ -1493,7 +1565,7 @@ Otto Wels has become chancellor of the SPD majority.
 @brauns_dilemma
 title: There is no clear governing majority.
 subtitle: President Braun faces a dilemma.
-view-if: president == "Braun" and (grand_coalition < 50 or grand_coalition_failed == 1)
+view-if: president == "Braun" and (grand_coalition < 251 or grand_coalition_failed == 1)
 
 President Braun faces a dilemma. He desperately desires a socialist or at least democratic government, but the electoral results are not there for such. Article 48 has been used by Hindenburg to promulgate anti-democratic and anti-worker policies; can Article 48 be used for good as well as evil?
 
@@ -1514,7 +1586,7 @@ on-arrival: sa_strength += 100; sh_strength += 100; in_emergency_government = 1
 Yes, an emergency minority government, with the support of the SPD. Who should lead this emergency minority government?
 
 - @braun_emergency_chancellor: Otto Braun for Chancellor-President!
-- @breitscheid_emergency_chancellor: Rudolf Breitscheid for emergency Chancellor.
+- @breitscheid_emergency_chancellor: Eugen Schiffer for emergency Chancellor.
 - @bruning_emergency_chancellor: Brüning of the Center Party, as a goodwill gesture toward the bourgeoisie.
 - @wirth_emergency_chancellor: Joseph Wirth of the Center Party, as a gesture of republican unity.
 
@@ -1534,7 +1606,7 @@ Thus, we have Chancellor-President Otto Braun. He claims that he will resign as 
 subtitle: The Communists are warming to him...
 on-arrival: chancellor = "Breitscheid"; chancellor_party = "SPD"; spd_in_government = 1; kpd_relation += 5; foreign_minister_party = "SPD"; interior_minister_party = "SPD"; justice_minister_party = "SPD"; labor_minister_party = "SPD"; reichswehr_minister_party = "SPD"; economic_minister_party = "SPD"; finance_minister_party = "SPD"; agriculture_minister_party = "SPD"; reichswehr_loyalty -= 0.1;
 
-We have appointed Rudolf Breitscheid as emergency chancellor. The Communists consider him less objectionable than the alternatives, although it is unclear whether they will tolerate this government.
+We have appointed Eugen Schiffer as emergency chancellor. The Communists consider him less objectionable than the alternatives, although it is unclear whether they will tolerate this government.
 
 - @far_right_coup
 - @emergency_no_confidence
@@ -1639,7 +1711,7 @@ We have won the vote of no confidence, and are currently ruling under an SPD min
 @weimar_coalition
 title: We can form a Weimar Coalition.
 subtitle: SPD + Z + [+ ddp_name +] [? if sapd_formed and kpd_relation >= 30 : + SAPD toleration ?] ([+ weimar_coalition +]%)
-view-if: weimar_coalition >= 50
+view-if: weimar_coalition >= 251
 on-arrival: leverage += 5; leverage += 5 if z_party_leader == "Joos"; in_weimar_coalition = 1; spd_in_government = 1; in_popular_front = 0; in_left_front = 0; foreign_minister_party = "Z"; interior_minister_party = "Z"; justice_minister_party = ddp_name; labor_minister_party = "Z"; reichswehr_minister_party = "I"; economic_minister_party = ddp_name; finance_minister_party = "Z"; agriculture_minister_party = "Z"; foreign_minister = "Wirth"; interior_minister = "Wirth"; justice_minister = "Koch-Weser"; labor_minister = "Stegerwald"; reichswehr_minister = "Groener"; economic_minister = "Dietrich"; finance_minister = "Köhler"; agriculture_minister = "Hermes";
 achievement: weimar_coalition
 
@@ -1655,18 +1727,18 @@ Who should be the chancellor?
 - @z_chancellor_wirth
 
 @breitscheid_coalition_chancellor
-title: Rudolf Breitscheid for Chancellor
+title: Eugen Schiffer for Chancellor
 subtitle: Breitscheid is viewed as friendlier towards the left of the SPD.
 view-if: year >= 1930
 on-arrival: chancellor = "Breitscheid"; chancellor_party = "SPD";
 go-to: ministries
 
-Rudolf Breitscheid has been appointed chancellor.
+Eugen Schiffer has been appointed chancellor.
 
 
 @grand_coalition
 title: We can form a Grand Coalition.
-view-if: grand_coalition >= 50 and grand_coalition_failed == 0
+view-if: grand_coalition >= 251 and grand_coalition_failed == 0
 subtitle: SPD + Z + BVP + [+ ddp_name +] + DVP ([+ grand_coalition +]%)
 on-arrival: in_grand_coalition = 1; in_popular_front = 0; in_left_front = 0
 go-to: grand_coalition_spd_lead if (n_elections <= 1 and largest_party == "SPD") or (largest_party == "SPD" and spd_r >= 30) or president = "Braun"; grand_coalition_z_lead if president != "Braun" and ((n_elections > 1 and spd_r < 30) or (n_elections <= 1 and largest_party != "SPD"))
@@ -1693,7 +1765,7 @@ Brüning is not opposed to a coalition with us. Alternatively, we could enter a 
 - @unity_government
 
 @join_bruning
-view-if: grand_coalition >= 50 or neo_weimar_coalition >= 50
+view-if: grand_coalition >= 251 or neo_weimar_coalition >= 251
 on-arrival: spd_in_government = 1; spd_toleration = 0; in_grand_coalition = 1; chancellor = "Brüning"; chancellor_party = "Z"; foreign_minister_party = "DVP"; interior_minister_party = "Z"; justice_minister_party = "Z"; labor_minister_party = "Z"; reichswehr_minister_party = "I"; economic_minister_party = "Z"; finance_minister_party = "Z"; agriculture_minister_party = "Z"; leverage = 25 if leverage >= 25;
 go-to: ministries
 
@@ -1702,7 +1774,7 @@ Heinrich Brüning welcomes us into his new cabinet. Now, we have our pick of min
 @bruning_oppo
 on-arrival: spd_in_government = 0; spd_toleration = 0; chancellor = "Brüning"; chancellor_party = "Z"; foreign_minister_party = "DVP"; interior_minister_party = "Z"; justice_minister_party = "Z"; labor_minister_party = "Z"; reichswehr_minister_party = "I"; economic_minister_party = "Z"; finance_minister_party = "Z"; agriculture_minister_party = "Z"; grand_coalition_failed = 1
 
-By refusing to join the grand coalition or tolerating it, we essentially throw the balance of government to the right wing. [? if right_coalition >= 50 : There are enough votes to form a right-wing coalition that includes the DNVP. However, the DNVP leader, Hugenberg, is opposed to a coalition with the "November criminals" of the Center Party. And of course, the NSDAP is not interested in coalition government. This means that there will not be enough votes to form a majority coalition. ?][? if right_coalition < 50 : There are not enough votes to form a right-wing coalition that includes the DNVP, and they are not interested in joining in a coalition with the "November criminals" of the Center Party, anyhow. And of course, the NSDAP is not interested in coalition government. This means that there is no route to a majority coalition. ?]
+By refusing to join the grand coalition or tolerating it, we essentially throw the balance of government to the right wing. [? if right_coalition >= 251 : There are enough votes to form a right-wing coalition that includes the DNVP. However, the DNVP leader, Hugenberg, is opposed to a coalition with the "November criminals" of the Center Party. And of course, the NSDAP is not interested in coalition government. This means that there will not be enough votes to form a majority coalition. ?][? if right_coalition < 251 : There are not enough votes to form a right-wing coalition that includes the DNVP, and they are not interested in joining in a coalition with the "November criminals" of the Center Party, anyhow. And of course, the NSDAP is not interested in coalition government. This means that there is no route to a majority coalition. ?]
 
 If we do not at least "tolerate" the government, there will be new elections in a few months. In the meantime, the President and Chancellor may use the emergency powers granted by Article 48 of the constitution to essentially govern by decree. And it is not at all clear that we will do any better in the next election.
 
@@ -1762,7 +1834,7 @@ if (Q.pro_republic < 36) {
     Q.rural_nsdap += 8;
     Q.unemployed_nsdap += 8;   
 }
-if (Q.far_right_coalition >= 50) {
+if (Q.far_right_coalition >= 251) {
     Q.sa_strength += 100;
     Q.sh_strength += 100;
     Q.coup_progress += 3;
@@ -1775,7 +1847,7 @@ The people's faith in democracy is shaken by this ordeal. Of course, the Nazis a
 
 
 @toleration_bruning
-choose-if: neo_weimar_coalition >= 50
+choose-if: neo_weimar_coalition >= 251
 unavailable-subtitle: The parties supporting Brüning do not have a majority.
 on-arrival: spd_in_government = 0; spd_toleration = 1; minority_government = 1; chancellor = "Brüning"; chancellor_party = "Z"; foreign_minister_party = "DVP"; interior_minister_party = "Z"; justice_minister_party = "I"; labor_minister_party = "Z"; reichswehr_minister_party = "I"; economic_minister_party = ddp_name; finance_minister_party = "DVP"; agriculture_minister_party = "Z"; pro_republic -= 4; new_middle_dvp -= 5; new_middle_ddp -= 5; old_middle_dvp -= 5; old_middle_ddp -= 5; old_middle_nsdap += 5; new_middle_nsdap += 5; rural_dnvp -= 5;
 
@@ -1941,7 +2013,7 @@ go-to: no_govt_2
 
 @no_govt_2
 on-arrival: reformist_dissent += 25; center_dissent += 10; labor_dissent += 25; neorevisionist_dissent += 25; in_weimar_coalition = 0; in_grand_coalition = 0; chancellor = "Brüning" if chancellor == "Marx"; spd_in_government = 0; grand_coalition_failed = 1
-go-to: right_coalition_post_spd if right_coalition >= 50 and president != "Braun" and year < 1929; new_elections_spd if (right_coalition < 50 or year >= 1929) and president != "Braun"; brauns_dilemma if president == "Braun"
+go-to: right_coalition_post_spd if right_coalition >= 251 and president != "Braun" and year < 1929; new_elections_spd if (right_coalition < 251 or year >= 1929) and president != "Braun"; brauns_dilemma if president == "Braun"
 
 
 @right_coalition_post_spd
@@ -1957,7 +2029,11 @@ We are seen as responsible for the failure to form a government, and many of our
 
 @ministries
 
-We can pick from any number of ministries. Controlling a ministry allows us to directly effect policy in that area. [? if in_left_front : Any ministry that we do not take will be given to the KPD. ?] [? if in_left_front and reichswehr_minister_party == "KPD" : If the KPD controls the Reichswehr Ministry, the army will most likely revolt. ?]
+We can pick ministries according to the DDP seat share within the negotiated coalition. Controlling a ministry allows us to directly effect policy in that area.
+
+DDP ministry picks remaining: **[+ leverage +]**
+
+[? if in_custom_negotiated_coalition : Remaining ministries will be assigned to coalition partners by seat count after we finish. ?] [? if in_left_front : Any ministry that we do not take will be given to the KPD. ?] [? if in_left_front and reichswehr_minister_party == "KPD" : If the KPD controls the Reichswehr Ministry, the army will most likely revolt. ?]
 
 - #mins_1928
 - #drop_mins_1928
@@ -1965,105 +2041,106 @@ We can pick from any number of ministries. Controlling a ministry allows us to d
 @labor
 title: Labor Ministry
 subtitle: Taking the Labor Ministry is expected of us.
-unavailable-subtitle: We do not have enough leverage.
+unavailable-subtitle: We have no ministry picks remaining.
 tags: mins_1928
-choose-if: leverage >= 5
-view-if: labor_minister_party != "SPD"
-on-arrival: leverage -= 5; labor_minister_party = "SPD"; labor_minister = "Wissell"
+choose-if: leverage >= 1
+view-if: labor_minister_party != ddp_name
+on-arrival: leverage -= 1; labor_minister_party = ddp_name; labor_minister = "Erkelenz"
 go-to: ministries
 
-Rudolf Wissell of the SPD has been appointed labor minister.
+Anton Erkelenz of the DDP has been appointed labor minister.
 
 @interior
 title: Interior Ministry
 subtitle: Taking the Interior Ministry is expected of us. The Interior Ministry controls domestic security.
-unavailable-subtitle: We do not have enough leverage.
+unavailable-subtitle: We have no ministry picks remaining.
 tags: mins_1928
-choose-if: leverage >= 5
-view-if: interior_minister_party != "SPD"
-on-arrival: leverage -= 5; interior_minister_party = "SPD"; interior_minister = "Severing"
+choose-if: leverage >= 1
+view-if: interior_minister_party != ddp_name
+on-arrival: leverage -= 1; interior_minister_party = ddp_name; interior_minister = "Koch-Weser"
 go-to: ministries
 
-Carl Severing of the SPD has been appointed Interior Minister.
+Erich Koch-Weser of the DDP has been appointed Interior Minister.
 
 @finance
 title: Finance Ministry
 subtitle: The Finance Ministry controls the government budget and taxes.
-unavailable-subtitle: We do not have enough leverage.
+unavailable-subtitle: We have no ministry picks remaining.
 tags: mins_1928
-choose-if: leverage >= 10 
-view-if: finance_minister_party != "SPD"
-on-arrival: leverage -= 10; finance_minister_party = "SPD"; finance_minister = "Hilferding"
+choose-if: leverage >= 1
+view-if: finance_minister_party != ddp_name
+on-arrival: leverage -= 1; finance_minister_party = ddp_name; finance_minister = "Dietrich"
 go-to: ministries
 
-Rudolf Hilferding of the SPD has been appointed Finance Minister.
+Hermann Dietrich of the DDP has been appointed Finance Minister.
 
 @economic
 title: Economic Ministry
 subtitle: The Economic Ministry controls broader economic policy.
-unavailable-subtitle: We do not have enough leverage.
+unavailable-subtitle: We have no ministry picks remaining.
 tags: mins_1928
-choose-if: leverage >= 10 
-view-if: economic_minister_party != "SPD"
-on-arrival: leverage -= 10; economic_minister_party = "SPD"; economic_minister = "Schmidt"
+choose-if: leverage >= 1
+view-if: economic_minister_party != ddp_name
+on-arrival: leverage -= 1; economic_minister_party = ddp_name; economic_minister = "Dietrich"
 go-to: ministries
 
-Robert Schmidt of the SPD has been appointed Economic Minister.
+Hermann Dietrich of the DDP has been appointed Economic Minister.
 
 @justice
 title: Justice Ministry
 subtitle: The Justice Ministry controls the courts.
-unavailable-subtitle: We do not have enough leverage.
+unavailable-subtitle: We have no ministry picks remaining.
 tags: mins_1928
-choose-if: leverage >= 10 
-view-if: justice_minister_party != "SPD"
-on-arrival: leverage -= 10; justice_minister_party = "SPD"; justice_minister = "Radbruch"
+choose-if: leverage >= 1
+view-if: justice_minister_party != ddp_name
+on-arrival: leverage -= 1; justice_minister_party = ddp_name; justice_minister = "Koch-Weser"
 go-to: ministries
 
-Gustav Radbruch of the SPD has been appointed Justice Minister.
+Erich Koch-Weser of the DDP has been appointed Justice Minister.
 
 @foreign
 title: Foreign Ministry
 subtitle: This is usually the domain of Gustav Stresemann of the DVP.
-unavailable-subtitle: We do not have enough leverage.
+unavailable-subtitle: We have no ministry picks remaining.
 tags: mins_1928
-choose-if: leverage >= 10 
-view-if: foreign_minister_party != "SPD"
-on-arrival: leverage -= 10; foreign_minister_party = "SPD"; foreign_minister = "Breitscheid"
+choose-if: leverage >= 1
+view-if: foreign_minister_party != ddp_name
+on-arrival: leverage -= 1; foreign_minister_party = ddp_name; foreign_minister = "Schiffer"
 go-to: ministries
 
-Rudolf Breitscheid of the SPD has been appointed Foreign Minister.
+Eugen Schiffer of the DDP has been appointed Foreign Minister.
 
 
 @agriculture
 title: Agricultural Ministry
 subtitle: This is not our usual domain.
-unavailable-subtitle: We do not have enough leverage.
-choose-if: leverage >= 10 
-view-if: agriculture_minister_party != "SPD"
-on-arrival: leverage -= 10; agriculture_minister_party = "SPD"; agriculture_minister = "Baade"
+unavailable-subtitle: We have no ministry picks remaining.
+choose-if: leverage >= 1
+view-if: agriculture_minister_party != ddp_name
+on-arrival: leverage -= 1; agriculture_minister_party = ddp_name; agriculture_minister = "Dietrich"
 go-to: ministries
 tags: mins_1928
 
-Fritz Baade of the SPD has been appointed Agriculture Minister.
+Hermann Dietrich of the DDP has been appointed Agriculture Minister.
 
 @reichswehr
 title: Reichswehr Ministry
 subtitle: The Ministry responsible for the armed forces is not typically our domain; General Groener and the bourgeois-conservatives will be displeased.
-unavailable-subtitle: We do not have enough leverage.
+unavailable-subtitle: We have no ministry picks remaining.
 tags: mins_1928
-choose-if: leverage >= 15 
-view-if: reichswehr_minister_party != "SPD"
-on-arrival: leverage -= 15; reichswehr_minister_party = "SPD"; reichswehr_minister = "Leber"
+choose-if: leverage >= 1
+view-if: reichswehr_minister_party != ddp_name
+on-arrival: leverage -= 1; reichswehr_minister_party = ddp_name; reichswehr_minister = "Gessler"
 go-to: ministries
 
-Julius Leber of the SPD has been appointed Reichswehr Minister.
+Otto Gessler of the DDP has been appointed Reichswehr Minister.
 
 
 
 @no_more
 title: No more ministries.
-subtitle: [? if leverage >= 10 : We still have some more leverage to gain ministries. ?][? if leverage < 10 : We do not have much leverage left. ?]
+subtitle: [? if leverage >= 1 : We still have ministry picks remaining. ?][? if leverage < 1 : We have used our ministry picks. ?]
+on-arrival: {! Q.assignRemainingNegotiatedMinistries(); !}
 tags: mins_1928
 
 This coalition arrangement is tolerable to all.
