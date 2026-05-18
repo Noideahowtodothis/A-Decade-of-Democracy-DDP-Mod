@@ -153,4 +153,8 @@ go-to: thuringia_government_confirmed
 
 @thuringia_government_confirmed
 title: Thuringia government formed
+
+= Thuringia government formed
+
+Leader **[+ thuringia_leader +]**
 - @root: Continue.
