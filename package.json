@@ -5,7 +5,7 @@
   "main": "out/html/index.html",
   "scripts": {
     "dendrynexus": "dendrynexus",
-    "build": "dendrynexus make-html --force"
+    "build": "npx dendrynexus make-html --force"
   },
   "repository": {
     "type": "git",
