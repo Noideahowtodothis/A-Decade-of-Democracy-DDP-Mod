@@ -1,0 +1,146 @@
+title: Bremen Bürgerschaft Elections
+new-page: true
+tags: event
+priority: -2
+view-if: (year = bremen_election_year and month >= bremen_election_month) or (year > bremen_election_year)
+on-departure: month_actions += 1; bremen_election_year = bremen_election_year + 4 if bremen_snap_election_called == 0; bremen_election_year = year + 4 if bremen_snap_election_called == 1; bremen_election_month = month if bremen_snap_election_called == 1; bremen_snap_election_called = 0
+set-jump: bremen_landtag_results
+
+= Bremen Bürgerschaft Elections, [+ month : month +] [+ year +]
+
+Bremen holds Bürgerschaft/Landtag elections. This system reuses the federal party-support system, applies Bremen party weights, combines DVP and Other before splitting off the Bremen-only Hausbesitzer Party, normalizes the result, and allocates **120** seats with D’Hondt.
+
+- @calculate_bremen_landtag: Count the votes.
+
+@calculate_bremen_landtag
+on-arrival: bremen_government = 5 if bremen_government == undefined; bremen_leader = "Theodor Spitta" if bremen_leader == undefined; bremen_majority_cabinet = 1 if bremen_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: bremen_landtag_results
+
+@bremen_landtag_results
+on-arrival: {! var isBremenSnapElection = Number(Q.bremen_snap_election_called) === 1; Q.bremen_next_election_year_preview = (isBremenSnapElection ? (Number(Q.year) || 0) : (Number(Q.bremen_election_year) || Number(Q.year) || 0)) + 4; Q.bremen_next_election_month_preview = isBremenSnapElection ? Q.month : Q.bremen_election_month; if (typeof window !== 'undefined' && typeof window.calculateBremenLandtagResults === 'function') { window.calculateBremenLandtagResults(Q); } !}
+
+= Bremen Bürgerschaft election results
+
+Next Bremen election after this Bürgerschaft is due in **[+ bremen_next_election_month_preview : month +] [+ bremen_next_election_year_preview +]**.
+
+Bremen Bürgerschaft seats: **[+ bremen_landtag_total_seats +] / 120**
+
+Current Bremen government: **[+ bremen_current_government_name +]** ([+ bremen_current_government_parties +]) led by **[+ bremen_leader +]**.
+
+Current government seats: **[+ bremen_current_government_seats +] / 120**. Status: **[+ bremen_current_government_status +]**. Majority cabinet: **[+ bremen_majority_cabinet +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Bremen vote share</td><td>Seats (out of 120)</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ bremen_spd_votes_disp +]% {!</td><td>!} [+ bremen_spd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#8B0000'> </div> !} KPD{!</td><td>!} [+ bremen_kpd_votes_disp +]% {!</td><td>!} [+ bremen_kpd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]{!</td><td>!} [+ bremen_ddp_votes_disp +]% {!</td><td>!} [+ bremen_ddp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z{!</td><td>!} [+ bremen_z_votes_disp +]% {!</td><td>!} [+ bremen_z_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP/Other-aligned DVP{!</td><td>!} [+ bremen_dvp_votes_disp +]% {!</td><td>!} [+ bremen_dvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#7A5C20'> </div> !} Hausbesitzer Party{!</td><td>!} [+ bremen_hausbesitzer_votes_disp +]% {!</td><td>!} [+ bremen_hausbesitzer_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP{!</td><td>!} [+ bremen_dnvp_votes_disp +]% {!</td><td>!} [+ bremen_dnvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP{!</td><td>!} [+ bremen_nsdap_votes_disp +]% {!</td><td>!} [+ bremen_nsdap_r +] {!</td></tr>!}
+{!</table>!}
+
+= Choose a Bremen coalition
+
+A coalition is selectable if it controls at least **61** of the **120** Bürgerschaft seats. If no listed coalition has a majority, the incumbent Bremen government may continue as a minority cabinet.
+
+- @bremen_select_sole_spd
+- @bremen_select_spd_kpd
+- @bremen_select_spd_ddp
+- @bremen_select_spd_ddp_dvp
+- @bremen_select_dvp_dnvp_ddp_hausbesitzer
+- @new_bremen_elections: Call new Bremen Bürgerschaft elections.
+- @root: Continue without changing the Bremen government.
+
+@bremen_select_sole_spd
+title: Sole SPD
+subtitle: SPD — [+ bremen_sole_spd_coalition_seats +] / 120 — [+ bremen_sole_spd_coalition_status +]
+view-if: bremen_sole_spd_coalition_selectable = 1
+on-arrival: {! Q.bremen_government = 1; if (typeof window !== 'undefined' && typeof window.updateBremenCoalitionOptions === 'function') { window.updateBremenCoalitionOptions(Q); } !}
+go-to: bremen_leader_selection
+
+@bremen_select_spd_kpd
+title: SPD-KPD
+subtitle: SPD + KPD — [+ bremen_spd_kpd_coalition_seats +] / 120 — [+ bremen_spd_kpd_coalition_status +]
+view-if: bremen_spd_kpd_coalition_selectable = 1
+on-arrival: {! Q.bremen_government = 2; if (typeof window !== 'undefined' && typeof window.updateBremenCoalitionOptions === 'function') { window.updateBremenCoalitionOptions(Q); } !}
+go-to: bremen_leader_selection
+
+@bremen_select_spd_ddp
+title: SPD-DDP
+subtitle: SPD + DDP — [+ bremen_spd_ddp_coalition_seats +] / 120 — [+ bremen_spd_ddp_coalition_status +]
+view-if: bremen_spd_ddp_coalition_selectable = 1
+on-arrival: {! Q.bremen_government = 3; if (typeof window !== 'undefined' && typeof window.updateBremenCoalitionOptions === 'function') { window.updateBremenCoalitionOptions(Q); } !}
+go-to: bremen_leader_selection
+
+@bremen_select_spd_ddp_dvp
+title: SPD-DDP-DVP
+subtitle: SPD + DDP + DVP — [+ bremen_spd_ddp_dvp_coalition_seats +] / 120 — [+ bremen_spd_ddp_dvp_coalition_status +]
+view-if: bremen_spd_ddp_dvp_coalition_selectable = 1
+on-arrival: {! Q.bremen_government = 4; if (typeof window !== 'undefined' && typeof window.updateBremenCoalitionOptions === 'function') { window.updateBremenCoalitionOptions(Q); } !}
+go-to: bremen_leader_selection
+
+@bremen_select_dvp_dnvp_ddp_hausbesitzer
+title: DVP-DNVP-DDP-Hausbesitzer
+subtitle: DVP + DNVP + DDP + Hausbesitzer — [+ bremen_dvp_dnvp_ddp_hausbesitzer_coalition_seats +] / 120 — [+ bremen_dvp_dnvp_ddp_hausbesitzer_coalition_status +]
+view-if: bremen_dvp_dnvp_ddp_hausbesitzer_coalition_selectable = 1
+on-arrival: {! Q.bremen_government = 5; if (typeof window !== 'undefined' && typeof window.updateBremenCoalitionOptions === 'function') { window.updateBremenCoalitionOptions(Q); } !}
+go-to: bremen_leader_selection
+
+@new_bremen_elections
+title: Call new Bremen Bürgerschaft elections.
+on-arrival: bremen_election_year = year; bremen_election_month = month; bremen_snap_election_called = 1
+go-to: calculate_bremen_landtag
+
+@bremen_leader_selection
+
+= Choose the Bremen leader
+
+Selected coalition: **[+ bremen_current_government_name +]** ([+ bremen_current_government_parties +]).
+
+Coalition seats: **[+ bremen_current_government_seats +] / 120**. Status: **[+ bremen_current_government_status +]**.
+
+- @bremen_leader_kaisen
+- @bremen_leader_spitta
+- @bremen_leader_donandt
+
+@bremen_leader_kaisen
+title: Wilhelm Kaisen
+subtitle: Available because the SPD is in the Bremen cabinet.
+view-if: bremen_government = 1 or bremen_government = 2 or bremen_government = 3 or bremen_government = 4
+on-arrival: bremen_leader = "Wilhelm Kaisen"
+go-to: bremen_government_confirmed
+
+@bremen_leader_spitta
+title: Theodor Spitta
+subtitle: Available because the DDP is in the Bremen cabinet and the SPD is not.
+view-if: bremen_government = 5
+on-arrival: bremen_leader = "Theodor Spitta"
+go-to: bremen_government_confirmed
+
+@bremen_leader_donandt
+title: Martin Donandt
+subtitle: Fallback leader for a Bremen cabinet without the SPD or DDP.
+view-if: bremen_government = 0
+on-arrival: bremen_leader = "Martin Donandt"
+go-to: bremen_government_confirmed
+
+@bremen_government_confirmed
+
+= Bremen government formed
+
+Coalition: **[+ bremen_current_government_name +]**
+
+Parties: **[+ bremen_current_government_parties +]**
+
+Seats: **[+ bremen_current_government_seats +] / 120**
+
+Status: **[+ bremen_current_government_status +]**
+
+Leader: **[+ bremen_leader +]**
+
+Next Bremen election: **[+ bremen_next_election_year_preview +]**, in **[+ bremen_next_election_month_preview : month +]**.
+
+- @root: Continue.

@@ -121,6 +121,16 @@ Q.bavaria_landtag_seat_count = 128;
 Q.bavaria_landtag_total_seats = 128;
 Q.bavaria_landtag_seat_allocation_valid = 1;
 Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
+Q.bremen_government = 5;
+Q.bremen_majority_cabinet = 1;
+Q.bremen_leader = "Theodor Spitta";
+Q.bremen_election_year = 1927;
+Q.bremen_election_month = 11;
+Q.bremen_snap_election_called = 0;
+Q.bremen_landtag_seat_count = 120;
+Q.bremen_landtag_total_seats = 120;
+Q.bremen_landtag_seat_allocation_valid = 1;
+Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
     Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
     for (var startupTrackerParty of Q.party_leader_ideology_parties) {
         Q[startupTrackerParty + '_leader'] = 0;
@@ -241,6 +251,16 @@ Q.bavaria_landtag_seat_count = 128;
 Q.bavaria_landtag_total_seats = 128;
 Q.bavaria_landtag_seat_allocation_valid = 1;
 Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
+Q.bremen_government = 5;
+Q.bremen_majority_cabinet = 1;
+Q.bremen_leader = "Theodor Spitta";
+Q.bremen_election_year = 1927;
+Q.bremen_election_month = 11;
+Q.bremen_snap_election_called = 0;
+Q.bremen_landtag_seat_count = 120;
+Q.bremen_landtag_total_seats = 120;
+Q.bremen_landtag_seat_allocation_valid = 1;
+Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
 
     Q.budget = 4;
     Q.inflation = 2.9;
@@ -485,6 +505,16 @@ Q.bavaria_landtag_seat_count = 128;
 Q.bavaria_landtag_total_seats = 128;
 Q.bavaria_landtag_seat_allocation_valid = 1;
 Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
+Q.bremen_government = 5;
+Q.bremen_majority_cabinet = 1;
+Q.bremen_leader = "Theodor Spitta";
+Q.bremen_election_year = 1927;
+Q.bremen_election_month = 11;
+Q.bremen_snap_election_called = 0;
+Q.bremen_landtag_seat_count = 120;
+Q.bremen_landtag_total_seats = 120;
+Q.bremen_landtag_seat_allocation_valid = 1;
+Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
 
 // The array of forces - paramilitary groups
 // Number of members in 1928 (in thousands)
