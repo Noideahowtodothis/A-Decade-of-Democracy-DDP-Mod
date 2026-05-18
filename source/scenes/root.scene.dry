@@ -102,6 +102,16 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
 
     Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
     Q.parties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
+    Q.spd_prussia = 1;
+    Q.prussian_government = "SPD";
+    Q.prussia_government = "SPD";
+    Q.prussia_majority_cabinet = 1;
+    Q.prussia_leader = "Braun";
+    Q.prussia_election_year = 1928;
+    Q.prussia_election_month = 5;
+    Q.prussia_landtag_seat_count = 450;
+    Q.prussia_landtag_total_seats = 450;
+    Q.prussia_landtag_seat_allocation_valid = 1;
     Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
     for (var startupTrackerParty of Q.party_leader_ideology_parties) {
         Q[startupTrackerParty + '_leader'] = 0;
@@ -131,6 +141,41 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
         Q[startupParty + '_votes_disp'] = startupVoteShare[startupParty].toFixed(1);
         Q[startupParty + '_votes_display'] = startupVoteShare[startupParty].toFixed(1);
     }
+
+    var startupPrussiaWeights = {z: 1.26, dnvp: 1.17, kpd: 1.03, spd: 0.95, ddp: 0.91, nsdap: 0.87, dvp: 1.00, bvp: 1.00, wp: 1.00, other: 1.00};
+    // TODO(prussia-election): add specific Prussian BVP/WP/Other weights if/when state weights are defined.
+    var startupPrussiaWeightedVotes = {};
+    var startupPrussiaWeightedTotal = 0;
+    for (var startupPrussiaParty of Q.parties) {
+        startupPrussiaWeightedVotes[startupPrussiaParty] = (startupVoteShare[startupPrussiaParty] || 0)*(startupPrussiaWeights[startupPrussiaParty] || 1.00);
+        startupPrussiaWeightedTotal += startupPrussiaWeightedVotes[startupPrussiaParty];
+    }
+    var startupPrussiaQuotients = [];
+    for (var startupPrussiaShareParty of Q.parties) {
+        var startupPrussiaShare = startupPrussiaWeightedTotal > 0 ? 100*startupPrussiaWeightedVotes[startupPrussiaShareParty]/startupPrussiaWeightedTotal : 0;
+        Q['prussia_' + startupPrussiaShareParty + '_votes_raw'] = startupPrussiaShare;
+        Q['prussia_' + startupPrussiaShareParty + '_votes'] = Math.round(startupPrussiaShare*10)/10;
+        Q['prussia_' + startupPrussiaShareParty + '_votes_disp'] = Q['prussia_' + startupPrussiaShareParty + '_votes'].toFixed(1);
+        Q['prussia_' + startupPrussiaShareParty + '_votes_display'] = Q['prussia_' + startupPrussiaShareParty + '_votes_disp'];
+        Q['prussia_' + startupPrussiaShareParty + '_result_votes'] = Q['prussia_' + startupPrussiaShareParty + '_votes'];
+        Q['prussia_' + startupPrussiaShareParty + '_r'] = 0;
+        Q['prussia_' + startupPrussiaShareParty + '_seats'] = 0;
+        for (var startupPrussiaSeat = 1; startupPrussiaSeat <= Q.prussia_landtag_seat_count; startupPrussiaSeat++) {
+            startupPrussiaQuotients.push({party: startupPrussiaShareParty, quotient: Q['prussia_' + startupPrussiaShareParty + '_votes']/startupPrussiaSeat});
+        }
+    }
+    startupPrussiaQuotients.sort(function(a, b) { return b.quotient - a.quotient; });
+    for (var startupPrussiaSeatIndex = 0; startupPrussiaSeatIndex < Q.prussia_landtag_seat_count; startupPrussiaSeatIndex++) {
+        Q['prussia_' + startupPrussiaQuotients[startupPrussiaSeatIndex].party + '_r'] += 1;
+    }
+    Q.prussia_landtag_total_seats = 0;
+    for (var startupPrussiaSeatParty of Q.parties) {
+        Q['prussia_' + startupPrussiaSeatParty + '_seats'] = Q['prussia_' + startupPrussiaSeatParty + '_r'];
+        Q['prussia_' + startupPrussiaSeatParty + '_seat_share_disp'] = (Math.round((100*Q['prussia_' + startupPrussiaSeatParty + '_r']/Q.prussia_landtag_seat_count)*10)/10).toFixed(1);
+        Q.prussia_landtag_total_seats += Q['prussia_' + startupPrussiaSeatParty + '_r'];
+    }
+    Q.prussia_current_government_seats = Q.prussia_spd_r + Q.prussia_z_r + Q.prussia_ddp_r;
+    Q.prussia_majority_cabinet = Q.prussia_current_government_seats >= 226 ? 1 : 0;
     // TODO(coalition): future version should allow Reichstag seat total to vary historically/randomly over time.
     Q.reichstag_seat_count = 500;
     Q.reichstag_total_seats = 500;
@@ -160,6 +205,17 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.coalition_nsdap_z_allowed = 0;
     Q.coalition_kpd_z_allowed = 0;
     Q.coalition_toleration_party = '';
+
+    Q.spd_prussia = 1;
+    Q.prussian_government = "SPD";
+    Q.prussia_government = "SPD";
+    Q.prussia_majority_cabinet = 1;
+    Q.prussia_leader = "Braun";
+    Q.prussia_election_year = 1928;
+    Q.prussia_election_month = 5;
+    Q.prussia_landtag_seat_count = 450;
+    Q.prussia_landtag_total_seats = 450;
+    Q.prussia_landtag_seat_allocation_valid = 1;
 
     Q.budget = 4;
     Q.inflation = 2.9;
@@ -387,6 +443,14 @@ Q.hindenburg_enabled = 0;
 Q.spd_prussia = 1;
 // Options: spd, z, dnvp, papen, nsdap
 Q.prussian_government = "SPD";
+Q.prussia_government = "SPD";
+Q.prussia_majority_cabinet = 1;
+Q.prussia_leader = "Braun";
+Q.prussia_election_year = 1928;
+Q.prussia_election_month = 5;
+Q.prussia_landtag_seat_count = 450;
+Q.prussia_landtag_total_seats = 450;
+Q.prussia_landtag_seat_allocation_valid = 1;
 
 // The array of forces - paramilitary groups
 // Number of members in 1928 (in thousands)
@@ -761,6 +825,41 @@ for (var initialVoteShareParty of initialVoteShareParties) {
     Q['old_' + initialVoteShareParty + '_votes'] = Q['old_' + initialVoteShareParty + '_r'] || 0;
     Q['old_' + initialVoteShareParty + '_votes_disp'] = Q['old_' + initialVoteShareParty + '_votes'].toFixed(1);
 }
+
+var startupPrussiaWeights = {z: 1.26, dnvp: 1.17, kpd: 1.03, spd: 0.95, ddp: 0.91, nsdap: 0.87, dvp: 1.00, bvp: 1.00, wp: 1.00, other: 1.00};
+// TODO(prussia-election): add specific Prussian BVP/WP/Other weights if/when state weights are defined.
+var startupPrussiaWeightedVotes = {};
+var startupPrussiaWeightedTotal = 0;
+for (var startupPrussiaParty of Q.parties) {
+    startupPrussiaWeightedVotes[startupPrussiaParty] = (Q[startupPrussiaParty + '_result_votes'] || Q[startupPrussiaParty + '_r'] || 0)*(startupPrussiaWeights[startupPrussiaParty] || 1.00);
+    startupPrussiaWeightedTotal += startupPrussiaWeightedVotes[startupPrussiaParty];
+}
+var startupPrussiaQuotients = [];
+for (var startupPrussiaShareParty of Q.parties) {
+    var startupPrussiaShare = startupPrussiaWeightedTotal > 0 ? 100*startupPrussiaWeightedVotes[startupPrussiaShareParty]/startupPrussiaWeightedTotal : 0;
+    Q['prussia_' + startupPrussiaShareParty + '_votes_raw'] = startupPrussiaShare;
+    Q['prussia_' + startupPrussiaShareParty + '_votes'] = Math.round(startupPrussiaShare*10)/10;
+    Q['prussia_' + startupPrussiaShareParty + '_votes_disp'] = Q['prussia_' + startupPrussiaShareParty + '_votes'].toFixed(1);
+    Q['prussia_' + startupPrussiaShareParty + '_votes_display'] = Q['prussia_' + startupPrussiaShareParty + '_votes_disp'];
+    Q['prussia_' + startupPrussiaShareParty + '_result_votes'] = Q['prussia_' + startupPrussiaShareParty + '_votes'];
+    Q['prussia_' + startupPrussiaShareParty + '_r'] = 0;
+    Q['prussia_' + startupPrussiaShareParty + '_seats'] = 0;
+    for (var startupPrussiaSeat = 1; startupPrussiaSeat <= Q.prussia_landtag_seat_count; startupPrussiaSeat++) {
+        startupPrussiaQuotients.push({party: startupPrussiaShareParty, quotient: Q['prussia_' + startupPrussiaShareParty + '_votes']/startupPrussiaSeat});
+    }
+}
+startupPrussiaQuotients.sort(function(a, b) { return b.quotient - a.quotient; });
+for (var startupPrussiaSeatIndex = 0; startupPrussiaSeatIndex < Q.prussia_landtag_seat_count; startupPrussiaSeatIndex++) {
+    Q['prussia_' + startupPrussiaQuotients[startupPrussiaSeatIndex].party + '_r'] += 1;
+}
+Q.prussia_landtag_total_seats = 0;
+for (var startupPrussiaSeatParty of Q.parties) {
+    Q['prussia_' + startupPrussiaSeatParty + '_seats'] = Q['prussia_' + startupPrussiaSeatParty + '_r'];
+    Q['prussia_' + startupPrussiaSeatParty + '_seat_share_disp'] = (Math.round((100*Q['prussia_' + startupPrussiaSeatParty + '_r']/Q.prussia_landtag_seat_count)*10)/10).toFixed(1);
+    Q.prussia_landtag_total_seats += Q['prussia_' + startupPrussiaSeatParty + '_r'];
+}
+Q.prussia_current_government_seats = Q.prussia_spd_r + Q.prussia_z_r + Q.prussia_ddp_r;
+Q.prussia_majority_cabinet = Q.prussia_current_government_seats >= 226 ? 1 : 0;
 
 // for changing the DDP's name to the DStP
 Q.ddp_name = "DDP";

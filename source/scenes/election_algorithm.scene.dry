@@ -108,6 +108,72 @@ for (var party of Q.parties) {
     Q[party + '_votes_disp'] = Q[party+'_votes'].toFixed(1);
     Q[party + '_votes_display'] = Q[party + '_votes_disp'];
 }
+
+// Calculate Prussian Landtag support from federal party support using Prussian party weights.
+// This intentionally does not select a Prussian coalition or add Prussian policies.
+window.calculatePrussianLandtagResults = function(qualities) {
+    var q = qualities || Q;
+    var prussianParties = q.parties || ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
+    var prussianSeatCount = q.prussia_landtag_seat_count || 450;
+    q.prussia_landtag_seat_count = prussianSeatCount;
+    var prussianWeights = {
+        z: 1.26,
+        dnvp: 1.17,
+        kpd: 1.03,
+        spd: 0.95,
+        ddp: 0.91,
+        nsdap: 0.87,
+        dvp: 1.00,
+        bvp: 1.00, // TODO(prussia-election): add a specific Prussian BVP weight if/when state weights are defined.
+        wp: 1.00, // TODO(prussia-election): add a specific Prussian WP weight if/when state weights are defined.
+        other: 1.00 // TODO(prussia-election): add a specific Prussian Other weight if/when state weights are defined.
+    };
+    q.prussia_party_weights = prussianWeights;
+    var weightedVotes = {};
+    var weightedTotal = 0;
+    for (var prussianParty of prussianParties) {
+        var federalVoteShare = Number(q[prussianParty + '_votes_raw']);
+        if (isNaN(federalVoteShare)) {
+            federalVoteShare = 100*(Number(q[prussianParty + '_normalized']) || 0);
+        }
+        if (isNaN(federalVoteShare) || federalVoteShare < 0) {
+            federalVoteShare = 0;
+        }
+        var partyWeight = prussianWeights[prussianParty];
+        if (partyWeight === undefined) {
+            partyWeight = 1.00;
+        }
+        weightedVotes[prussianParty] = federalVoteShare*partyWeight;
+        weightedTotal += weightedVotes[prussianParty];
+    }
+    var prussianVoteShares = {};
+    for (var prussianShareParty of prussianParties) {
+        var prussianRawShare = weightedTotal > 0 ? 100*weightedVotes[prussianShareParty]/weightedTotal : 0;
+        q['prussia_' + prussianShareParty + '_votes_raw'] = prussianRawShare;
+        q['prussia_' + prussianShareParty + '_votes'] = Math.round(prussianRawShare*10)/10;
+        q['prussia_' + prussianShareParty + '_votes_disp'] = q['prussia_' + prussianShareParty + '_votes'].toFixed(1);
+        q['prussia_' + prussianShareParty + '_votes_display'] = q['prussia_' + prussianShareParty + '_votes_disp'];
+        q['prussia_' + prussianShareParty + '_result_votes'] = q['prussia_' + prussianShareParty + '_votes'];
+        prussianVoteShares[prussianShareParty] = q['prussia_' + prussianShareParty + '_votes'];
+    }
+    var prussianBannedParties = {};
+    for (var prussianBannedParty of prussianParties) {
+        prussianBannedParties[prussianBannedParty] = q[prussianBannedParty + '_banned'];
+    }
+    var prussianThreshold = q.prussia_electoral_threshold || q.electoral_threshold || 0;
+    var prussianSeats = window.allocateDhondtSeats(prussianVoteShares, prussianSeatCount, prussianThreshold, {parties: prussianParties, banned: prussianBannedParties});
+    q.prussia_landtag_total_seats = 0;
+    for (var prussianSeatParty of prussianParties) {
+        q['prussia_' + prussianSeatParty + '_r'] = prussianSeats[prussianSeatParty] || 0;
+        q['prussia_' + prussianSeatParty + '_seats'] = q['prussia_' + prussianSeatParty + '_r'];
+        q['prussia_' + prussianSeatParty + '_seat_share_disp'] = (Math.round((100*q['prussia_' + prussianSeatParty + '_r']/prussianSeatCount)*10)/10).toFixed(1);
+        q.prussia_landtag_total_seats += q['prussia_' + prussianSeatParty + '_r'];
+    }
+    q.prussia_landtag_seat_allocation_valid = q.prussia_landtag_total_seats == prussianSeatCount ? 1 : 0;
+    q.prussia_current_government_seats = (Number(q.prussia_spd_r) || 0) + (Number(q.prussia_z_r) || 0) + (Number(q.prussia_ddp_r) || 0);
+    q.prussia_majority_cabinet = q.prussia_current_government_seats >= Math.floor(prussianSeatCount/2) + 1 ? 1 : 0;
+};
+window.calculatePrussianLandtagResults(Q);
 !}
 go-to: jumpScene
 

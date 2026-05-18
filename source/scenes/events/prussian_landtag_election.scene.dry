@@ -1,0 +1,45 @@
+title: Prussian Landtag Elections
+new-page: true
+tags: event
+priority: -2
+view-if: (year = prussia_election_year and month >= prussia_election_month) or (year > prussia_election_year)
+on-departure: month_actions += 1; prussia_election_year = prussia_election_year + 4; prussian_government = prussia_government
+set-jump: prussian_landtag_results
+
+= Prussian Landtag Elections, [+ month : month +] [+ year +]
+
+Prussia holds Landtag elections. The first implementation reuses the federal party-support system, applies Prussian party weights, normalizes the result, and allocates **450** Landtag seats with D’Hondt.
+
+- @calculate_prussian_landtag: Count the votes.
+
+@calculate_prussian_landtag
+on-arrival: prussia_government = prussian_government if prussia_government == undefined; prussian_government = prussia_government if prussian_government == undefined
+go-to: election_algorithm
+set-jump: prussian_landtag_results
+
+@prussian_landtag_results
+on-arrival: {! if (typeof window !== 'undefined' && typeof window.calculatePrussianLandtagResults === 'function') { window.calculatePrussianLandtagResults(Q); } !}
+
+= Prussian Landtag election results
+
+Prussian Landtag seats: **[+ prussia_landtag_total_seats +] / 450**
+
+Current Prussian government tracker: **[+ prussia_government +]** led by **[+ prussia_leader +]**.
+
+Current SPD-Z-DDP government seats: **[+ prussia_current_government_seats +] / 450**. Majority cabinet: **[+ prussia_majority_cabinet +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Prussian vote share</td><td>Seats (out of 450)</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ prussia_spd_votes_disp +]% {!</td><td>!} [+ prussia_spd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#8B0000'> </div> !} KPD{!</td><td>!} [+ prussia_kpd_votes_disp +]% {!</td><td>!} [+ prussia_kpd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]{!</td><td>!} [+ prussia_ddp_votes_disp +]% {!</td><td>!} [+ prussia_ddp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z{!</td><td>!} [+ prussia_z_votes_disp +]% {!</td><td>!} [+ prussia_z_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#69A2BE'> </div> !} BVP{!</td><td>!} [+ prussia_bvp_votes_disp +]% {!</td><td>!} [+ prussia_bvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP{!</td><td>!} [+ prussia_dvp_votes_disp +]% {!</td><td>!} [+ prussia_dvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#7A5C20'> </div> !} WP{!</td><td>!} [+ prussia_wp_votes_disp +]% {!</td><td>!} [+ prussia_wp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#a0a0a0'> </div> !} Others{!</td><td>!} [+ prussia_other_votes_disp +]% {!</td><td>!} [+ prussia_other_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP{!</td><td>!} [+ prussia_dnvp_votes_disp +]% {!</td><td>!} [+ prussia_dnvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP{!</td><td>!} [+ prussia_nsdap_votes_disp +]% {!</td><td>!} [+ prussia_nsdap_r +] {!</td></tr>!}
+{!</table>!}
+
+- @root: Continue.
