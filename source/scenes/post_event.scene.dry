@@ -130,6 +130,30 @@ if (Q.wurttemberg_csvd_party_name == undefined) {
 if (Q.wurttemberg_wbwb_party_name == undefined) {
     Q.wurttemberg_wbwb_party_name = "Württembergischer Bauern- und Weingärtnerbund";
 }
+if (Q.mecklenburg_schwerin_election_year == undefined) {
+    Q.mecklenburg_schwerin_election_year = 1930;
+}
+if (Q.mecklenburg_schwerin_election_month == undefined) {
+    Q.mecklenburg_schwerin_election_month = 6;
+}
+if (Q.mecklenburg_schwerin_government == undefined) {
+    Q.mecklenburg_schwerin_government = 0;
+}
+if (Q.mecklenburg_schwerin_majority_cabinet == undefined) {
+    Q.mecklenburg_schwerin_majority_cabinet = 0;
+}
+if (Q.mecklenburg_schwerin_leader == undefined) {
+    Q.mecklenburg_schwerin_leader = "";
+}
+// Mecklenburg-Schwerin baseline: start from June 1926, then apply the 4-year Landtag cycle => June 1930.
+Q.mecklenburg_schwerin_landtag_seat_count = 51;
+Q.mecklenburg_schwerin_majority_threshold = 26;
+if (Q.mecklenburg_schwerin_landtag_total_seats == undefined) {
+    Q.mecklenburg_schwerin_landtag_total_seats = 51;
+}
+if (Q.mecklenburg_schwerin_landtag_seat_allocation_valid == undefined) {
+    Q.mecklenburg_schwerin_landtag_seat_allocation_valid = 1;
+}
 
 for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap']) {
     if (Q[relationParty + '_relation'] == undefined) {
