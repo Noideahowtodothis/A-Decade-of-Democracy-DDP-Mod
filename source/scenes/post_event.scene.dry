@@ -296,9 +296,10 @@ for (var cultureVar of Q.culture_vars) {
         Q[cultureVar] = registryEntry.max;
     }
 }
-// Monthly republicanism vote drift.
+// Monthly culture vote drift.
 // Tiny monthly pressure from republican legitimacy toward/away from constitutional parties.
 var REPUBLICANISM_MONTHLY_DRIFT_RATE = 0.05;
+var PACIFISM_MONTHLY_DRIFT_RATE = 0.025;
 function transferVoteSupport(className, sourceParties, targetParties, totalTransfer) {
     if (totalTransfer <= 0) {
         return;
@@ -334,18 +335,36 @@ function transferVoteSupport(className, sourceParties, targetParties, totalTrans
     }
 }
 if (Q.month_actions >= 1) {
+    var monthlyVoteDriftClasses = ['workers', 'unemployed', 'catholics', 'old_middle', 'new_middle', 'rural'];
     var republicanismDriftScale = (Q.pro_republic - 50)/50;
     var republicanismMonthlyDrift = Math.abs(republicanismDriftScale)*REPUBLICANISM_MONTHLY_DRIFT_RATE;
     var antiRepublicanParties = ['nsdap', 'dnvp', 'kpd'];
     // TODO: future DNVP/DVP leader ideology can alter which parties benefit.
     var republicanParties = ['ddp', 'spd', 'z', 'bvp', 'dvp'];
     if (republicanismMonthlyDrift > 0) {
-        for (var republicanismClass of ['workers', 'unemployed', 'catholics', 'old_middle', 'new_middle', 'rural']) {
+        for (var republicanismClass of monthlyVoteDriftClasses) {
             if (Q.classes.indexOf(republicanismClass) >= 0) {
                 if (republicanismDriftScale > 0) {
                     transferVoteSupport(republicanismClass, antiRepublicanParties, republicanParties, republicanismMonthlyDrift);
                 } else {
                     transferVoteSupport(republicanismClass, republicanParties, antiRepublicanParties, republicanismMonthlyDrift);
+                }
+            }
+        }
+    }
+
+    var pacifismDriftScale = (Q.pacifism - 50)/50;
+    var pacifismMonthlyDrift = Math.abs(pacifismDriftScale)*PACIFISM_MONTHLY_DRIFT_RATE;
+    var pacifistBeneficiaryParties = ['ddp', 'dvp'];
+    var militaristBeneficiaryParties = ['nsdap', 'dnvp'];
+    // TODO: future hard-right DVP or moderated DNVP should change pacifism drift.
+    if (pacifismMonthlyDrift > 0) {
+        for (var pacifismClass of monthlyVoteDriftClasses) {
+            if (Q.classes.indexOf(pacifismClass) >= 0) {
+                if (pacifismDriftScale > 0) {
+                    transferVoteSupport(pacifismClass, militaristBeneficiaryParties, pacifistBeneficiaryParties, pacifismMonthlyDrift);
+                } else {
+                    transferVoteSupport(pacifismClass, pacifistBeneficiaryParties, militaristBeneficiaryParties, pacifismMonthlyDrift);
                 }
             }
         }
