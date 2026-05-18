@@ -160,6 +160,16 @@ Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
+Q.mecklenburg_schwerin_government = 0;
+Q.mecklenburg_schwerin_majority_cabinet = 0;
+Q.mecklenburg_schwerin_leader = "";
+Q.mecklenburg_schwerin_election_year = 1928;
+Q.mecklenburg_schwerin_election_month = 5;
+// TODO(mecklenburg-schwerin-election): Historical election month/year is not yet modeled; using the standard 4-year Landtag scheduling convention from game start.
+Q.mecklenburg_schwerin_landtag_seat_count = 51;
+Q.mecklenburg_schwerin_majority_threshold = 26;
+Q.mecklenburg_schwerin_landtag_total_seats = 51;
+Q.mecklenburg_schwerin_landtag_seat_allocation_valid = 1;
     Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
     for (var startupTrackerParty of Q.party_leader_ideology_parties) {
         Q[startupTrackerParty + '_leader'] = 0;
@@ -319,6 +329,16 @@ Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
+Q.mecklenburg_schwerin_government = 0;
+Q.mecklenburg_schwerin_majority_cabinet = 0;
+Q.mecklenburg_schwerin_leader = "";
+Q.mecklenburg_schwerin_election_year = 1928;
+Q.mecklenburg_schwerin_election_month = 5;
+// TODO(mecklenburg-schwerin-election): Historical election month/year is not yet modeled; using the standard 4-year Landtag scheduling convention from game start.
+Q.mecklenburg_schwerin_landtag_seat_count = 51;
+Q.mecklenburg_schwerin_majority_threshold = 26;
+Q.mecklenburg_schwerin_landtag_total_seats = 51;
+Q.mecklenburg_schwerin_landtag_seat_allocation_valid = 1;
 
     Q.budget = 4;
     Q.inflation = 2.9;
@@ -602,6 +622,16 @@ Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
+Q.mecklenburg_schwerin_government = 0;
+Q.mecklenburg_schwerin_majority_cabinet = 0;
+Q.mecklenburg_schwerin_leader = "";
+Q.mecklenburg_schwerin_election_year = 1928;
+Q.mecklenburg_schwerin_election_month = 5;
+// TODO(mecklenburg-schwerin-election): Historical election month/year is not yet modeled; using the standard 4-year Landtag scheduling convention from game start.
+Q.mecklenburg_schwerin_landtag_seat_count = 51;
+Q.mecklenburg_schwerin_majority_threshold = 26;
+Q.mecklenburg_schwerin_landtag_total_seats = 51;
+Q.mecklenburg_schwerin_landtag_seat_allocation_valid = 1;
 
 // The array of forces - paramilitary groups
 // Number of members in 1928 (in thousands)
@@ -1373,4 +1403,3 @@ go-to: main if difficulty >= 0; main.main_easy if difficulty < 0
 It is a bright time for German democracy. After a period of struggle, inflation is finally under control, and the economy is expanding steadily. In foreign policy, we have reached agreements with the Western powers and the Soviet Union that might make genuine peace a reality.
 
 Now, the task of Social Democracy is to prepare for the next election. The bourgeois-right government of Wilhelm Marx is unpopular, and we stand to gain. Perhaps the next government will have a socialist majority.
-
