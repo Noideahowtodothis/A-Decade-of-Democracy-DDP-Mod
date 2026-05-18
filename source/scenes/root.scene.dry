@@ -150,6 +150,16 @@ Q.thuringia_landtag_seat_count = 56;
 Q.thuringia_landtag_total_seats = 56;
 Q.thuringia_landtag_seat_allocation_valid = 1;
 Q.thuringia_landbund_party_name = "Thüringer Landbund";
+Q.oldenburg_government = 0;
+Q.oldenburg_majority_cabinet = 0;
+Q.oldenburg_leader = "";
+Q.oldenburg_election_year = 1928;
+Q.oldenburg_election_month = 5;
+// TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
+Q.oldenburg_landtag_seat_count = 48;
+Q.oldenburg_majority_threshold = 25;
+Q.oldenburg_landtag_total_seats = 48;
+Q.oldenburg_landtag_seat_allocation_valid = 1;
     Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
     for (var startupTrackerParty of Q.party_leader_ideology_parties) {
         Q[startupTrackerParty + '_leader'] = 0;
@@ -299,6 +309,16 @@ Q.thuringia_landtag_seat_count = 56;
 Q.thuringia_landtag_total_seats = 56;
 Q.thuringia_landtag_seat_allocation_valid = 1;
 Q.thuringia_landbund_party_name = "Thüringer Landbund";
+Q.oldenburg_government = 0;
+Q.oldenburg_majority_cabinet = 0;
+Q.oldenburg_leader = "";
+Q.oldenburg_election_year = 1928;
+Q.oldenburg_election_month = 5;
+// TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
+Q.oldenburg_landtag_seat_count = 48;
+Q.oldenburg_majority_threshold = 25;
+Q.oldenburg_landtag_total_seats = 48;
+Q.oldenburg_landtag_seat_allocation_valid = 1;
 
     Q.budget = 4;
     Q.inflation = 2.9;
@@ -572,6 +592,16 @@ Q.thuringia_landtag_seat_count = 56;
 Q.thuringia_landtag_total_seats = 56;
 Q.thuringia_landtag_seat_allocation_valid = 1;
 Q.thuringia_landbund_party_name = "Thüringer Landbund";
+Q.oldenburg_government = 0;
+Q.oldenburg_majority_cabinet = 0;
+Q.oldenburg_leader = "";
+Q.oldenburg_election_year = 1928;
+Q.oldenburg_election_month = 5;
+// TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
+Q.oldenburg_landtag_seat_count = 48;
+Q.oldenburg_majority_threshold = 25;
+Q.oldenburg_landtag_total_seats = 48;
+Q.oldenburg_landtag_seat_allocation_valid = 1;
 
 // The array of forces - paramilitary groups
 // Number of members in 1928 (in thousands)
