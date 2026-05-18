@@ -4,8 +4,7 @@
   "description": "Building the game:",
   "main": "out/html/index.html",
   "scripts": {
-    "dendrynexus": "dendrynexus",
-    "build": "npx dendrynexus make-html --force"
+    "build": "echo \"No build needed; Vercel serves committed out/html\""
   },
   "repository": {
     "type": "git",
