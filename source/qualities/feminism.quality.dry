@@ -1,0 +1,7 @@
+name: Feminism
+initial: 50
+min: 0
+max: 100
+default-display: feminism
+
+Support for women’s political, social, and legal equality.

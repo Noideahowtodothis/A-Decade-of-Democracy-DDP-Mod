@@ -140,15 +140,22 @@ for (var c of Q.classes) {
 }
 
 if (!Q.culture_vars) {
-    Q.culture_vars = ['pro_republic', 'pacifism', 'nationalism', 'secularism'];
+    Q.culture_vars = ['pro_republic', 'pacifism', 'nationalism', 'secularism', 'feminism'];
 }
 if (!Q.culture_var_registry) {
     Q.culture_var_registry = {
         pro_republic: {min: 0, max: 100, default: 59, description: 'Support for republican/parliamentary constitutional legitimacy.'},
         pacifism: {min: 0, max: 100, default: 50, description: 'Public opposition to militarism and support for diplomatic/non-military solutions.'},
         nationalism: {min: 0, max: 100, default: 60, description: 'Level of nationalist/revanchist political sentiment.'},
-        secularism: {min: 0, max: 100, default: 50, description: 'Support for secular public institutions over confessional/religious influence.'}
+        secularism: {min: 0, max: 100, default: 50, description: 'Support for secular public institutions over confessional/religious influence.'},
+        feminism: {min: 0, max: 100, default: 50, description: 'Support for women’s political, social, and legal equality.'}
     };
+}
+if (Q.culture_vars.indexOf('feminism') < 0) {
+    Q.culture_vars.push('feminism');
+}
+if (!Q.culture_var_registry.feminism) {
+    Q.culture_var_registry.feminism = {min: 0, max: 100, default: 50, description: 'Support for women’s political, social, and legal equality.'};
 }
 // Migrate legacy save data from the old SPD-specific pacifism meter to the standardized culture variable.
 if (!Q.culture_registry_version && typeof Q.pacifism !== 'number') {
@@ -213,7 +220,7 @@ if (!Q.debug_state_variables) {
 if (!Q.audit_state_variables) {
     Q.audit_state_variables = [];
 }
-var requiredStateVariables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism'];
+var requiredStateVariables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism', 'feminism'];
 requiredStateVariables = requiredStateVariables.concat(Q.ddp_factions || [], Q.ddp_faction_dissent_variables || [], Q.ddp_ideology_variables || [], Q.simplified_faction_variables || []);
 for (var requiredStateVariable of requiredStateVariables) {
     if (Q.core_state_variables.indexOf(requiredStateVariable) < 0) {
