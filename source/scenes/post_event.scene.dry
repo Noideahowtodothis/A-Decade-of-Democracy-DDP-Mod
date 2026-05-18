@@ -302,6 +302,7 @@ var REPUBLICANISM_MONTHLY_DRIFT_RATE = 0.05;
 var PACIFISM_MONTHLY_DRIFT_RATE = 0.025;
 var NATIONALISM_MONTHLY_DRIFT_RATE = 0.025;
 var FEMINISM_MONTHLY_DRIFT_RATE = 0.015;
+var SECULARISM_MONTHLY_DRIFT_RATE = 0.000625;
 function transferVoteSupport(className, sourceParties, targetParties, totalTransfer) {
     if (totalTransfer <= 0) {
         return;
@@ -384,6 +385,32 @@ if (Q.month_actions >= 1) {
                     transferVoteSupport(nationalismClass, nationalistSourceParties, nationalistBeneficiaryParties, nationalismMonthlyDrift);
                 } else {
                     transferVoteSupport(nationalismClass, nationalistBeneficiaryParties, nationalistSourceParties, nationalismMonthlyDrift);
+                }
+            }
+        }
+    }
+
+    var secularismDriftScale = (Q.secularism - 50)/50;
+    var secularSourceParties = ['z', 'dnvp'];
+    var secularBeneficiaryParties = ['ddp', 'dvp'];
+    // TODO: future Catholic/regional party behavior should alter secularism drift.
+    if (secularismDriftScale != 0) {
+        for (var secularismClass of monthlyVoteDriftClasses) {
+            if (Q.classes.indexOf(secularismClass) >= 0) {
+                var secularismRelevantSupport = 0;
+                var secularismTransferSources = secularismDriftScale > 0 ? secularSourceParties : secularBeneficiaryParties;
+                for (var secularismSourceParty of secularismTransferSources) {
+                    var secularismSourceKey = secularismClass + '_' + secularismSourceParty;
+                    if (Q[secularismSourceKey] === undefined || isNaN(Q[secularismSourceKey])) {
+                        Q[secularismSourceKey] = 0;
+                    }
+                    secularismRelevantSupport += Math.max(0, Q[secularismSourceKey]);
+                }
+                var secularismMonthlyDrift = secularismRelevantSupport*Math.abs(secularismDriftScale)*SECULARISM_MONTHLY_DRIFT_RATE;
+                if (secularismDriftScale > 0) {
+                    transferVoteSupport(secularismClass, secularSourceParties, secularBeneficiaryParties, secularismMonthlyDrift);
+                } else {
+                    transferVoteSupport(secularismClass, secularBeneficiaryParties, secularSourceParties, secularismMonthlyDrift);
                 }
             }
         }
