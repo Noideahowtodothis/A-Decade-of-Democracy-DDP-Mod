@@ -10,8 +10,15 @@
 
 ## Building the game
 
-1. Install [dendrynexus](https://github.com/aucchen/dendrynexus)
+Install dependencies and run the project build script:
 
-2. Run `dendrynexus make-html` in this folder.
+```sh
+npm install
+npm run build
+```
 
-To update dendrynexus in `package-lock.json`, run `npm install --upgrade https://github.com/aucchen/dendrynexus`
+`npm run build` uses the local `dendrynexus` dependency to regenerate the
+playable HTML output in `out/html` from the DendryNexus source files under
+`source/`. A globally installed `dendrynexus` command is not required.
+
+See `VERCEL_DEPLOY.md` for deployment details and the pinned DendryNexus source.
