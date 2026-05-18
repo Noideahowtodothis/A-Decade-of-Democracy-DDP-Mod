@@ -300,6 +300,7 @@ for (var cultureVar of Q.culture_vars) {
 // Tiny monthly pressure from republican legitimacy toward/away from constitutional parties.
 var REPUBLICANISM_MONTHLY_DRIFT_RATE = 0.05;
 var PACIFISM_MONTHLY_DRIFT_RATE = 0.025;
+var FEMINISM_MONTHLY_DRIFT_RATE = 0.015;
 function transferVoteSupport(className, sourceParties, targetParties, totalTransfer) {
     if (totalTransfer <= 0) {
         return;
@@ -365,6 +366,24 @@ if (Q.month_actions >= 1) {
                     transferVoteSupport(pacifismClass, militaristBeneficiaryParties, pacifistBeneficiaryParties, pacifismMonthlyDrift);
                 } else {
                     transferVoteSupport(pacifismClass, pacifistBeneficiaryParties, militaristBeneficiaryParties, pacifismMonthlyDrift);
+                }
+            }
+        }
+    }
+
+    var feminismDriftScale = (Q.feminism - 50)/50;
+    var feminismMonthlyDrift = Math.abs(feminismDriftScale)*FEMINISM_MONTHLY_DRIFT_RATE;
+    var antiFeministBeneficiaryParties = ['dnvp', 'dvp'];
+    var feministBeneficiaryParties = ['ddp', 'spd', 'kpd'];
+    // TODO: future women’s rights events should affect feminism.
+    // TODO: future party ideology should change which parties benefit.
+    if (feminismMonthlyDrift > 0) {
+        for (var feminismClass of monthlyVoteDriftClasses) {
+            if (Q.classes.indexOf(feminismClass) >= 0) {
+                if (feminismDriftScale > 0) {
+                    transferVoteSupport(feminismClass, antiFeministBeneficiaryParties, feministBeneficiaryParties, feminismMonthlyDrift);
+                } else {
+                    transferVoteSupport(feminismClass, feministBeneficiaryParties, antiFeministBeneficiaryParties, feminismMonthlyDrift);
                 }
             }
         }
