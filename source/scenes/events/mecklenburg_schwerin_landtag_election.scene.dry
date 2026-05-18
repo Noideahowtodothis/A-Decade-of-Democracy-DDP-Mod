@@ -1,0 +1,188 @@
+title: Mecklenburg-Schwerin Landtag Elections
+new-page: true
+tags: event
+priority: -2
+view-if: (year = mecklenburg_schwerin_election_year and month >= mecklenburg_schwerin_election_month) or (year > mecklenburg_schwerin_election_year)
+on-departure: month_actions += 1; mecklenburg_schwerin_election_year = mecklenburg_schwerin_election_year + 4 if mecklenburg_schwerin_snap_election_called == 0; mecklenburg_schwerin_election_year = year + 4 if mecklenburg_schwerin_snap_election_called == 1; mecklenburg_schwerin_election_month = month if mecklenburg_schwerin_snap_election_called == 1; mecklenburg_schwerin_snap_election_called = 0
+set-jump: mecklenburg_schwerin_landtag_results
+
+= Mecklenburg-Schwerin Landtag Elections, [+ month : month +] [+ year +]
+
+Mecklenburg-Schwerin holds Landtag elections. This system reuses federal party support, applies Mecklenburg-Schwerin weights, normalizes results, and allocates **51** seats with D'Hondt.
+
+- @calculate_mecklenburg_schwerin_landtag: Count the votes.
+
+@calculate_mecklenburg_schwerin_landtag
+on-arrival: mecklenburg_schwerin_government = 1 if mecklenburg_schwerin_government == undefined; mecklenburg_schwerin_leader = "Johannes Stelling" if mecklenburg_schwerin_leader == undefined; mecklenburg_schwerin_majority_cabinet = 0 if mecklenburg_schwerin_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: mecklenburg_schwerin_landtag_results
+
+@mecklenburg_schwerin_landtag_results
+on-arrival: {! var isMecklenburgSchwerinSnapElection = Number(Q.mecklenburg_schwerin_snap_election_called) === 1; Q.mecklenburg_schwerin_next_election_year_preview = (isMecklenburgSchwerinSnapElection ? (Number(Q.year) || 0) : (Number(Q.mecklenburg_schwerin_election_year) || Number(Q.year) || 0)) + 4; Q.mecklenburg_schwerin_next_election_month_preview = isMecklenburgSchwerinSnapElection ? Q.month : Q.mecklenburg_schwerin_election_month; if (typeof window !== 'undefined' && typeof window.calculateMecklenburgSchwerinLandtagResults === 'function') { window.calculateMecklenburgSchwerinLandtagResults(Q); } !}
+
+= Mecklenburg-Schwerin Landtag election results
+
+Next Mecklenburg-Schwerin election after this Landtag is due in **[+ mecklenburg_schwerin_next_election_month_preview : month +] [+ mecklenburg_schwerin_next_election_year_preview +]**.
+
+Mecklenburg-Schwerin Landtag seats: **[+ mecklenburg_schwerin_landtag_total_seats +] / 51**.
+
+Current Mecklenburg-Schwerin government: **[+ mecklenburg_schwerin_current_government_name +]** ([+ mecklenburg_schwerin_current_government_parties +]) led by **[+ mecklenburg_schwerin_leader +]**.
+
+Current government seats: **[+ mecklenburg_schwerin_current_government_seats +] / 51**. Status: **[+ mecklenburg_schwerin_current_government_status +]**. Majority cabinet: **[+ mecklenburg_schwerin_majority_cabinet +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Mecklenburg-Schwerin vote share</td><td>Seats (out of 51)</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ mecklenburg_schwerin_spd_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_spd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]{!</td><td>!} [+ mecklenburg_schwerin_ddp_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_ddp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP{!</td><td>!} [+ mecklenburg_schwerin_dvp_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_dvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#5E8C31'> </div> !} WP{!</td><td>!} [+ mecklenburg_schwerin_wp_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_wp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP{!</td><td>!} [+ mecklenburg_schwerin_dnvp_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_dnvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#8B0000'> </div> !} KPD{!</td><td>!} [+ mecklenburg_schwerin_kpd_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_kpd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP{!</td><td>!} [+ mecklenburg_schwerin_nsdap_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_nsdap_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z{!</td><td>!} [+ mecklenburg_schwerin_z_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_z_r +] {!</td></tr>!}
+{!</table>!}
+
+= Choose a Mecklenburg-Schwerin coalition
+
+A coalition is selectable if it controls at least **26** of the **51** Landtag seats. If no listed coalition has a majority, the incumbent Mecklenburg-Schwerin government may continue as a minority cabinet.
+
+- @mecklenburg_schwerin_select_ddp_spd
+- @mecklenburg_schwerin_select_spd_ddp_dvp
+- @mecklenburg_schwerin_select_dvp_ddp_dnvp_wp
+- @mecklenburg_schwerin_select_dvp_dnvp
+- @mecklenburg_schwerin_select_dvp_dnvp_wp_nsdap
+- @mecklenburg_schwerin_select_dnvp_nsdap
+- @mecklenburg_schwerin_select_nsdap_alone
+- @new_mecklenburg_schwerin_elections: Call new Mecklenburg-Schwerin Landtag elections.
+- @root: Continue without changing the Mecklenburg-Schwerin government.
+
+@mecklenburg_schwerin_select_ddp_spd
+title: DDP-SPD
+subtitle: DDP + SPD — [+ mecklenburg_schwerin_ddp_spd_coalition_seats +] / 51 — [+ mecklenburg_schwerin_ddp_spd_coalition_status +]
+view-if: mecklenburg_schwerin_ddp_spd_coalition_selectable = 1
+on-arrival: {! Q.mecklenburg_schwerin_government = 1; if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') { window.updateMecklenburgSchwerinCoalitionOptions(Q); } !}
+go-to: mecklenburg_schwerin_leader_selection
+
+@mecklenburg_schwerin_select_spd_ddp_dvp
+title: SPD-DDP-DVP
+subtitle: SPD + DDP + DVP — [+ mecklenburg_schwerin_spd_ddp_dvp_coalition_seats +] / 51 — [+ mecklenburg_schwerin_spd_ddp_dvp_coalition_status +]
+view-if: mecklenburg_schwerin_spd_ddp_dvp_coalition_selectable = 1
+on-arrival: {! Q.mecklenburg_schwerin_government = 2; if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') { window.updateMecklenburgSchwerinCoalitionOptions(Q); } !}
+go-to: mecklenburg_schwerin_leader_selection
+
+@mecklenburg_schwerin_select_dvp_ddp_dnvp_wp
+title: DVP-DDP-DNVP-WP
+subtitle: DVP + DDP + DNVP + WP — [+ mecklenburg_schwerin_dvp_ddp_dnvp_wp_coalition_seats +] / 51 — [+ mecklenburg_schwerin_dvp_ddp_dnvp_wp_coalition_status +]
+view-if: mecklenburg_schwerin_dvp_ddp_dnvp_wp_coalition_selectable = 1
+on-arrival: {! Q.mecklenburg_schwerin_government = 3; if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') { window.updateMecklenburgSchwerinCoalitionOptions(Q); } !}
+go-to: mecklenburg_schwerin_leader_selection
+
+@mecklenburg_schwerin_select_dvp_dnvp
+title: DVP-DNVP
+subtitle: DVP + DNVP — [+ mecklenburg_schwerin_dvp_dnvp_coalition_seats +] / 51 — [+ mecklenburg_schwerin_dvp_dnvp_coalition_status +]
+view-if: mecklenburg_schwerin_dvp_dnvp_coalition_selectable = 1
+on-arrival: {! Q.mecklenburg_schwerin_government = 4; if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') { window.updateMecklenburgSchwerinCoalitionOptions(Q); } !}
+go-to: mecklenburg_schwerin_leader_selection
+
+@mecklenburg_schwerin_select_dvp_dnvp_wp_nsdap
+title: DVP-DNVP-WP-NSDAP
+subtitle: DVP + DNVP + WP + NSDAP — [+ mecklenburg_schwerin_dvp_dnvp_wp_nsdap_coalition_seats +] / 51 — [+ mecklenburg_schwerin_dvp_dnvp_wp_nsdap_coalition_status +]
+view-if: mecklenburg_schwerin_dvp_dnvp_wp_nsdap_coalition_selectable = 1
+on-arrival: {! Q.mecklenburg_schwerin_government = 5; if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') { window.updateMecklenburgSchwerinCoalitionOptions(Q); } !}
+go-to: mecklenburg_schwerin_leader_selection
+
+@mecklenburg_schwerin_select_dnvp_nsdap
+title: DNVP-NSDAP
+subtitle: DNVP + NSDAP — [+ mecklenburg_schwerin_dnvp_nsdap_coalition_seats +] / 51 — [+ mecklenburg_schwerin_dnvp_nsdap_coalition_status +]
+view-if: mecklenburg_schwerin_dnvp_nsdap_coalition_selectable = 1
+on-arrival: {! Q.mecklenburg_schwerin_government = 6; if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') { window.updateMecklenburgSchwerinCoalitionOptions(Q); } !}
+go-to: mecklenburg_schwerin_leader_selection
+
+@mecklenburg_schwerin_select_nsdap_alone
+title: NSDAP alone
+subtitle: NSDAP — [+ mecklenburg_schwerin_nsdap_alone_coalition_seats +] / 51 — [+ mecklenburg_schwerin_nsdap_alone_coalition_status +]
+view-if: mecklenburg_schwerin_nsdap_alone_coalition_selectable = 1
+on-arrival: {! Q.mecklenburg_schwerin_government = 7; if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') { window.updateMecklenburgSchwerinCoalitionOptions(Q); } !}
+go-to: mecklenburg_schwerin_leader_selection
+
+@new_mecklenburg_schwerin_elections
+title: Call new Mecklenburg-Schwerin Landtag elections.
+on-arrival: mecklenburg_schwerin_election_year = year; mecklenburg_schwerin_election_month = month; mecklenburg_schwerin_snap_election_called = 1
+go-to: calculate_mecklenburg_schwerin_landtag
+
+@mecklenburg_schwerin_leader_selection
+title: Choose the Mecklenburg-Schwerin leader
+
+= Choose the Mecklenburg-Schwerin leader
+
+Selected coalition: **[+ mecklenburg_schwerin_current_government_name +]** ([+ mecklenburg_schwerin_current_government_parties +]).
+
+Coalition seats: **[+ mecklenburg_schwerin_current_government_seats +] / 51**. Status: **[+ mecklenburg_schwerin_current_government_status +]**.
+
+- @mecklenburg_schwerin_leader_johannes_stelling
+- @mecklenburg_schwerin_leader_paul_schroder
+- @mecklenburg_schwerin_leader_hermann_reincke_bloch
+- @mecklenburg_schwerin_leader_walter_granzow
+- @mecklenburg_schwerin_leader_karl_eschenburg
+- @mecklenburg_schwerin_leader_joachim_von_brandenstein
+
+@mecklenburg_schwerin_leader_johannes_stelling
+title: Johannes Stelling
+subtitle: Available because the SPD is in the Mecklenburg-Schwerin cabinet.
+view-if: mecklenburg_schwerin_leader_johannes_stelling_available = 1
+on-arrival: mecklenburg_schwerin_leader = "Johannes Stelling"
+go-to: mecklenburg_schwerin_government_confirmed
+
+@mecklenburg_schwerin_leader_paul_schroder
+title: Paul Schröder
+subtitle: Available before 1932 because the SPD is in the Mecklenburg-Schwerin cabinet.
+view-if: mecklenburg_schwerin_leader_paul_schroder_available = 1
+on-arrival: mecklenburg_schwerin_leader = "Paul Schröder"
+go-to: mecklenburg_schwerin_government_confirmed
+
+@mecklenburg_schwerin_leader_hermann_reincke_bloch
+title: Hermann Reincke-Bloch
+subtitle: Available before 1929 because the DVP is in the Mecklenburg-Schwerin cabinet.
+view-if: mecklenburg_schwerin_leader_hermann_reincke_bloch_available = 1
+on-arrival: mecklenburg_schwerin_leader = "Hermann Reincke-Bloch"
+go-to: mecklenburg_schwerin_government_confirmed
+
+@mecklenburg_schwerin_leader_walter_granzow
+title: Walter Granzow
+subtitle: Available because the NSDAP is in the Mecklenburg-Schwerin cabinet.
+view-if: mecklenburg_schwerin_leader_walter_granzow_available = 1
+on-arrival: mecklenburg_schwerin_leader = "Walter Granzow"
+go-to: mecklenburg_schwerin_government_confirmed
+
+@mecklenburg_schwerin_leader_karl_eschenburg
+title: Karl Eschenburg
+subtitle: Available because the DNVP is in the Mecklenburg-Schwerin cabinet.
+view-if: mecklenburg_schwerin_leader_karl_eschenburg_available = 1
+on-arrival: mecklenburg_schwerin_leader = "Karl Eschenburg"
+go-to: mecklenburg_schwerin_government_confirmed
+
+@mecklenburg_schwerin_leader_joachim_von_brandenstein
+title: Joachim von Brandenstein
+subtitle: Available because the DNVP is in the Mecklenburg-Schwerin cabinet.
+view-if: mecklenburg_schwerin_leader_joachim_von_brandenstein_available = 1
+on-arrival: mecklenburg_schwerin_leader = "Joachim von Brandenstein"
+go-to: mecklenburg_schwerin_government_confirmed
+
+@mecklenburg_schwerin_government_confirmed
+title: Mecklenburg-Schwerin government formed
+
+= Mecklenburg-Schwerin government formed
+
+Coalition: **[+ mecklenburg_schwerin_current_government_name +]**
+
+Parties: **[+ mecklenburg_schwerin_current_government_parties +]**
+
+Seats: **[+ mecklenburg_schwerin_current_government_seats +] / 51**
+
+Status: **[+ mecklenburg_schwerin_current_government_status +]**
+
+Leader: **[+ mecklenburg_schwerin_leader +]**
+
+Next Mecklenburg-Schwerin election: **[+ mecklenburg_schwerin_next_election_month_preview : month +] [+ mecklenburg_schwerin_next_election_year_preview +]**.
+
+- @root: Continue.
