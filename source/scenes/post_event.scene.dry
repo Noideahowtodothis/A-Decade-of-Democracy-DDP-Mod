@@ -104,6 +104,33 @@ if (Q.hamburg_snap_election_called == undefined) {
 }
 // Hamburg uses a fixed 160-seat Bürgerschaft/Landtag.
 Q.hamburg_landtag_seat_count = 160;
+
+if (Q.wurttemberg_election_year == undefined) {
+    Q.wurttemberg_election_year = 1928;
+}
+if (Q.wurttemberg_election_month == undefined) {
+    Q.wurttemberg_election_month = 5;
+}
+if (Q.wurttemberg_government == undefined) {
+    Q.wurttemberg_government = 4;
+}
+if (Q.wurttemberg_majority_cabinet == undefined) {
+    Q.wurttemberg_majority_cabinet = 1;
+}
+if (Q.wurttemberg_leader == undefined) {
+    Q.wurttemberg_leader = "Eugen Bolz";
+}
+if (Q.wurttemberg_snap_election_called == undefined) {
+    Q.wurttemberg_snap_election_called = 0;
+}
+Q.wurttemberg_landtag_seat_count = 80;
+if (Q.wurttemberg_csvd_party_name == undefined) {
+    Q.wurttemberg_csvd_party_name = "Christlich-Sozialer Volksdienst";
+}
+if (Q.wurttemberg_wbwb_party_name == undefined) {
+    Q.wurttemberg_wbwb_party_name = "Württembergischer Bauern- und Weingärtnerbund";
+}
+
 for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap']) {
     if (Q[relationParty + '_relation'] == undefined) {
         Q[relationParty + '_relation'] = 50;
@@ -944,7 +971,95 @@ if (typeof window !== 'undefined') {
     };
     window.calculateHamburgLandtagResults(Q);
 
-    window.calculatePrussianLandtagResults = function(qualities) {
+    
+    window.calculateWurttembergLandtagResults = function(qualities) {
+        var q = qualities || Q;
+        var wurttembergParties = ['spd', 'ddp', 'dvp', 'z', 'kpd', 'dnvp', 'csvd', 'wbwb', 'nsdap', 'other'];
+        q.wurttemberg_parties = wurttembergParties;
+        var seatCount = 80;
+        q.wurttemberg_landtag_seat_count = 80;
+        var wurttembergWeights = {z: 1.64, ddp: 1.90, dvp: 0.63, spd: 0.77, kpd: 0.67, nsdap: 0.71, dnvp: 2.14, other: 1.00};
+        q.wurttemberg_party_weights = wurttembergWeights;
+        function federalShare(party) {
+            var share = Number(q[party + '_votes_raw']);
+            if (isNaN(share)) { share = 100*(Number(q[party + '_normalized']) || 0); }
+            if (isNaN(share) || share < 0) { share = 0; }
+            return share;
+        }
+        var weightedDnvpPool = federalShare('dnvp')*wurttembergWeights.dnvp;
+        q.wurttemberg_dnvp_pool_weighted_raw = weightedDnvpPool;
+        q.wurttemberg_dnvp_split_csvd_share = 1/6;
+        q.wurttemberg_dnvp_split_wbwb_share = 4/6;
+        q.wurttemberg_dnvp_split_dnvp_share = 1/6;
+        var weightedVotes = {
+            spd: federalShare('spd')*wurttembergWeights.spd,
+            ddp: federalShare('ddp')*wurttembergWeights.ddp,
+            dvp: federalShare('dvp')*wurttembergWeights.dvp,
+            z: federalShare('z')*wurttembergWeights.z,
+            kpd: federalShare('kpd')*wurttembergWeights.kpd,
+            dnvp: weightedDnvpPool*(1/6),
+            csvd: weightedDnvpPool*(1/6),
+            wbwb: weightedDnvpPool*(4/6),
+            nsdap: federalShare('nsdap')*wurttembergWeights.nsdap,
+            other: federalShare('other')*wurttembergWeights.other
+        };
+        var total = 0;
+        for (var pty of wurttembergParties) { total += weightedVotes[pty] || 0; }
+        var voteShares = {};
+        for (var party of wurttembergParties) {
+            var raw = total > 0 ? 100*(weightedVotes[party] || 0)/total : 0;
+            q['wurttemberg_' + party + '_votes_raw'] = raw;
+            q['wurttemberg_' + party + '_votes'] = Math.round(raw*10)/10;
+            q['wurttemberg_' + party + '_votes_disp'] = q['wurttemberg_' + party + '_votes'].toFixed(1);
+            q['wurttemberg_' + party + '_result_votes'] = q['wurttemberg_' + party + '_votes'];
+            voteShares[party] = q['wurttemberg_' + party + '_votes'];
+        }
+        var banned = {};
+        for (var bannedParty of wurttembergParties) { banned[bannedParty] = q[bannedParty + '_banned']; }
+        var threshold = q.wurttemberg_electoral_threshold || q.electoral_threshold || 0;
+        var seats = window.allocateDhondtSeats(voteShares, seatCount, threshold, {parties: wurttembergParties, banned: banned});
+        q.wurttemberg_landtag_total_seats = 0;
+        for (var seatParty of wurttembergParties) {
+            q['wurttemberg_' + seatParty + '_r'] = seats[seatParty] || 0;
+            q['wurttemberg_' + seatParty + '_seats'] = q['wurttemberg_' + seatParty + '_r'];
+            q.wurttemberg_landtag_total_seats += q['wurttemberg_' + seatParty + '_r'];
+        }
+        q.wurttemberg_landtag_seat_allocation_valid = q.wurttemberg_landtag_total_seats == seatCount ? 1 : 0;
+        if (typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(q); }
+    };
+    window.updateWurttembergCoalitionOptions = function(qualities) {
+        var q = qualities || Q;
+        var threshold = 41;
+        if (q.wurttemberg_government == undefined) { q.wurttemberg_government = 4; }
+        var options = [
+            {id:1,key:'spd_ddp',name:'SPD-DDP',parties:'SPD + DDP',seats:(Number(q.wurttemberg_spd_r)||0)+(Number(q.wurttemberg_ddp_r)||0)},
+            {id:2,key:'spd_ddp_dvp',name:'SPD-DDP-DVP',parties:'SPD + DDP + DVP',seats:(Number(q.wurttemberg_spd_r)||0)+(Number(q.wurttemberg_ddp_r)||0)+(Number(q.wurttemberg_dvp_r)||0)},
+            {id:3,key:'spd_ddp_z_dvp',name:'SPD-DDP-Z-DVP',parties:'SPD + DDP + Z + DVP',seats:(Number(q.wurttemberg_spd_r)||0)+(Number(q.wurttemberg_ddp_r)||0)+(Number(q.wurttemberg_z_r)||0)+(Number(q.wurttemberg_dvp_r)||0)},
+            {id:4,key:'ddp_z_dvp',name:'DDP-Z-DVP',parties:'DDP + Z + DVP',seats:(Number(q.wurttemberg_ddp_r)||0)+(Number(q.wurttemberg_z_r)||0)+(Number(q.wurttemberg_dvp_r)||0)},
+            {id:5,key:'ddp_z_dvp_wbwb',name:'DDP-Z-DVP-WBWB',parties:'DDP + Z + DVP + WBWB',seats:(Number(q.wurttemberg_ddp_r)||0)+(Number(q.wurttemberg_z_r)||0)+(Number(q.wurttemberg_dvp_r)||0)+(Number(q.wurttemberg_wbwb_r)||0)},
+            {id:6,key:'z_dvp_wbwb_dnvp',name:'Z-DVP-WBWB-DNVP',parties:'Z + DVP + WBWB + DNVP',seats:(Number(q.wurttemberg_z_r)||0)+(Number(q.wurttemberg_dvp_r)||0)+(Number(q.wurttemberg_wbwb_r)||0)+(Number(q.wurttemberg_dnvp_r)||0)},
+            {id:7,key:'z_wbwb_dnvp',name:'Z-WBWB-DNVP',parties:'Z + WBWB + DNVP',seats:(Number(q.wurttemberg_z_r)||0)+(Number(q.wurttemberg_wbwb_r)||0)+(Number(q.wurttemberg_dnvp_r)||0)},
+            {id:8,key:'z_wbwb_dnvp_csvd',name:'Z-WBWB-DNVP-CSVD',parties:'Z + WBWB + DNVP + CSVD',seats:(Number(q.wurttemberg_z_r)||0)+(Number(q.wurttemberg_wbwb_r)||0)+(Number(q.wurttemberg_dnvp_r)||0)+(Number(q.wurttemberg_csvd_r)||0)},
+            {id:9,key:'wbwb_dnvp_nsdap',name:'WBWB-DNVP-NSDAP',parties:'WBWB + DNVP + NSDAP',seats:(Number(q.wurttemberg_wbwb_r)||0)+(Number(q.wurttemberg_dnvp_r)||0)+(Number(q.wurttemberg_nsdap_r)||0)}
+        ];
+        var anyMajority=0;
+        for (var i=0;i<options.length;i++) { if (options[i].seats >= threshold) { anyMajority=1; } }
+        for (var j=0;j<options.length;j++) {
+            var option=options[j], prefix='wurttemberg_'+option.key+'_coalition', hasMajority=option.seats>=threshold, isIncumbent=Number(q.wurttemberg_government)===option.id;
+            q[prefix + '_seats']=option.seats; q[prefix + '_status']=hasMajority?'Majority':'Minority'; q[prefix + '_selectable']=hasMajority || (!anyMajority && isIncumbent) ? 1 : 0;
+        }
+        var selected = options[(Number(q.wurttemberg_government)||4)-1] || options[3];
+        q.wurttemberg_current_government_name = selected.name; q.wurttemberg_current_government_parties = selected.parties; q.wurttemberg_current_government_seats = selected.seats;
+        q.wurttemberg_majority_cabinet = selected.seats >= threshold ? 1 : 0; q.wurttemberg_current_government_status = q.wurttemberg_majority_cabinet ? 'Majority' : 'Minority';
+        q.wurttemberg_spd_in_government = selected.parties.indexOf('SPD') >= 0 ? 1 : 0;
+        q.wurttemberg_ddp_in_government = selected.parties.indexOf('DDP') >= 0 ? 1 : 0;
+        q.wurttemberg_z_in_government = selected.parties.indexOf('Z') >= 0 ? 1 : 0;
+        q.wurttemberg_dnvp_in_government = selected.parties.indexOf('DNVP') >= 0 ? 1 : 0;
+        q.wurttemberg_nsdap_in_government = selected.parties.indexOf('NSDAP') >= 0 ? 1 : 0;
+    };
+    window.calculateWurttembergLandtagResults(Q);
+
+window.calculatePrussianLandtagResults = function(qualities) {
         var q = qualities || Q;
         var prussianParties = q.parties || ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
         var prussianSeatCount = q.prussia_landtag_seat_count || 450;

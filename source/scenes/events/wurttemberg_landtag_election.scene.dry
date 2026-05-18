@@ -1,0 +1,199 @@
+title: Württemberg Landtag Elections
+new-page: true
+tags: event
+priority: -2
+view-if: (year = wurttemberg_election_year and month >= wurttemberg_election_month) or (year > wurttemberg_election_year)
+on-departure: month_actions += 1; wurttemberg_election_year = wurttemberg_election_year + 4 if wurttemberg_snap_election_called == 0; wurttemberg_election_year = year + 4 if wurttemberg_snap_election_called == 1; wurttemberg_election_month = month if wurttemberg_snap_election_called == 1; wurttemberg_snap_election_called = 0
+set-jump: wurttemberg_landtag_results
+
+= Württemberg Landtag Elections, [+ month : month +] [+ year +]
+
+Württemberg holds Landtag elections with **80** seats allocated by D’Hondt.
+
+- @calculate_wurttemberg_landtag: Count the votes.
+
+@calculate_wurttemberg_landtag
+on-arrival: wurttemberg_government = 4 if wurttemberg_government == undefined; wurttemberg_leader = "Eugen Bolz" if wurttemberg_leader == undefined; wurttemberg_majority_cabinet = 1 if wurttemberg_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: wurttemberg_landtag_results
+
+@wurttemberg_landtag_results
+on-arrival: {! var isWurttembergSnapElection = Number(Q.wurttemberg_snap_election_called) === 1; Q.wurttemberg_next_election_year_preview = (isWurttembergSnapElection ? (Number(Q.year) || 0) : (Number(Q.wurttemberg_election_year) || Number(Q.year) || 0)) + 4; Q.wurttemberg_next_election_month_preview = isWurttembergSnapElection ? Q.month : Q.wurttemberg_election_month; if (typeof window !== 'undefined' && typeof window.calculateWurttembergLandtagResults === 'function') { window.calculateWurttembergLandtagResults(Q); } !}
+
+= Württemberg Landtag election results
+
+Next Württemberg election is due in **[+ wurttemberg_next_election_month_preview : month +] [+ wurttemberg_next_election_year_preview +]**.
+
+Württemberg Landtag seats: **[+ wurttemberg_landtag_total_seats +] / 80**
+
+Current Württemberg government: **[+ wurttemberg_current_government_name +]** ([+ wurttemberg_current_government_parties +]) led by **[+ wurttemberg_leader +]**.
+
+Current government seats: **[+ wurttemberg_current_government_seats +] / 80**. Status: **[+ wurttemberg_current_government_status +]**. Majority cabinet: **[+ wurttemberg_majority_cabinet +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Württemberg vote share</td><td>Seats (out of 80)</td></tr>!}
+{!<tr><td>SPD</td><td>[+ wurttemberg_spd_votes_disp +]%</td><td>[+ wurttemberg_spd_r +]</td></tr>!}
+{!<tr><td>[+ ddp_name +]</td><td>[+ wurttemberg_ddp_votes_disp +]%</td><td>[+ wurttemberg_ddp_r +]</td></tr>!}
+{!<tr><td>DVP</td><td>[+ wurttemberg_dvp_votes_disp +]%</td><td>[+ wurttemberg_dvp_r +]</td></tr>!}
+{!<tr><td>Z</td><td>[+ wurttemberg_z_votes_disp +]%</td><td>[+ wurttemberg_z_r +]</td></tr>!}
+{!<tr><td>KPD</td><td>[+ wurttemberg_kpd_votes_disp +]%</td><td>[+ wurttemberg_kpd_r +]</td></tr>!}
+{!<tr><td>DNVP</td><td>[+ wurttemberg_dnvp_votes_disp +]%</td><td>[+ wurttemberg_dnvp_r +]</td></tr>!}
+{!<tr><td>CSVD</td><td>[+ wurttemberg_csvd_votes_disp +]%</td><td>[+ wurttemberg_csvd_r +]</td></tr>!}
+{!<tr><td>WBWB</td><td>[+ wurttemberg_wbwb_votes_disp +]%</td><td>[+ wurttemberg_wbwb_r +]</td></tr>!}
+{!<tr><td>NSDAP</td><td>[+ wurttemberg_nsdap_votes_disp +]%</td><td>[+ wurttemberg_nsdap_r +]</td></tr>!}
+{!<tr><td>Other</td><td>[+ wurttemberg_other_votes_disp +]%</td><td>[+ wurttemberg_other_r +]</td></tr>!}
+{!</table>!}
+
+= Choose a Württemberg coalition
+
+A coalition is selectable if it controls at least **41** of the **80** Landtag seats. If no listed coalition has a majority, the incumbent Württemberg government may continue as a minority cabinet.
+
+- @wurttemberg_select_spd_ddp
+- @wurttemberg_select_spd_ddp_dvp
+- @wurttemberg_select_spd_ddp_z_dvp
+- @wurttemberg_select_ddp_z_dvp
+- @wurttemberg_select_ddp_z_dvp_wbwb
+- @wurttemberg_select_z_dvp_wbwb_dnvp
+- @wurttemberg_select_z_wbwb_dnvp
+- @wurttemberg_select_z_wbwb_dnvp_csvd
+- @wurttemberg_select_wbwb_dnvp_nsdap
+- @new_wurttemberg_elections: Call new Württemberg Landtag elections.
+- @root: Continue without changing the Württemberg government.
+
+@wurttemberg_select_spd_ddp
+title: SPD-DDP
+subtitle: SPD + DDP — [+ wurttemberg_spd_ddp_coalition_seats +] / 80 — [+ wurttemberg_spd_ddp_coalition_status +]
+view-if: wurttemberg_spd_ddp_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 1; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@wurttemberg_select_spd_ddp_dvp
+title: SPD-DDP-DVP
+subtitle: SPD + DDP + DVP — [+ wurttemberg_spd_ddp_dvp_coalition_seats +] / 80 — [+ wurttemberg_spd_ddp_dvp_coalition_status +]
+view-if: wurttemberg_spd_ddp_dvp_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 2; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@wurttemberg_select_spd_ddp_z_dvp
+title: SPD-DDP-Z-DVP
+subtitle: SPD + DDP + Z + DVP — [+ wurttemberg_spd_ddp_z_dvp_coalition_seats +] / 80 — [+ wurttemberg_spd_ddp_z_dvp_coalition_status +]
+view-if: wurttemberg_spd_ddp_z_dvp_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 3; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@wurttemberg_select_ddp_z_dvp
+title: DDP-Z-DVP
+subtitle: DDP + Z + DVP — [+ wurttemberg_ddp_z_dvp_coalition_seats +] / 80 — [+ wurttemberg_ddp_z_dvp_coalition_status +]
+view-if: wurttemberg_ddp_z_dvp_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 4; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@wurttemberg_select_ddp_z_dvp_wbwb
+title: DDP-Z-DVP-WBWB
+subtitle: DDP + Z + DVP + WBWB — [+ wurttemberg_ddp_z_dvp_wbwb_coalition_seats +] / 80 — [+ wurttemberg_ddp_z_dvp_wbwb_coalition_status +]
+view-if: wurttemberg_ddp_z_dvp_wbwb_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 5; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@wurttemberg_select_z_dvp_wbwb_dnvp
+title: Z-DVP-WBWB-DNVP
+subtitle: Z + DVP + WBWB + DNVP — [+ wurttemberg_z_dvp_wbwb_dnvp_coalition_seats +] / 80 — [+ wurttemberg_z_dvp_wbwb_dnvp_coalition_status +]
+view-if: wurttemberg_z_dvp_wbwb_dnvp_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 6; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@wurttemberg_select_z_wbwb_dnvp
+title: Z-WBWB-DNVP
+subtitle: Z + WBWB + DNVP — [+ wurttemberg_z_wbwb_dnvp_coalition_seats +] / 80 — [+ wurttemberg_z_wbwb_dnvp_coalition_status +]
+view-if: wurttemberg_z_wbwb_dnvp_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 7; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@wurttemberg_select_z_wbwb_dnvp_csvd
+title: Z-WBWB-DNVP-CSVD
+subtitle: Z + WBWB + DNVP + CSVD — [+ wurttemberg_z_wbwb_dnvp_csvd_coalition_seats +] / 80 — [+ wurttemberg_z_wbwb_dnvp_csvd_coalition_status +]
+view-if: wurttemberg_z_wbwb_dnvp_csvd_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 8; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@wurttemberg_select_wbwb_dnvp_nsdap
+title: WBWB-DNVP-NSDAP
+subtitle: WBWB + DNVP + NSDAP — [+ wurttemberg_wbwb_dnvp_nsdap_coalition_seats +] / 80 — [+ wurttemberg_wbwb_dnvp_nsdap_coalition_status +]
+view-if: wurttemberg_wbwb_dnvp_nsdap_coalition_selectable = 1
+on-arrival: {! Q.wurttemberg_government = 9; if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') { window.updateWurttembergCoalitionOptions(Q); } !}
+go-to: wurttemberg_leader_selection
+
+@new_wurttemberg_elections
+title: Call new Württemberg Landtag elections.
+on-arrival: wurttemberg_election_year = year; wurttemberg_election_month = month; wurttemberg_snap_election_called = 1
+go-to: calculate_wurttemberg_landtag
+
+@wurttemberg_leader_selection
+title: Choose the Württemberg leader
+
+= Choose the Württemberg leader
+- @wurttemberg_leader_keil
+- @wurttemberg_leader_schumacher
+- @wurttemberg_leader_bolz
+- @wurttemberg_leader_bazille
+- @wurttemberg_leader_maier
+- @wurttemberg_leader_hieber
+- @wurttemberg_leader_mergenthaler
+
+@wurttemberg_leader_keil
+title: Wilhelm Keil
+view-if: wurttemberg_spd_in_government = 1
+on-arrival: wurttemberg_leader = "Wilhelm Keil"
+go-to: wurttemberg_government_confirmed
+
+@wurttemberg_leader_schumacher
+title: Kurt Schumacher
+view-if: wurttemberg_spd_in_government = 1
+on-arrival: wurttemberg_leader = "Kurt Schumacher"
+go-to: wurttemberg_government_confirmed
+
+@wurttemberg_leader_bolz
+title: Eugen Bolz
+view-if: wurttemberg_z_in_government = 1
+on-arrival: wurttemberg_leader = "Eugen Bolz"
+go-to: wurttemberg_government_confirmed
+
+@wurttemberg_leader_bazille
+title: Wilhelm Bazille
+view-if: wurttemberg_dnvp_in_government = 1
+on-arrival: wurttemberg_leader = "Wilhelm Bazille"
+go-to: wurttemberg_government_confirmed
+
+@wurttemberg_leader_maier
+title: Reinhold Maier
+view-if: wurttemberg_ddp_in_government = 1
+on-arrival: wurttemberg_leader = "Reinhold Maier"
+go-to: wurttemberg_government_confirmed
+
+@wurttemberg_leader_hieber
+title: Johannes Hieber
+view-if: wurttemberg_ddp_in_government = 1
+on-arrival: wurttemberg_leader = "Johannes Hieber"
+go-to: wurttemberg_government_confirmed
+
+@wurttemberg_leader_mergenthaler
+title: Christian Mergenthaler
+view-if: wurttemberg_nsdap_in_government = 1
+on-arrival: wurttemberg_leader = "Christian Mergenthaler"
+go-to: wurttemberg_government_confirmed
+
+@wurttemberg_government_confirmed
+title: Württemberg government formed
+
+= Württemberg government formed
+Coalition: **[+ wurttemberg_current_government_name +]**
+
+Seats: **[+ wurttemberg_current_government_seats +] / 80**
+
+Status: **[+ wurttemberg_current_government_status +]**
+
+Leader: **[+ wurttemberg_leader +]**
+
+Next Württemberg election: **[+ wurttemberg_next_election_month_preview : month +] [+ wurttemberg_next_election_year_preview +]**.
+
+- @root: Continue.
