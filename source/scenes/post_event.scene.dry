@@ -1059,6 +1059,60 @@ if (typeof window !== 'undefined') {
     };
     window.calculateWurttembergLandtagResults(Q);
 
+    window.calculateOldenburgLandtagResults = function(qualities) {
+        var q = qualities || Q;
+        var oldenburgParties = ['spd', 'z', 'ddp', 'dvp', 'wp', 'dnvp', 'cnbl', 'kpd', 'nsdap', 'other'];
+        q.oldenburg_parties = oldenburgParties;
+        var oldenburgSeatCount = 48;
+        q.oldenburg_landtag_seat_count = oldenburgSeatCount;
+        var oldenburgWeights = {z: 1.60, ddp: 2.55, dvp: 2.17, spd: 0.89, kpd: 0.56, dnvp: 1.12, nsdap: 1.80, wp: 0.73, other: 1.00};
+        q.oldenburg_party_weights = oldenburgWeights;
+        q.oldenburg_cnbl_name = 'Christlich-Nationale Bauern- und Landvolkpartei';
+        function fed(party) {
+            var share = Number(q[party + '_votes_raw']);
+            if (isNaN(share)) { share = 100*(Number(q[party + '_normalized']) || 0); }
+            return isNaN(share) || share < 0 ? 0 : share;
+        }
+        var weightedVotes = {
+            spd: fed('spd')*0.89,
+            z: fed('z')*1.60,
+            ddp: fed('ddp')*2.55,
+            dvp: fed('dvp')*2.17,
+            wp: fed('wp')*0.73,
+            kpd: fed('kpd')*0.56,
+            nsdap: fed('nsdap')*1.80,
+            other: fed('other')*1.00
+        };
+        var dnvpPool = fed('dnvp')*1.12;
+        weightedVotes.cnbl = dnvpPool*0.25;
+        weightedVotes.dnvp = dnvpPool*0.75;
+        var weightedTotal = 0;
+        for (var pty of oldenburgParties) { weightedTotal += weightedVotes[pty] || 0; }
+        var oldenburgVoteShares = {};
+        for (var party of oldenburgParties) {
+            var rawShare = weightedTotal > 0 ? 100*(weightedVotes[party] || 0)/weightedTotal : 0;
+            q['oldenburg_' + party + '_votes_raw'] = rawShare;
+            q['oldenburg_' + party + '_votes'] = Math.round(rawShare*10)/10;
+            q['oldenburg_' + party + '_votes_disp'] = q['oldenburg_' + party + '_votes'].toFixed(1);
+            q['oldenburg_' + party + '_votes_display'] = q['oldenburg_' + party + '_votes_disp'];
+            q['oldenburg_' + party + '_result_votes'] = q['oldenburg_' + party + '_votes'];
+            oldenburgVoteShares[party] = q['oldenburg_' + party + '_votes'];
+        }
+        var banned = {};
+        for (var bannedParty of oldenburgParties) { banned[bannedParty] = q[bannedParty + '_banned']; }
+        var threshold = q.oldenburg_electoral_threshold || q.electoral_threshold || 0;
+        var seats = window.allocateDhondtSeats(oldenburgVoteShares, oldenburgSeatCount, threshold, {parties: oldenburgParties, banned: banned});
+        q.oldenburg_landtag_total_seats = 0;
+        for (var seatParty of oldenburgParties) {
+            q['oldenburg_' + seatParty + '_r'] = seats[seatParty] || 0;
+            q['oldenburg_' + seatParty + '_seats'] = q['oldenburg_' + seatParty + '_r'];
+            q['oldenburg_' + seatParty + '_seat_share_disp'] = (Math.round((100*q['oldenburg_' + seatParty + '_r']/oldenburgSeatCount)*10)/10).toFixed(1);
+            q.oldenburg_landtag_total_seats += q['oldenburg_' + seatParty + '_r'];
+        }
+        q.oldenburg_landtag_seat_allocation_valid = q.oldenburg_landtag_total_seats == oldenburgSeatCount ? 1 : 0;
+    };
+    window.calculateOldenburgLandtagResults(Q);
+
 window.calculatePrussianLandtagResults = function(qualities) {
         var q = qualities || Q;
         var prussianParties = q.parties || ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
