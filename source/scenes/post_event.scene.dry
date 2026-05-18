@@ -84,6 +84,26 @@ Q.bremen_landtag_seat_count = 120;
 if (Q.bremen_hausbesitzer_party_name == undefined) {
     Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
 }
+if (Q.hamburg_election_year == undefined) {
+    Q.hamburg_election_year = 1927;
+}
+if (Q.hamburg_election_month == undefined) {
+    Q.hamburg_election_month = 10;
+}
+if (Q.hamburg_government == undefined) {
+    Q.hamburg_government = 3;
+}
+if (Q.hamburg_majority_cabinet == undefined) {
+    Q.hamburg_majority_cabinet = 1;
+}
+if (Q.hamburg_leader == undefined) {
+    Q.hamburg_leader = "Rudolf Ross";
+}
+if (Q.hamburg_snap_election_called == undefined) {
+    Q.hamburg_snap_election_called = 0;
+}
+// Hamburg uses a fixed 160-seat Bürgerschaft/Landtag.
+Q.hamburg_landtag_seat_count = 160;
 for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap']) {
     if (Q[relationParty + '_relation'] == undefined) {
         Q[relationParty + '_relation'] = 50;
@@ -817,6 +837,112 @@ if (typeof window !== 'undefined') {
         q.bremen_current_government_status = q.bremen_majority_cabinet ? 'Majority' : 'Minority';
     };
     window.calculateBremenLandtagResults(Q);
+
+    // Calculate Hamburg Bürgerschaft/Landtag support from federal party support using Hamburg party weights.
+    window.calculateHamburgLandtagResults = function(qualities) {
+        var q = qualities || Q;
+        var hamburgParties = ['spd', 'kpd', 'ddp', 'dvp', 'dnvp', 'z', 'nsdap', 'wp'];
+        q.hamburg_parties = hamburgParties;
+        var hamburgSeatCount = 160;
+        q.hamburg_landtag_seat_count = 160;
+        var hamburgWeights = {
+            spd: 1.27,
+            kpd: 1.45,
+            ddp: 3.00,
+            dvp: 1.40,
+            dnvp: 0.86,
+            z: 0.11,
+            nsdap: 0.80,
+            wp: 0.62
+        };
+        q.hamburg_party_weights = hamburgWeights;
+        function federalShare(party) {
+            var share = Number(q[party + '_votes_raw']);
+            if (isNaN(share)) {
+                share = 100*(Number(q[party + '_normalized']) || 0);
+            }
+            if (isNaN(share) || share < 0) {
+                share = 0;
+            }
+            return share;
+        }
+        var weightedVotes = {};
+        var weightedTotal = 0;
+        for (var hamburgWeightedParty of hamburgParties) {
+            weightedVotes[hamburgWeightedParty] = federalShare(hamburgWeightedParty)*(hamburgWeights[hamburgWeightedParty] || 1.00);
+            weightedTotal += weightedVotes[hamburgWeightedParty] || 0;
+        }
+        var hamburgVoteShares = {};
+        for (var hamburgShareParty of hamburgParties) {
+            var hamburgRawShare = weightedTotal > 0 ? 100*(weightedVotes[hamburgShareParty] || 0)/weightedTotal : 0;
+            q['hamburg_' + hamburgShareParty + '_votes_raw'] = hamburgRawShare;
+            q['hamburg_' + hamburgShareParty + '_votes'] = Math.round(hamburgRawShare*10)/10;
+            q['hamburg_' + hamburgShareParty + '_votes_disp'] = q['hamburg_' + hamburgShareParty + '_votes'].toFixed(1);
+            q['hamburg_' + hamburgShareParty + '_votes_display'] = q['hamburg_' + hamburgShareParty + '_votes_disp'];
+            q['hamburg_' + hamburgShareParty + '_result_votes'] = q['hamburg_' + hamburgShareParty + '_votes'];
+            hamburgVoteShares[hamburgShareParty] = q['hamburg_' + hamburgShareParty + '_votes'];
+        }
+        var hamburgBannedParties = {};
+        for (var hamburgBannedParty of hamburgParties) {
+            hamburgBannedParties[hamburgBannedParty] = q[hamburgBannedParty + '_banned'];
+        }
+        var hamburgThreshold = q.hamburg_electoral_threshold || q.electoral_threshold || 0;
+        var hamburgSeats = window.allocateDhondtSeats(hamburgVoteShares, hamburgSeatCount, hamburgThreshold, {parties: hamburgParties, banned: hamburgBannedParties});
+        q.hamburg_landtag_total_seats = 0;
+        for (var hamburgSeatParty of hamburgParties) {
+            q['hamburg_' + hamburgSeatParty + '_r'] = hamburgSeats[hamburgSeatParty] || 0;
+            q['hamburg_' + hamburgSeatParty + '_seats'] = q['hamburg_' + hamburgSeatParty + '_r'];
+            q['hamburg_' + hamburgSeatParty + '_seat_share_disp'] = (Math.round((100*q['hamburg_' + hamburgSeatParty + '_r']/hamburgSeatCount)*10)/10).toFixed(1);
+            q.hamburg_landtag_total_seats += q['hamburg_' + hamburgSeatParty + '_r'];
+        }
+        q.hamburg_landtag_seat_allocation_valid = q.hamburg_landtag_total_seats == hamburgSeatCount ? 1 : 0;
+        if (typeof window.updateHamburgCoalitionOptions === 'function') {
+            window.updateHamburgCoalitionOptions(q);
+        }
+    };
+    window.updateHamburgCoalitionOptions = function(qualities) {
+        var q = qualities || Q;
+        q.hamburg_landtag_seat_count = 160;
+        var threshold = 81;
+        if (q.hamburg_government == undefined) {
+            q.hamburg_government = 3;
+        }
+        var options = [
+            {id: 1, key: 'spd_kpd', name: 'SPD-KPD', parties: 'SPD + KPD', seats: (Number(q.hamburg_spd_r) || 0) + (Number(q.hamburg_kpd_r) || 0)},
+            {id: 2, key: 'sole_spd', name: 'Sole SPD', parties: 'SPD', seats: (Number(q.hamburg_spd_r) || 0)},
+            {id: 3, key: 'spd_ddp', name: 'SPD-DDP', parties: 'SPD + DDP', seats: (Number(q.hamburg_spd_r) || 0) + (Number(q.hamburg_ddp_r) || 0)},
+            {id: 4, key: 'spd_ddp_dvp', name: 'SPD-DDP-DVP', parties: 'SPD + DDP + DVP', seats: (Number(q.hamburg_spd_r) || 0) + (Number(q.hamburg_ddp_r) || 0) + (Number(q.hamburg_dvp_r) || 0)},
+            {id: 5, key: 'ddp_dnvp_wp_dvp', name: 'DDP-DNVP-WP-DVP', parties: 'DDP + DNVP + WP + DVP', seats: (Number(q.hamburg_ddp_r) || 0) + (Number(q.hamburg_dnvp_r) || 0) + (Number(q.hamburg_wp_r) || 0) + (Number(q.hamburg_dvp_r) || 0)}
+        ];
+        q.hamburg_majority_threshold = threshold;
+        var anyMajority = 0;
+        for (var majorityIndex = 0; majorityIndex < options.length; majorityIndex++) {
+            if (options[majorityIndex].seats >= threshold) {
+                anyMajority = 1;
+            }
+        }
+        q.hamburg_any_majority_coalition = anyMajority;
+        for (var optionIndex = 0; optionIndex < options.length; optionIndex++) {
+            var option = options[optionIndex];
+            var prefix = 'hamburg_' + option.key + '_coalition';
+            var hasMajority = option.seats >= threshold;
+            var isIncumbent = Number(q.hamburg_government) === option.id;
+            q[prefix + '_name'] = option.name;
+            q[prefix + '_parties'] = option.parties;
+            q[prefix + '_seats'] = option.seats;
+            q[prefix + '_majority'] = hasMajority ? 1 : 0;
+            q[prefix + '_status'] = hasMajority ? 'Majority' : 'Minority';
+            q[prefix + '_selectable'] = hasMajority || (!anyMajority && isIncumbent) ? 1 : 0;
+        }
+        var selected = options[(Number(q.hamburg_government) || 3) - 1] || options[2];
+        q.hamburg_current_government_name = selected.name;
+        q.hamburg_current_government_parties = selected.parties;
+        q.hamburg_current_government_seats = selected.seats;
+        q.hamburg_majority_cabinet = selected.seats >= threshold ? 1 : 0;
+        q.hamburg_current_government_status = q.hamburg_majority_cabinet ? 'Majority' : 'Minority';
+        q.hamburg_leader_default = selected.parties.indexOf('SPD') >= 0 ? 'Rudolf Ross' : (selected.parties.indexOf('DDP') >= 0 ? 'Carl Wilhelm Petersen' : (selected.parties.indexOf('DVP') >= 0 ? 'Walther Dauch' : ''));
+    };
+    window.calculateHamburgLandtagResults(Q);
 
     window.calculatePrussianLandtagResults = function(qualities) {
         var q = qualities || Q;

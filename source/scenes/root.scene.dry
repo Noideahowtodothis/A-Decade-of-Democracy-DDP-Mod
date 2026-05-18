@@ -131,6 +131,15 @@ Q.bremen_landtag_seat_count = 120;
 Q.bremen_landtag_total_seats = 120;
 Q.bremen_landtag_seat_allocation_valid = 1;
 Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
+Q.hamburg_government = 3;
+Q.hamburg_majority_cabinet = 1;
+Q.hamburg_leader = "Rudolf Ross";
+Q.hamburg_election_year = 1927;
+Q.hamburg_election_month = 10;
+Q.hamburg_snap_election_called = 0;
+Q.hamburg_landtag_seat_count = 160;
+Q.hamburg_landtag_total_seats = 160;
+Q.hamburg_landtag_seat_allocation_valid = 1;
     Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
     for (var startupTrackerParty of Q.party_leader_ideology_parties) {
         Q[startupTrackerParty + '_leader'] = 0;
@@ -261,6 +270,15 @@ Q.bremen_landtag_seat_count = 120;
 Q.bremen_landtag_total_seats = 120;
 Q.bremen_landtag_seat_allocation_valid = 1;
 Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
+Q.hamburg_government = 3;
+Q.hamburg_majority_cabinet = 1;
+Q.hamburg_leader = "Rudolf Ross";
+Q.hamburg_election_year = 1927;
+Q.hamburg_election_month = 10;
+Q.hamburg_snap_election_called = 0;
+Q.hamburg_landtag_seat_count = 160;
+Q.hamburg_landtag_total_seats = 160;
+Q.hamburg_landtag_seat_allocation_valid = 1;
 
     Q.budget = 4;
     Q.inflation = 2.9;
@@ -515,6 +533,15 @@ Q.bremen_landtag_seat_count = 120;
 Q.bremen_landtag_total_seats = 120;
 Q.bremen_landtag_seat_allocation_valid = 1;
 Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
+Q.hamburg_government = 3;
+Q.hamburg_majority_cabinet = 1;
+Q.hamburg_leader = "Rudolf Ross";
+Q.hamburg_election_year = 1927;
+Q.hamburg_election_month = 10;
+Q.hamburg_snap_election_called = 0;
+Q.hamburg_landtag_seat_count = 160;
+Q.hamburg_landtag_total_seats = 160;
+Q.hamburg_landtag_seat_allocation_valid = 1;
 
 // The array of forces - paramilitary groups
 // Number of members in 1928 (in thousands)
