@@ -25,9 +25,16 @@ We can enact policies in Prussia.
 - @unban_sh: Reverse the Stahlhelm ban.
 - @negotiate_concordat: Negotiate a concordat with the Vatican.
 - @sign_concordat: Sign a concordat with the Vatican.
+- @call_prussian_election: Call new Prussian Landtag elections.
 - @root: No new policies are needed.
 - @easy_discard
 - @cancel_advisor_action
+
+@call_prussian_election
+title: Call new Prussian Landtag elections.
+subtitle: Hold a new election for the 450-seat Prussian Landtag.
+on-arrival: prussia_election_year = year; prussia_election_month = month
+go-to: prussian_landtag_election.calculate_prussian_landtag
 
 @police_loyalty
 view-if: prussian_police_loyalty < 1

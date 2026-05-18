@@ -103,10 +103,10 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
     Q.parties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
     Q.spd_prussia = 1;
-    Q.prussian_government = "SPD";
-    Q.prussia_government = "SPD";
+    Q.prussian_government = 1;
+    Q.prussia_government = 1;
     Q.prussia_majority_cabinet = 1;
-    Q.prussia_leader = "Braun";
+    Q.prussia_leader = "Otto Braun";
     Q.prussia_election_year = 1928;
     Q.prussia_election_month = 5;
     Q.prussia_landtag_seat_count = 450;
@@ -174,8 +174,15 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
         Q['prussia_' + startupPrussiaSeatParty + '_seat_share_disp'] = (Math.round((100*Q['prussia_' + startupPrussiaSeatParty + '_r']/Q.prussia_landtag_seat_count)*10)/10).toFixed(1);
         Q.prussia_landtag_total_seats += Q['prussia_' + startupPrussiaSeatParty + '_r'];
     }
-    Q.prussia_current_government_seats = Q.prussia_spd_r + Q.prussia_z_r + Q.prussia_ddp_r;
+    Q.prussia_weimar_coalition_seats = Q.prussia_spd_r + Q.prussia_z_r + Q.prussia_ddp_r;
+    Q.prussia_groko_coalition_seats = Q.prussia_weimar_coalition_seats + Q.prussia_dvp_r;
+    Q.prussia_bourgeois_coalition_seats = Q.prussia_dvp_r + Q.prussia_dnvp_r + Q.prussia_ddp_r + Q.prussia_z_r;
+    Q.prussia_far_right_coalition_seats = Q.prussia_nsdap_r + Q.prussia_dvp_r + Q.prussia_dnvp_r + Q.prussia_z_r;
+    Q.prussia_current_government_name = "Weimar Coalition";
+    Q.prussia_current_government_parties = "SPD + Z + DDP";
+    Q.prussia_current_government_seats = Q.prussia_weimar_coalition_seats;
     Q.prussia_majority_cabinet = Q.prussia_current_government_seats >= 226 ? 1 : 0;
+    Q.prussia_current_government_status = Q.prussia_majority_cabinet ? "Majority" : "Minority";
     // TODO(coalition): future version should allow Reichstag seat total to vary historically/randomly over time.
     Q.reichstag_seat_count = 500;
     Q.reichstag_total_seats = 500;
@@ -207,10 +214,10 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.coalition_toleration_party = '';
 
     Q.spd_prussia = 1;
-    Q.prussian_government = "SPD";
-    Q.prussia_government = "SPD";
+    Q.prussian_government = 1;
+    Q.prussia_government = 1;
     Q.prussia_majority_cabinet = 1;
-    Q.prussia_leader = "Braun";
+    Q.prussia_leader = "Otto Braun";
     Q.prussia_election_year = 1928;
     Q.prussia_election_month = 5;
     Q.prussia_landtag_seat_count = 450;
@@ -442,10 +449,10 @@ Q.hindenburg_enabled = 0;
 // TODO: Potential future consolidation with federalism once Prussia-state relations mechanics are implemented; preserve existing Prussian control logic for now.
 Q.spd_prussia = 1;
 // Options: spd, z, dnvp, papen, nsdap
-Q.prussian_government = "SPD";
-Q.prussia_government = "SPD";
+Q.prussian_government = 1;
+Q.prussia_government = 1;
 Q.prussia_majority_cabinet = 1;
-Q.prussia_leader = "Braun";
+Q.prussia_leader = "Otto Braun";
 Q.prussia_election_year = 1928;
 Q.prussia_election_month = 5;
 Q.prussia_landtag_seat_count = 450;
@@ -858,8 +865,15 @@ for (var startupPrussiaSeatParty of Q.parties) {
     Q['prussia_' + startupPrussiaSeatParty + '_seat_share_disp'] = (Math.round((100*Q['prussia_' + startupPrussiaSeatParty + '_r']/Q.prussia_landtag_seat_count)*10)/10).toFixed(1);
     Q.prussia_landtag_total_seats += Q['prussia_' + startupPrussiaSeatParty + '_r'];
 }
-Q.prussia_current_government_seats = Q.prussia_spd_r + Q.prussia_z_r + Q.prussia_ddp_r;
+Q.prussia_weimar_coalition_seats = Q.prussia_spd_r + Q.prussia_z_r + Q.prussia_ddp_r;
+Q.prussia_groko_coalition_seats = Q.prussia_weimar_coalition_seats + Q.prussia_dvp_r;
+Q.prussia_bourgeois_coalition_seats = Q.prussia_dvp_r + Q.prussia_dnvp_r + Q.prussia_ddp_r + Q.prussia_z_r;
+Q.prussia_far_right_coalition_seats = Q.prussia_nsdap_r + Q.prussia_dvp_r + Q.prussia_dnvp_r + Q.prussia_z_r;
+Q.prussia_current_government_name = "Weimar Coalition";
+Q.prussia_current_government_parties = "SPD + Z + DDP";
+Q.prussia_current_government_seats = Q.prussia_weimar_coalition_seats;
 Q.prussia_majority_cabinet = Q.prussia_current_government_seats >= 226 ? 1 : 0;
+Q.prussia_current_government_status = Q.prussia_majority_cabinet ? "Majority" : "Minority";
 
 // for changing the DDP's name to the DStP
 Q.ddp_name = "DDP";

@@ -170,8 +170,43 @@ window.calculatePrussianLandtagResults = function(qualities) {
         q.prussia_landtag_total_seats += q['prussia_' + prussianSeatParty + '_r'];
     }
     q.prussia_landtag_seat_allocation_valid = q.prussia_landtag_total_seats == prussianSeatCount ? 1 : 0;
-    q.prussia_current_government_seats = (Number(q.prussia_spd_r) || 0) + (Number(q.prussia_z_r) || 0) + (Number(q.prussia_ddp_r) || 0);
-    q.prussia_majority_cabinet = q.prussia_current_government_seats >= Math.floor(prussianSeatCount/2) + 1 ? 1 : 0;
+    if (typeof window.updatePrussianCoalitionOptions === 'function') {
+        window.updatePrussianCoalitionOptions(q);
+    }
+};
+window.updatePrussianCoalitionOptions = function(qualities) {
+    var q = qualities || Q;
+    var threshold = Math.floor((q.prussia_landtag_seat_count || 450)/2) + 1;
+    if (q.prussia_government == undefined || q.prussia_government == "SPD") {
+        q.prussia_government = 1;
+    }
+    q.prussian_government = q.prussia_government;
+    var options = [
+        {id: 1, key: 'weimar', name: 'Weimar Coalition', parties: 'SPD + Z + DDP', seats: (Number(q.prussia_spd_r) || 0) + (Number(q.prussia_z_r) || 0) + (Number(q.prussia_ddp_r) || 0)},
+        {id: 2, key: 'groko', name: 'GroKo', parties: 'SPD + Z + DDP + DVP', seats: (Number(q.prussia_spd_r) || 0) + (Number(q.prussia_z_r) || 0) + (Number(q.prussia_ddp_r) || 0) + (Number(q.prussia_dvp_r) || 0)},
+        {id: 3, key: 'bourgeois', name: 'Bourgeois Coalition', parties: 'DVP + DNVP + DDP + Z', seats: (Number(q.prussia_dvp_r) || 0) + (Number(q.prussia_dnvp_r) || 0) + (Number(q.prussia_ddp_r) || 0) + (Number(q.prussia_z_r) || 0)},
+        {id: 4, key: 'far_right', name: 'Far-Right Coalition', parties: 'NSDAP + DVP + DNVP + Z', seats: (Number(q.prussia_nsdap_r) || 0) + (Number(q.prussia_dvp_r) || 0) + (Number(q.prussia_dnvp_r) || 0) + (Number(q.prussia_z_r) || 0)}
+    ];
+    q.prussia_majority_threshold = threshold;
+    for (var optionIndex = 0; optionIndex < options.length; optionIndex++) {
+        var option = options[optionIndex];
+        var prefix = 'prussia_' + option.key + '_coalition';
+        var hasMajority = option.seats >= threshold;
+        var isIncumbent = Number(q.prussia_government) === option.id;
+        q[prefix + '_name'] = option.name;
+        q[prefix + '_parties'] = option.parties;
+        q[prefix + '_seats'] = option.seats;
+        q[prefix + '_majority'] = hasMajority ? 1 : 0;
+        q[prefix + '_status'] = hasMajority ? 'Majority' : 'Minority';
+        q[prefix + '_selectable'] = hasMajority || isIncumbent ? 1 : 0;
+    }
+    var selected = options[(Number(q.prussia_government) || 1) - 1] || options[0];
+    q.prussia_current_government_name = selected.name;
+    q.prussia_current_government_parties = selected.parties;
+    q.prussia_current_government_seats = selected.seats;
+    q.prussia_majority_cabinet = selected.seats >= threshold ? 1 : 0;
+    q.prussia_current_government_status = q.prussia_majority_cabinet ? 'Majority' : 'Minority';
+    q.spd_prussia = Number(q.prussia_government) === 1 || Number(q.prussia_government) === 2 ? 1 : 0;
 };
 window.calculatePrussianLandtagResults(Q);
 !}

@@ -24,9 +24,9 @@ on-arrival: {! if (typeof window !== 'undefined' && typeof window.calculatePruss
 
 Prussian Landtag seats: **[+ prussia_landtag_total_seats +] / 450**
 
-Current Prussian government tracker: **[+ prussia_government +]** led by **[+ prussia_leader +]**.
+Current Prussian government: **[+ prussia_current_government_name +]** ([+ prussia_current_government_parties +]) led by **[+ prussia_leader +]**.
 
-Current SPD-Z-DDP government seats: **[+ prussia_current_government_seats +] / 450**. Majority cabinet: **[+ prussia_majority_cabinet +]**.
+Current government seats: **[+ prussia_current_government_seats +] / 450**. Status: **[+ prussia_current_government_status +]**. Majority cabinet: **[+ prussia_majority_cabinet +]**.
 
 {!<table>!}
 {!<tr><td>Party</td><td>Prussian vote share</td><td>Seats (out of 450)</td></tr>!}
@@ -41,5 +41,96 @@ Current SPD-Z-DDP government seats: **[+ prussia_current_government_seats +] / 4
 {!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP{!</td><td>!} [+ prussia_dnvp_votes_disp +]% {!</td><td>!} [+ prussia_dnvp_r +] {!</td></tr>!}
 {!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP{!</td><td>!} [+ prussia_nsdap_votes_disp +]% {!</td><td>!} [+ prussia_nsdap_r +] {!</td></tr>!}
 {!</table>!}
+
+= Choose a Prussian coalition
+
+A coalition is selectable if it controls at least **226** of the **450** Landtag seats. The incumbent coalition is always selectable, even if it can only continue as a minority cabinet.
+
+- @prussia_select_weimar
+- @prussia_select_groko
+- @prussia_select_bourgeois
+- @prussia_select_far_right
+- @new_prussian_elections: Call new Prussian Landtag elections.
+- @root: Continue without changing the Prussian government.
+
+@prussia_select_weimar
+title: Weimar Coalition
+subtitle: SPD + Z + DDP — [+ prussia_weimar_coalition_seats +] / 450 — [+ prussia_weimar_coalition_status +]
+view-if: prussia_weimar_coalition_selectable = 1
+on-arrival: {! Q.prussia_government = 1; Q.prussian_government = 1; if (typeof window !== 'undefined' && typeof window.updatePrussianCoalitionOptions === 'function') { window.updatePrussianCoalitionOptions(Q); } !}
+go-to: prussia_leader_selection
+
+@prussia_select_groko
+title: GroKo
+subtitle: SPD + Z + DDP + DVP — [+ prussia_groko_coalition_seats +] / 450 — [+ prussia_groko_coalition_status +]
+view-if: prussia_groko_coalition_selectable = 1
+on-arrival: {! Q.prussia_government = 2; Q.prussian_government = 2; if (typeof window !== 'undefined' && typeof window.updatePrussianCoalitionOptions === 'function') { window.updatePrussianCoalitionOptions(Q); } !}
+go-to: prussia_leader_selection
+
+@prussia_select_bourgeois
+title: Bourgeois Coalition
+subtitle: DVP + DNVP + DDP + Z — [+ prussia_bourgeois_coalition_seats +] / 450 — [+ prussia_bourgeois_coalition_status +]
+view-if: prussia_bourgeois_coalition_selectable = 1
+on-arrival: {! Q.prussia_government = 3; Q.prussian_government = 3; if (typeof window !== 'undefined' && typeof window.updatePrussianCoalitionOptions === 'function') { window.updatePrussianCoalitionOptions(Q); } !}
+go-to: prussia_leader_selection
+
+@prussia_select_far_right
+title: Far-Right Coalition
+subtitle: NSDAP + DVP + DNVP + Z — [+ prussia_far_right_coalition_seats +] / 450 — [+ prussia_far_right_coalition_status +]
+view-if: prussia_far_right_coalition_selectable = 1
+on-arrival: {! Q.prussia_government = 4; Q.prussian_government = 4; if (typeof window !== 'undefined' && typeof window.updatePrussianCoalitionOptions === 'function') { window.updatePrussianCoalitionOptions(Q); } !}
+go-to: prussia_leader_selection
+
+@new_prussian_elections
+title: Call new Prussian Landtag elections.
+on-arrival: prussia_election_year = year; prussia_election_month = month
+go-to: calculate_prussian_landtag
+
+@prussia_leader_selection
+
+= Choose the Prussian leader
+
+Selected coalition: **[+ prussia_current_government_name +]** ([+ prussia_current_government_parties +]).
+
+Coalition seats: **[+ prussia_current_government_seats +] / 450**. Status: **[+ prussia_current_government_status +]**.
+
+- @prussia_leader_braun
+- @prussia_leader_stegerwald
+- @prussia_leader_goering
+
+@prussia_leader_braun
+title: Otto Braun
+subtitle: Available because the SPD is in the coalition.
+view-if: prussia_government = 1 or prussia_government = 2
+on-arrival: prussia_leader = "Otto Braun"
+go-to: prussian_government_confirmed
+
+@prussia_leader_stegerwald
+title: Adam Stegerwald
+subtitle: Available because Zentrum is in the coalition.
+view-if: prussia_government = 1 or prussia_government = 2 or prussia_government = 3 or prussia_government = 4
+on-arrival: prussia_leader = "Adam Stegerwald"
+go-to: prussian_government_confirmed
+
+@prussia_leader_goering
+title: Hermann Göring
+subtitle: Available because the NSDAP is in the coalition.
+view-if: prussia_government = 4
+on-arrival: prussia_leader = "Hermann Göring"
+go-to: prussian_government_confirmed
+
+@prussian_government_confirmed
+
+= Prussian government formed
+
+Coalition: **[+ prussia_current_government_name +]**
+
+Parties: **[+ prussia_current_government_parties +]**
+
+Seats: **[+ prussia_current_government_seats +] / 450**
+
+Status: **[+ prussia_current_government_status +]**
+
+Leader: **[+ prussia_leader +]**
 
 - @root: Continue.
