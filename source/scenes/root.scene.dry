@@ -112,6 +112,15 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.prussia_landtag_seat_count = 450;
     Q.prussia_landtag_total_seats = 450;
     Q.prussia_landtag_seat_allocation_valid = 1;
+Q.bavaria_government = 2;
+Q.bavaria_majority_cabinet = 1;
+Q.bavaria_leader = "Heinrich Held";
+Q.bavaria_election_year = 1928;
+Q.bavaria_election_month = 4;
+Q.bavaria_landtag_seat_count = 128;
+Q.bavaria_landtag_total_seats = 128;
+Q.bavaria_landtag_seat_allocation_valid = 1;
+Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
     Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
     for (var startupTrackerParty of Q.party_leader_ideology_parties) {
         Q[startupTrackerParty + '_leader'] = 0;
@@ -223,6 +232,15 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.prussia_landtag_seat_count = 450;
     Q.prussia_landtag_total_seats = 450;
     Q.prussia_landtag_seat_allocation_valid = 1;
+Q.bavaria_government = 2;
+Q.bavaria_majority_cabinet = 1;
+Q.bavaria_leader = "Heinrich Held";
+Q.bavaria_election_year = 1928;
+Q.bavaria_election_month = 4;
+Q.bavaria_landtag_seat_count = 128;
+Q.bavaria_landtag_total_seats = 128;
+Q.bavaria_landtag_seat_allocation_valid = 1;
+Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
 
     Q.budget = 4;
     Q.inflation = 2.9;
@@ -458,6 +476,15 @@ Q.prussia_election_month = 5;
 Q.prussia_landtag_seat_count = 450;
 Q.prussia_landtag_total_seats = 450;
 Q.prussia_landtag_seat_allocation_valid = 1;
+Q.bavaria_government = 2;
+Q.bavaria_majority_cabinet = 1;
+Q.bavaria_leader = "Heinrich Held";
+Q.bavaria_election_year = 1928;
+Q.bavaria_election_month = 4;
+Q.bavaria_landtag_seat_count = 128;
+Q.bavaria_landtag_total_seats = 128;
+Q.bavaria_landtag_seat_allocation_valid = 1;
+Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
 
 // The array of forces - paramilitary groups
 // Number of members in 1928 (in thousands)
@@ -1226,7 +1253,7 @@ go-to: main if difficulty >= 0; main.main_easy if difficulty < 0
 
 = 1928
 
-It is a bright time for German democracy. After a period of struggle, inflation is finally under control, and the economy is expanding steadily. In foreign policy, we have reached agreements with the Western powers and the Soviet Union that might make genuine peace a reality. 
+It is a bright time for German democracy. After a period of struggle, inflation is finally under control, and the economy is expanding steadily. In foreign policy, we have reached agreements with the Western powers and the Soviet Union that might make genuine peace a reality.
 
 Now, the task of Social Democracy is to prepare for the next election. The bourgeois-right government of Wilhelm Marx is unpopular, and we stand to gain. Perhaps the next government will have a socialist majority.
 

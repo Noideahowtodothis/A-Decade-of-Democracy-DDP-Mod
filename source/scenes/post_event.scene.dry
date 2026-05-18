@@ -41,6 +41,26 @@ if (Q.prussia_leader == undefined || Q.prussia_leader == "Braun") {
 if (Q.prussia_landtag_seat_count == undefined) {
     Q.prussia_landtag_seat_count = 450;
 }
+if (Q.bavaria_election_year == undefined) {
+    Q.bavaria_election_year = 1928;
+}
+if (Q.bavaria_election_month == undefined) {
+    Q.bavaria_election_month = 4;
+}
+if (Q.bavaria_government == undefined) {
+    Q.bavaria_government = 2;
+}
+if (Q.bavaria_majority_cabinet == undefined) {
+    Q.bavaria_majority_cabinet = 1;
+}
+if (Q.bavaria_leader == undefined) {
+    Q.bavaria_leader = "Heinrich Held";
+}
+// Bavaria uses a fixed 128-seat Landtag; force the value so older saves or test states cannot carry a stale seat count.
+Q.bavaria_landtag_seat_count = 128;
+if (Q.bavaria_peasant_party_name == undefined) {
+    Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
+}
 for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap']) {
     if (Q[relationParty + '_relation'] == undefined) {
         Q[relationParty + '_relation'] = 50;
@@ -472,18 +492,18 @@ for (var c of Q.classes) {
     }
 }
 // calculate support for each of the parties
-var total_support = 0; 
+var total_support = 0;
 for (var party of Q.parties) {
     var party_support = 0;
     for (var c of Q.classes) {
-        if (Q.old_demographics) { 
+        if (Q.old_demographics) {
             party_support += Q[c]*Q[c+'_'+party];
-        } else  { 
+        } else  {
             party_support += Q[c]*Q[c+'_'+party+'_normalized'];
-        } 
+        }
     }
     Q[party + '_support'] = party_support;
-    total_support += party_support; 
+    total_support += party_support;
 }
 // 2. normalize support (fraction)
 for (var party of Q.parties) {
@@ -538,6 +558,123 @@ if (typeof window !== 'undefined' && typeof window.allocateDhondtSeats !== 'func
     };
 }
 if (typeof window !== 'undefined') {
+    // Calculate Bavarian Landtag support from federal party support using Bavarian party weights.
+    // Z and BVP are combined for Bavaria before applying the BVP/Z state scale.
+    window.calculateBavarianLandtagResults = function(qualities) {
+        var q = qualities || Q;
+        var bavarianParties = ['spd', 'kpd', 'bvp_z', 'ddp', 'dvp', 'dnvp', 'nsdap', 'peasant', 'other'];
+        q.bavaria_parties = bavarianParties;
+        q.bavaria_peasant_party_name = 'Bavarian Peasant Party';
+        var bavarianSeatCount = 128;
+        q.bavaria_landtag_seat_count = 128;
+        var bavarianWeights = {
+            bvp_z: 2.67,
+            spd: 0.77,
+            dnvp: 0.545,
+            dvp: 0.578,
+            ddp: 0.47,
+            kpd: 0.76,
+            nsdap: 0.834,
+            other: 1.00,
+            peasant_from_other: 0.016
+        };
+        q.bavaria_party_weights = bavarianWeights;
+        function federalShare(party) {
+            var share = Number(q[party + '_votes_raw']);
+            if (isNaN(share)) {
+                share = 100*(Number(q[party + '_normalized']) || 0);
+            }
+            if (isNaN(share) || share < 0) {
+                share = 0;
+            }
+            return share;
+        }
+        var otherBase = federalShare('other');
+        var weightedVotes = {
+            spd: federalShare('spd')*bavarianWeights.spd,
+            kpd: federalShare('kpd')*bavarianWeights.kpd,
+            bvp_z: (federalShare('z') + federalShare('bvp'))*bavarianWeights.bvp_z,
+            ddp: federalShare('ddp')*bavarianWeights.ddp,
+            dvp: federalShare('dvp')*bavarianWeights.dvp,
+            dnvp: federalShare('dnvp')*bavarianWeights.dnvp,
+            nsdap: federalShare('nsdap')*bavarianWeights.nsdap,
+            peasant: otherBase*bavarianWeights.peasant_from_other,
+            other: otherBase*(1 - bavarianWeights.peasant_from_other)
+        };
+        var weightedTotal = 0;
+        for (var weightedParty of bavarianParties) {
+            weightedTotal += weightedVotes[weightedParty] || 0;
+        }
+        var bavarianVoteShares = {};
+        for (var bavarianShareParty of bavarianParties) {
+            var bavarianRawShare = weightedTotal > 0 ? 100*(weightedVotes[bavarianShareParty] || 0)/weightedTotal : 0;
+            q['bavaria_' + bavarianShareParty + '_votes_raw'] = bavarianRawShare;
+            q['bavaria_' + bavarianShareParty + '_votes'] = Math.round(bavarianRawShare*10)/10;
+            q['bavaria_' + bavarianShareParty + '_votes_disp'] = q['bavaria_' + bavarianShareParty + '_votes'].toFixed(1);
+            q['bavaria_' + bavarianShareParty + '_votes_display'] = q['bavaria_' + bavarianShareParty + '_votes_disp'];
+            q['bavaria_' + bavarianShareParty + '_result_votes'] = q['bavaria_' + bavarianShareParty + '_votes'];
+            bavarianVoteShares[bavarianShareParty] = q['bavaria_' + bavarianShareParty + '_votes'];
+        }
+        var bavarianBannedParties = {};
+        for (var bavarianBannedParty of bavarianParties) {
+            bavarianBannedParties[bavarianBannedParty] = q[bavarianBannedParty + '_banned'];
+        }
+        var bavarianThreshold = q.bavaria_electoral_threshold || q.electoral_threshold || 0;
+        var bavarianSeats = window.allocateDhondtSeats(bavarianVoteShares, bavarianSeatCount, bavarianThreshold, {parties: bavarianParties, banned: bavarianBannedParties});
+        q.bavaria_landtag_total_seats = 0;
+        for (var bavarianSeatParty of bavarianParties) {
+            q['bavaria_' + bavarianSeatParty + '_r'] = bavarianSeats[bavarianSeatParty] || 0;
+            q['bavaria_' + bavarianSeatParty + '_seats'] = q['bavaria_' + bavarianSeatParty + '_r'];
+            q['bavaria_' + bavarianSeatParty + '_seat_share_disp'] = (Math.round((100*q['bavaria_' + bavarianSeatParty + '_r']/bavarianSeatCount)*10)/10).toFixed(1);
+            q.bavaria_landtag_total_seats += q['bavaria_' + bavarianSeatParty + '_r'];
+        }
+        q.bavaria_landtag_seat_allocation_valid = q.bavaria_landtag_total_seats == bavarianSeatCount ? 1 : 0;
+        if (typeof window.updateBavarianCoalitionOptions === 'function') {
+            window.updateBavarianCoalitionOptions(q);
+        }
+    };
+    window.updateBavarianCoalitionOptions = function(qualities) {
+        var q = qualities || Q;
+        q.bavaria_landtag_seat_count = 128;
+        var threshold = 65;
+        if (q.bavaria_government == undefined) {
+            q.bavaria_government = 2;
+        }
+        var options = [
+            {id: 1, key: 'traffic_light', name: 'Traffic Light', parties: 'DDP + Peasant + SPD', seats: (Number(q.bavaria_ddp_r) || 0) + (Number(q.bavaria_peasant_r) || 0) + (Number(q.bavaria_spd_r) || 0)},
+            {id: 2, key: 'bvp_peasant_dnvp', name: 'BVP-Peasant-DNVP', parties: 'BVP/Z + Peasant + DNVP', seats: (Number(q.bavaria_bvp_z_r) || 0) + (Number(q.bavaria_peasant_r) || 0) + (Number(q.bavaria_dnvp_r) || 0)},
+            {id: 3, key: 'bvp_dnvp', name: 'BVP-DNVP', parties: 'BVP/Z + DNVP', seats: (Number(q.bavaria_bvp_z_r) || 0) + (Number(q.bavaria_dnvp_r) || 0)},
+            {id: 4, key: 'bvp_ddp_peasant', name: 'BVP-DDP-Peasant', parties: 'BVP/Z + DDP + Peasant', seats: (Number(q.bavaria_bvp_z_r) || 0) + (Number(q.bavaria_ddp_r) || 0) + (Number(q.bavaria_peasant_r) || 0)}
+        ];
+        q.bavaria_majority_threshold = threshold;
+        var anyMajority = 0;
+        for (var majorityIndex = 0; majorityIndex < options.length; majorityIndex++) {
+            if (options[majorityIndex].seats >= threshold) {
+                anyMajority = 1;
+            }
+        }
+        q.bavaria_any_majority_coalition = anyMajority;
+        for (var optionIndex = 0; optionIndex < options.length; optionIndex++) {
+            var option = options[optionIndex];
+            var prefix = 'bavaria_' + option.key + '_coalition';
+            var hasMajority = option.seats >= threshold;
+            var isIncumbent = Number(q.bavaria_government) === option.id;
+            q[prefix + '_name'] = option.name;
+            q[prefix + '_parties'] = option.parties;
+            q[prefix + '_seats'] = option.seats;
+            q[prefix + '_majority'] = hasMajority ? 1 : 0;
+            q[prefix + '_status'] = hasMajority ? 'Majority' : 'Minority';
+            q[prefix + '_selectable'] = hasMajority || (!anyMajority && isIncumbent) ? 1 : 0;
+        }
+        var selected = options[(Number(q.bavaria_government) || 2) - 1] || options[1];
+        q.bavaria_current_government_name = selected.name;
+        q.bavaria_current_government_parties = selected.parties;
+        q.bavaria_current_government_seats = selected.seats;
+        q.bavaria_majority_cabinet = selected.seats >= threshold ? 1 : 0;
+        q.bavaria_current_government_status = q.bavaria_majority_cabinet ? 'Majority' : 'Minority';
+    };
+    window.calculateBavarianLandtagResults(Q);
+
     window.calculatePrussianLandtagResults = function(qualities) {
         var q = qualities || Q;
         var prussianParties = q.parties || ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
@@ -799,12 +936,12 @@ if (Q.month_actions >= 1) {
     if (Q.major_curriculum && Q.major_curriculum == "democratic") {
         if (Q.pro_republic < 60) {
             Q.pro_republic += 0.5;
-        } 
+        }
     }
     if (Q.minor_curriculum && Q.minor_curriculum == "democratic") {
         if (Q.pro_republic < 60) {
             Q.pro_republic += 0.3;
-        } 
+        }
     }
     // science bonus to economic growth
     // education bonus
