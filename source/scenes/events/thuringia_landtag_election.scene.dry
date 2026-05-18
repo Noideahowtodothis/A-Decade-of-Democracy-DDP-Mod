@@ -1,0 +1,160 @@
+title: Thuringia Landtag Elections
+new-page: true
+tags: event
+priority: -2
+view-if: (year = thuringia_election_year and month >= thuringia_election_month) or (year > thuringia_election_year)
+on-departure: month_actions += 1; thuringia_election_year = thuringia_election_year + 4 if thuringia_snap_election_called == 0; thuringia_election_year = year + 4 if thuringia_snap_election_called == 1; thuringia_election_month = month if thuringia_snap_election_called == 1; thuringia_snap_election_called = 0
+set-jump: thuringia_landtag_results
+
+= Thuringia Landtag Elections, [+ month : month +] [+ year +]
+
+Thuringia holds Landtag elections. This system reuses federal party support, applies Thuringia weights and DNVP/Landbund split rules, normalizes results, and allocates **56** seats with D’Hondt.
+
+- @calculate_thuringia_landtag: Count the votes.
+
+@calculate_thuringia_landtag
+on-arrival: thuringia_government = 5 if thuringia_government == undefined; thuringia_leader = "Arnold Paulssen" if thuringia_leader == undefined; thuringia_majority_cabinet = 1 if thuringia_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: thuringia_landtag_results
+
+@thuringia_landtag_results
+on-arrival: {! var isThuringiaSnapElection = Number(Q.thuringia_snap_election_called) === 1; Q.thuringia_next_election_year_preview = (isThuringiaSnapElection ? (Number(Q.year) || 0) : (Number(Q.thuringia_election_year) || Number(Q.year) || 0)) + 4; Q.thuringia_next_election_month_preview = isThuringiaSnapElection ? Q.month : Q.thuringia_election_month; if (typeof window !== 'undefined' && typeof window.calculateThuringiaLandtagResults === 'function') { window.calculateThuringiaLandtagResults(Q); } !}
+
+= Thuringia Landtag election results
+
+Next Thuringia election after this Landtag is due in **[+ thuringia_next_election_month_preview : month +] [+ thuringia_next_election_year_preview +]**.
+
+Thuringia Landtag seats: **[+ thuringia_landtag_total_seats +] / 56**
+
+Current Thuringia government: **[+ thuringia_current_government_name +]** ([+ thuringia_current_government_parties +]) led by **[+ thuringia_leader +]**.
+
+Current government seats: **[+ thuringia_current_government_seats +] / 56**. Status: **[+ thuringia_current_government_status +]**. Majority cabinet: **[+ thuringia_majority_cabinet +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Thuringia vote share</td><td>Seats (out of 56)</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ thuringia_spd_votes_disp +]% {!</td><td>!} [+ thuringia_spd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#8B0000'> </div> !} KPD{!</td><td>!} [+ thuringia_kpd_votes_disp +]% {!</td><td>!} [+ thuringia_kpd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]{!</td><td>!} [+ thuringia_ddp_votes_disp +]% {!</td><td>!} [+ thuringia_ddp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP{!</td><td>!} [+ thuringia_dvp_votes_disp +]% {!</td><td>!} [+ thuringia_dvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP{!</td><td>!} [+ thuringia_dnvp_votes_disp +]% {!</td><td>!} [+ thuringia_dnvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#7A5C20'> </div> !} Thüringer Landbund{!</td><td>!} [+ thuringia_landbund_votes_disp +]% {!</td><td>!} [+ thuringia_landbund_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP{!</td><td>!} [+ thuringia_nsdap_votes_disp +]% {!</td><td>!} [+ thuringia_nsdap_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#5E8C31'> </div> !} WP{!</td><td>!} [+ thuringia_wp_votes_disp +]% {!</td><td>!} [+ thuringia_wp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z{!</td><td>!} [+ thuringia_z_votes_disp +]% {!</td><td>!} [+ thuringia_z_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#a0a0a0'> </div> !} Others{!</td><td>!} [+ thuringia_other_votes_disp +]% {!</td><td>!} [+ thuringia_other_r +] {!</td></tr>!}
+{!</table>!}
+
+= Choose a Thuringia coalition
+
+A coalition is selectable if it controls at least **29** of the **56** Landtag seats. If no listed coalition has a majority, the incumbent Thuringia government may continue as a minority cabinet.
+
+- @thuringia_select_spd_kpd
+- @thuringia_select_sole_spd
+- @thuringia_select_spd_ddp
+- @thuringia_select_spd_ddp_dvp
+- @thuringia_select_ddp_dvp_dnvp_landbund
+- @thuringia_select_ddp_dvp_dnvp_landbund_nsdap
+- @thuringia_select_dvp_dnvp_landbund_nsdap
+- @new_thuringia_elections: Call new Thuringia Landtag elections.
+- @root: Continue without changing the Thuringia government.
+
+@thuringia_select_spd_kpd
+title: SPD-KPD
+subtitle: SPD + KPD — [+ thuringia_spd_kpd_coalition_seats +] / 56 — [+ thuringia_spd_kpd_coalition_status +]
+view-if: thuringia_spd_kpd_coalition_selectable = 1
+on-arrival: {! Q.thuringia_government = 1; window.updateThuringiaCoalitionOptions(Q); !}
+go-to: thuringia_leader_selection
+
+@thuringia_select_sole_spd
+title: Sole SPD
+subtitle: SPD — [+ thuringia_sole_spd_coalition_seats +] / 56 — [+ thuringia_sole_spd_coalition_status +]
+view-if: thuringia_sole_spd_coalition_selectable = 1
+on-arrival: {! Q.thuringia_government = 2; window.updateThuringiaCoalitionOptions(Q); !}
+go-to: thuringia_leader_selection
+
+@thuringia_select_spd_ddp
+title: SPD-DDP
+subtitle: SPD + DDP — [+ thuringia_spd_ddp_coalition_seats +] / 56 — [+ thuringia_spd_ddp_coalition_status +]
+view-if: thuringia_spd_ddp_coalition_selectable = 1
+on-arrival: {! Q.thuringia_government = 3; window.updateThuringiaCoalitionOptions(Q); !}
+go-to: thuringia_leader_selection
+
+@thuringia_select_spd_ddp_dvp
+title: SPD-DDP-DVP
+subtitle: SPD + DDP + DVP — [+ thuringia_spd_ddp_dvp_coalition_seats +] / 56 — [+ thuringia_spd_ddp_dvp_coalition_status +]
+view-if: thuringia_spd_ddp_dvp_coalition_selectable = 1
+on-arrival: {! Q.thuringia_government = 4; window.updateThuringiaCoalitionOptions(Q); !}
+go-to: thuringia_leader_selection
+
+@thuringia_select_ddp_dvp_dnvp_landbund
+title: DDP-DVP-DNVP-Landbund
+subtitle: DDP + DVP + DNVP + Landbund — [+ thuringia_ddp_dvp_dnvp_landbund_coalition_seats +] / 56 — [+ thuringia_ddp_dvp_dnvp_landbund_coalition_status +]
+view-if: thuringia_ddp_dvp_dnvp_landbund_coalition_selectable = 1
+on-arrival: {! Q.thuringia_government = 5; window.updateThuringiaCoalitionOptions(Q); !}
+go-to: thuringia_leader_selection
+
+@thuringia_select_ddp_dvp_dnvp_landbund_nsdap
+title: DDP-DVP-DNVP-Landbund-NSDAP
+subtitle: DDP + DVP + DNVP + Landbund + NSDAP — [+ thuringia_ddp_dvp_dnvp_landbund_nsdap_coalition_seats +] / 56 — [+ thuringia_ddp_dvp_dnvp_landbund_nsdap_coalition_status +]
+view-if: thuringia_ddp_dvp_dnvp_landbund_nsdap_coalition_selectable = 1
+on-arrival: {! Q.thuringia_government = 6; window.updateThuringiaCoalitionOptions(Q); !}
+go-to: thuringia_leader_selection
+
+@thuringia_select_dvp_dnvp_landbund_nsdap
+title: DVP-DNVP-Landbund-NSDAP
+subtitle: DVP + DNVP + Landbund + NSDAP — [+ thuringia_dvp_dnvp_landbund_nsdap_coalition_seats +] / 56 — [+ thuringia_dvp_dnvp_landbund_nsdap_coalition_status +]
+view-if: thuringia_dvp_dnvp_landbund_nsdap_coalition_selectable = 1
+on-arrival: {! Q.thuringia_government = 7; window.updateThuringiaCoalitionOptions(Q); !}
+go-to: thuringia_leader_selection
+
+@new_thuringia_elections
+title: Call new Thuringia Landtag elections.
+on-arrival: thuringia_election_year = year; thuringia_election_month = month; thuringia_snap_election_called = 1
+go-to: calculate_thuringia_landtag
+
+@thuringia_leader_selection
+title: Choose the Thuringia leader
+
+- @thuringia_leader_frolich
+- @thuringia_leader_paulssen
+- @thuringia_leader_leutheusser
+- @thuringia_leader_baum
+- @thuringia_leader_frick
+
+@thuringia_leader_frolich
+title: August Frölich
+view-if: thuringia_spd_in_government = 1 and thuringia_dvp_in_government = 0
+on-arrival: thuringia_leader = "August Frölich"
+go-to: thuringia_government_confirmed
+
+@thuringia_leader_paulssen
+title: Arnold Paulssen
+view-if: thuringia_ddp_in_government = 1
+on-arrival: thuringia_leader = "Arnold Paulssen"
+go-to: thuringia_government_confirmed
+
+@thuringia_leader_leutheusser
+title: Richard Leutheußer
+view-if: thuringia_dvp_in_government = 1
+on-arrival: thuringia_leader = "Richard Leutheußer"
+go-to: thuringia_government_confirmed
+
+@thuringia_leader_baum
+title: Erwin Baum
+view-if: thuringia_spd_in_government = 0
+on-arrival: thuringia_leader = "Erwin Baum"
+go-to: thuringia_government_confirmed
+
+@thuringia_leader_frick
+title: Wilhelm Frick
+view-if: thuringia_nsdap_in_government = 1
+on-arrival: thuringia_leader = "Wilhelm Frick"
+go-to: thuringia_government_confirmed
+
+@thuringia_government_confirmed
+title: Thuringia government formed
+
+= Thuringia government formed
+
+Leader **[+ thuringia_leader +]**
+- @root: Continue.

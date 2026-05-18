@@ -333,6 +333,67 @@ window.updateHamburgCoalitionOptions = function(qualities) {
 };
 window.calculateHamburgLandtagResults(Q);
 
+
+// Calculate Thuringia Landtag support from federal party support using Thuringia party weights and special DNVP/Landbund handling.
+window.calculateThuringiaLandtagResults = function(qualities) {
+    var q = qualities || Q;
+    var thuringiaParties = ['spd', 'kpd', 'ddp', 'dvp', 'dnvp', 'landbund', 'nsdap', 'wp', 'z', 'other'];
+    q.thuringia_parties = thuringiaParties;
+    // TODO(thuringia-election): Future version should randomly generate Thuringia seat total between 53 and 61.
+    var thuringiaSeatCount = 56;
+    q.thuringia_landtag_seat_count = thuringiaSeatCount;
+    var thuringiaWeights = {spd: 1.10, kpd: 1.32, ddp: 1.00, dvp: 1.34, nsdap: 1.26, wp: 1.76, z: 0.11, other: 1.00};
+    q.thuringia_party_weights = thuringiaWeights;
+    function fed(party){ var share = Number(q[party + '_votes_raw']); if (isNaN(share)) { share = 100*(Number(q[party + '_normalized']) || 0); } return isNaN(share) || share < 0 ? 0 : share; }
+    var weightedVotes = {spd: fed('spd')*1.10, kpd: fed('kpd')*1.32, ddp: fed('ddp')*1.00, dvp: fed('dvp')*1.34, nsdap: fed('nsdap')*1.26, wp: fed('wp')*1.76, z: fed('z')*0.11, other: fed('other')*1.00};
+    var dnvpLandbundPool = fed('dnvp')*1.45;
+    weightedVotes.landbund = dnvpLandbundPool*0.75;
+    weightedVotes.dnvp = dnvpLandbundPool*0.25;
+    var weightedTotal = 0;
+    for (var p in weightedVotes) { weightedTotal += weightedVotes[p] || 0; }
+    var thuringiaVoteShares = {};
+    for (var i = 0; i < thuringiaParties.length; i++) {
+        var party = thuringiaParties[i];
+        var rawShare = weightedTotal > 0 ? 100*(weightedVotes[party] || 0)/weightedTotal : 0;
+        q['thuringia_' + party + '_votes_raw'] = rawShare;
+        q['thuringia_' + party + '_votes'] = Math.round(rawShare*10)/10;
+        q['thuringia_' + party + '_votes_disp'] = q['thuringia_' + party + '_votes'].toFixed(1);
+        thuringiaVoteShares[party] = q['thuringia_' + party + '_votes'];
+    }
+    if (Number(q.year) === 1927 && Number(q.month) === 1) {
+        thuringiaVoteShares.dnvp += thuringiaVoteShares.dvp + thuringiaVoteShares.landbund;
+        thuringiaVoteShares.dvp = 0;
+        thuringiaVoteShares.landbund = 0;
+    }
+    var banned = {}; for (var j = 0; j < thuringiaParties.length; j++) { banned[thuringiaParties[j]] = q[thuringiaParties[j] + '_banned']; }
+    var threshold = q.thuringia_electoral_threshold || q.electoral_threshold || 0;
+    var seats = window.allocateDhondtSeats(thuringiaVoteShares, thuringiaSeatCount, threshold, {parties: thuringiaParties, banned: banned});
+    q.thuringia_landtag_total_seats = 0;
+    for (var k = 0; k < thuringiaParties.length; k++) { var sp = thuringiaParties[k]; q['thuringia_' + sp + '_r'] = seats[sp] || 0; q.thuringia_landtag_total_seats += q['thuringia_' + sp + '_r']; }
+    q.thuringia_landtag_seat_allocation_valid = q.thuringia_landtag_total_seats == thuringiaSeatCount ? 1 : 0;
+    if (typeof window.updateThuringiaCoalitionOptions === 'function') { window.updateThuringiaCoalitionOptions(q); }
+};
+window.updateThuringiaCoalitionOptions = function(qualities) {
+    var q = qualities || Q;
+    var majority = 29;
+    var options = [
+        {id: 1, key: 'spd_kpd', name: 'SPD-KPD', parties: 'SPD + KPD', seats: (Number(q.thuringia_spd_r)||0)+(Number(q.thuringia_kpd_r)||0)},
+        {id: 2, key: 'sole_spd', name: 'Sole SPD', parties: 'SPD', seats: (Number(q.thuringia_spd_r)||0)},
+        {id: 3, key: 'spd_ddp', name: 'SPD-DDP', parties: 'SPD + DDP', seats: (Number(q.thuringia_spd_r)||0)+(Number(q.thuringia_ddp_r)||0)},
+        {id: 4, key: 'spd_ddp_dvp', name: 'SPD-DDP-DVP', parties: 'SPD + DDP + DVP', seats: (Number(q.thuringia_spd_r)||0)+(Number(q.thuringia_ddp_r)||0)+(Number(q.thuringia_dvp_r)||0)},
+        {id: 5, key: 'ddp_dvp_dnvp_landbund', name: 'DDP-DVP-DNVP-Landbund', parties: 'DDP + DVP + DNVP + Thüringer Landbund', seats: (Number(q.thuringia_ddp_r)||0)+(Number(q.thuringia_dvp_r)||0)+(Number(q.thuringia_dnvp_r)||0)+(Number(q.thuringia_landbund_r)||0)},
+        {id: 6, key: 'ddp_dvp_dnvp_landbund_nsdap', name: 'DDP-DVP-DNVP-Landbund-NSDAP', parties: 'DDP + DVP + DNVP + Thüringer Landbund + NSDAP', seats: (Number(q.thuringia_ddp_r)||0)+(Number(q.thuringia_dvp_r)||0)+(Number(q.thuringia_dnvp_r)||0)+(Number(q.thuringia_landbund_r)||0)+(Number(q.thuringia_nsdap_r)||0)},
+        {id: 7, key: 'dvp_dnvp_landbund_nsdap', name: 'DVP-DNVP-Landbund-NSDAP', parties: 'DVP + DNVP + Thüringer Landbund + NSDAP', seats: (Number(q.thuringia_dvp_r)||0)+(Number(q.thuringia_dnvp_r)||0)+(Number(q.thuringia_landbund_r)||0)+(Number(q.thuringia_nsdap_r)||0)}
+    ];
+    var any = 0; for (var i = 0; i < options.length; i++) { if (options[i].seats >= majority) { any = 1; } }
+    for (var i2 = 0; i2 < options.length; i2++) { var o = options[i2]; var p = 'thuringia_' + o.key + '_coalition'; var hm = o.seats >= majority; var inc = Number(q.thuringia_government) === o.id; q[p + '_seats'] = o.seats; q[p + '_status'] = hm ? 'Majority' : 'Minority'; q[p + '_selectable'] = hm || (!any && inc) ? 1 : 0; }
+    var selected = options[(Number(q.thuringia_government) || 5) - 1] || options[4];
+    q.thuringia_current_government_name = selected.name; q.thuringia_current_government_parties = selected.parties; q.thuringia_current_government_seats = selected.seats;
+    q.thuringia_current_government_status = selected.seats >= majority ? 'Majority' : 'Minority'; q.thuringia_majority_cabinet = selected.seats >= majority ? 1 : 0;
+    q.thuringia_spd_in_government = selected.parties.indexOf('SPD') >= 0 ? 1 : 0; q.thuringia_dvp_in_government = selected.parties.indexOf('DVP') >= 0 ? 1 : 0; q.thuringia_ddp_in_government = selected.parties.indexOf('DDP') >= 0 ? 1 : 0; q.thuringia_nsdap_in_government = selected.parties.indexOf('NSDAP') >= 0 ? 1 : 0;
+};
+window.calculateThuringiaLandtagResults(Q);
+
 // Calculate Prussian Landtag support from federal party support using Prussian party weights.
 // This intentionally does not select a Prussian coalition or add Prussian policies.
 window.calculatePrussianLandtagResults = function(qualities) {

@@ -140,6 +140,16 @@ Q.hamburg_snap_election_called = 0;
 Q.hamburg_landtag_seat_count = 160;
 Q.hamburg_landtag_total_seats = 160;
 Q.hamburg_landtag_seat_allocation_valid = 1;
+Q.thuringia_government = 5;
+Q.thuringia_majority_cabinet = 1;
+Q.thuringia_leader = "Arnold Paulssen";
+Q.thuringia_election_year = 1927;
+Q.thuringia_election_month = 1;
+Q.thuringia_snap_election_called = 0;
+Q.thuringia_landtag_seat_count = 56;
+Q.thuringia_landtag_total_seats = 56;
+Q.thuringia_landtag_seat_allocation_valid = 1;
+Q.thuringia_landbund_party_name = "Thüringer Landbund";
     Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
     for (var startupTrackerParty of Q.party_leader_ideology_parties) {
         Q[startupTrackerParty + '_leader'] = 0;
@@ -279,6 +289,16 @@ Q.hamburg_snap_election_called = 0;
 Q.hamburg_landtag_seat_count = 160;
 Q.hamburg_landtag_total_seats = 160;
 Q.hamburg_landtag_seat_allocation_valid = 1;
+Q.thuringia_government = 5;
+Q.thuringia_majority_cabinet = 1;
+Q.thuringia_leader = "Arnold Paulssen";
+Q.thuringia_election_year = 1927;
+Q.thuringia_election_month = 1;
+Q.thuringia_snap_election_called = 0;
+Q.thuringia_landtag_seat_count = 56;
+Q.thuringia_landtag_total_seats = 56;
+Q.thuringia_landtag_seat_allocation_valid = 1;
+Q.thuringia_landbund_party_name = "Thüringer Landbund";
 
     Q.budget = 4;
     Q.inflation = 2.9;
@@ -542,6 +562,16 @@ Q.hamburg_snap_election_called = 0;
 Q.hamburg_landtag_seat_count = 160;
 Q.hamburg_landtag_total_seats = 160;
 Q.hamburg_landtag_seat_allocation_valid = 1;
+Q.thuringia_government = 5;
+Q.thuringia_majority_cabinet = 1;
+Q.thuringia_leader = "Arnold Paulssen";
+Q.thuringia_election_year = 1927;
+Q.thuringia_election_month = 1;
+Q.thuringia_snap_election_called = 0;
+Q.thuringia_landtag_seat_count = 56;
+Q.thuringia_landtag_total_seats = 56;
+Q.thuringia_landtag_seat_allocation_valid = 1;
+Q.thuringia_landbund_party_name = "Thüringer Landbund";
 
 // The array of forces - paramilitary groups
 // Number of members in 1928 (in thousands)
@@ -1313,5 +1343,4 @@ go-to: main if difficulty >= 0; main.main_easy if difficulty < 0
 It is a bright time for German democracy. After a period of struggle, inflation is finally under control, and the economy is expanding steadily. In foreign policy, we have reached agreements with the Western powers and the Soviet Union that might make genuine peace a reality.
 
 Now, the task of Social Democracy is to prepare for the next election. The bourgeois-right government of Wilhelm Marx is unpopular, and we stand to gain. Perhaps the next government will have a socialist majority.
-
 
