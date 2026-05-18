@@ -23,7 +23,16 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.ddp_factions = Q.factions;
     for (var startupDdpFaction of Q.ddp_factions) {
         Q[startupDdpFaction] = 0;
+        Q[startupDdpFaction + '_dissent'] = 0;
     }
+    Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
+    Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economic_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader'];
+    Q.ddp_nationalism_position = 0;
+    Q.ddp_economic_position = 0;
+    Q.ddp_republic_position = 0;
+    Q.ddp_federalism_position = 0;
+    Q.ddp_leader = 0;
+    Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
 
     Q.deprecated_spd_faction_vars = ['left_strength', 'left_dissent', 'center_strength', 'center_dissent', 'labor_strength', 'labor_dissent', 'reformist_strength', 'reformist_dissent', 'neorevisionist_strength', 'neorevisionist_dissent'];
     Q.left_strength = 15;
@@ -97,6 +106,7 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
         Q[startupTrackerParty + '_leader'] = 0;
         Q[startupTrackerParty + '_ideology'] = 0;
     }
+    Q.ddp_leader = 0;
     Q.kpd_leader = 1;
     Q.z_leader = 2;
     Q.nsdap_leader = 3;
@@ -247,6 +257,21 @@ Q.ddp_left_liberal = 0;
 Q.ddp_left_bourgeois = 0;
 // Regionalist = federalist/regional autonomy liberals
 Q.ddp_regionalist = 0;
+Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
+Q.ddp_left_progressive_dissent = 0;
+Q.ddp_laborist_dissent = 0;
+Q.ddp_left_liberal_dissent = 0;
+Q.ddp_left_bourgeois_dissent = 0;
+Q.ddp_regionalist_dissent = 0;
+
+// DDP congress ideology/state variables. Codes are displayed through DDP qdisplays and status labels.
+Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economic_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader'];
+Q.ddp_nationalism_position = 0;
+Q.ddp_economic_position = 0;
+Q.ddp_republic_position = 0;
+Q.ddp_federalism_position = 0;
+Q.ddp_leader = 0;
+Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
 
 // Deprecated SPD faction compatibility variables.
 // TODO(DDP factions): Migrate remaining SPD faction effects/conditions to DDP faction variables during future rebalancing.
@@ -341,6 +366,7 @@ for (var trackerParty of Q.party_leader_ideology_parties) {
     Q[trackerParty + '_leader'] = 0;
     Q[trackerParty + '_ideology'] = 0;
 }
+Q.ddp_leader = 0;
 Q.kpd_leader = 1;
 // alternative is the Conciliators as party leader
 Q.kpd_party_leader = "Thälmann";
@@ -743,12 +769,22 @@ Q.political_records = [];
 
 // Variable registries for scripted events, debug/state inspectors, and future audit/index systems.
 Q.core_state_variables = ['presidential_anger', 'elite_support', 'federalism', 'pro_republic', 'pacifism', 'nationalism', 'secularism'];
+for (var ddpIdeologyVariable of Q.ddp_ideology_variables) {
+    if (Q.core_state_variables.indexOf(ddpIdeologyVariable) < 0) {
+        Q.core_state_variables.push(ddpIdeologyVariable);
+    }
+}
+for (var ddpDissentVariable of Q.ddp_faction_dissent_variables) {
+    if (Q.core_state_variables.indexOf(ddpDissentVariable) < 0) {
+        Q.core_state_variables.push(ddpDissentVariable);
+    }
+}
 Q.party_leader_ideology_variables = [];
 for (var trackerVariableParty of Q.party_leader_ideology_parties) {
     Q.party_leader_ideology_variables.push(trackerVariableParty + '_leader');
     Q.party_leader_ideology_variables.push(trackerVariableParty + '_ideology');
 }
-Q.scripted_event_variables = Q.core_state_variables.concat(Q.ddp_factions, Q.simplified_faction_variables, Q.party_leader_ideology_variables);
+Q.scripted_event_variables = Q.core_state_variables.concat(Q.ddp_factions, Q.ddp_faction_dissent_variables, Q.ddp_ideology_variables, Q.simplified_faction_variables, Q.party_leader_ideology_variables);
 Q.debug_state_variables = Q.scripted_event_variables;
 Q.audit_state_variables = Q.scripted_event_variables;
 Q.derived_political_variables = ['federalism_state_integration_pressure', 'federalism_judicial_federalization_readiness', 'federalism_regional_crisis_risk', 'federalism_prussia_state_relations'];

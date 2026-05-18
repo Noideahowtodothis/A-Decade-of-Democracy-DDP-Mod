@@ -1,0 +1,425 @@
+title: DDP Party Congress
+subtitle: Mechanical first version
+new-page: true
+tags: event
+view-if: (year = 1925 and month = 12 and not ddp_congress_1925_12_done) or (year = 1927 and month = 4 and not ddp_congress_1927_04_done) or (year = 1929 and month = 10 and not ddp_congress_1929_10_done) or (year = 1931 and month = 3 and not ddp_congress_1931_03_done) or (year = 1933 and month = 8 and not ddp_congress_1933_08_done)
+max-visits: 5
+on-arrival: {!
+Q.ddp_congress_current_date = Q.year + '-' + (Q.month < 10 ? '0' + Q.month : '' + Q.month);
+if (Q.year == 1925 && Q.month == 12) { Q.ddp_congress_1925_12_done = 1; }
+if (Q.year == 1927 && Q.month == 4) { Q.ddp_congress_1927_04_done = 1; }
+if (Q.year == 1929 && Q.month == 10) { Q.ddp_congress_1929_10_done = 1; }
+if (Q.year == 1931 && Q.month == 3) { Q.ddp_congress_1931_03_done = 1; }
+if (Q.year == 1933 && Q.month == 8) { Q.ddp_congress_1933_08_done = 1; }
+
+if (typeof globalThis !== 'undefined') {
+    globalThis.ddpCongressFactionLabels = {
+        ddp_left_progressive: 'Left Progressive',
+        ddp_laborist: 'Laborist',
+        ddp_left_liberal: 'Left Liberal',
+        ddp_left_bourgeois: 'Left Bourgeois',
+        ddp_regionalist: 'Regionalist'
+    };
+    globalThis.ddpCongressIssues = {nationalism:{label:'Nationalism', variable:'ddp_nationalism_position', positions:[{code:'oppose_extreme_nationalism', value:1, label:'Oppose Extreme Nationalism', support:['ddp_left_progressive'], neutral:['ddp_left_liberal'], oppose:['ddp_laborist','ddp_left_bourgeois','ddp_regionalist']},{code:'liberal_civic_nationalism', value:2, label:'Support Liberal Civic Nationalism', support:['ddp_left_liberal'], neutral:['ddp_left_progressive','ddp_laborist','ddp_left_bourgeois'], oppose:['ddp_regionalist']},{code:'political_benefit_nationalism', value:3, label:'Use Nationalism for Political Benefit', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:['ddp_laborist','ddp_left_liberal'], oppose:['ddp_left_progressive']},{code:'german_racial_nationalism', value:4, label:'Support German Racial Nationalism', support:['ddp_regionalist'], neutral:['ddp_left_bourgeois'], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]},economic:{label:'Economics', variable:'ddp_economic_position', positions:[{code:'interventionist_economics', value:1, label:'Support Interventionist Economics', support:['ddp_left_progressive','ddp_laborist'], neutral:['ddp_left_liberal'], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'social_liberal_economy', value:2, label:'Support a Social Liberal Economy', support:['ddp_left_progressive','ddp_laborist','ddp_left_liberal'], neutral:[], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'liberal_economics', value:3, label:'Support Liberal Economics', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:['ddp_left_liberal'], oppose:['ddp_left_progressive','ddp_laborist']},{code:'agrarian_interests', value:4, label:'Focus on Agrarian Interests', support:['ddp_regionalist'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois']}]},republic:{label:'The Republic', variable:'ddp_republic_position', positions:[{code:'cornerstone_republic', value:1, label:'Make Ourselves the Cornerstone of the Republic', support:['ddp_left_liberal','ddp_left_progressive','ddp_laborist'], neutral:[], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'quiet_republic', value:2, label:'Support the Republic Quietly', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]},federalism:{label:'Federalism', variable:'ddp_federalism_position', positions:[{code:'expand_federal_powers', value:1, label:'Expand Federal Powers', support:['ddp_regionalist'], neutral:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], oppose:[]},{code:'expand_central_power', value:2, label:'Expand Central Power', support:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], neutral:[], oppose:['ddp_regionalist']},{code:'unitary_state', value:3, label:'Support a Unitary State', support:['ddp_left_progressive'], neutral:['ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], oppose:['ddp_regionalist']}]},leader:{label:'Leader', variable:'ddp_leader', positions:[{code:'anton_erkelenz', value:1, label:'Anton Erkelenz', support:['ddp_left_progressive','ddp_laborist'], neutral:[], oppose:['ddp_left_liberal','ddp_left_bourgeois','ddp_regionalist']},{code:'theodor_heuss', value:2, label:'Theodor Heuss', support:['ddp_left_progressive','ddp_left_liberal'], neutral:['ddp_laborist'], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'theodor_maier', value:3, label:'Theodor Maier', support:['ddp_left_liberal','ddp_left_bourgeois'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_regionalist']},{code:'otto_fischbeck', value:4, label:'Otto Fischbeck', support:['ddp_regionalist'], neutral:['ddp_left_bourgeois'], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']},{code:'erich_koch_weser', value:5, label:'Erich Koch-Weser', support:['ddp_left_bourgeois','ddp_left_liberal'], neutral:['ddp_left_progressive','ddp_laborist','ddp_regionalist'], oppose:[]},{code:'hermann_dietrich', value:6, label:'Hermann Dietrich', support:['ddp_regionalist','ddp_left_bourgeois'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]}};
+    globalThis.prepareDdpCongress = function(qualities) {
+        var factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
+        qualities.ddp_factions = factions;
+        if (!qualities.ddp_faction_dissent_variables) {
+            qualities.ddp_faction_dissent_variables = [];
+        }
+        var strengthTotal = 0;
+        for (var i = 0; i < factions.length; i++) {
+            var faction = factions[i];
+            if (qualities[faction] === undefined || isNaN(qualities[faction])) {
+                qualities[faction] = 0;
+            }
+            if (qualities[faction] < 0) {
+                qualities[faction] = 0;
+            }
+            strengthTotal += qualities[faction];
+            if (qualities[faction + '_dissent'] === undefined || isNaN(qualities[faction + '_dissent'])) {
+                qualities[faction + '_dissent'] = 0;
+            }
+            qualities[faction + '_dissent'] = Math.max(0, Math.min(100, Math.round(qualities[faction + '_dissent'])));
+            if (qualities.ddp_faction_dissent_variables.indexOf(faction + '_dissent') < 0) {
+                qualities.ddp_faction_dissent_variables.push(faction + '_dissent');
+            }
+        }
+        qualities.ddp_congress_total_strength = strengthTotal;
+        qualities.ddp_congress_delegate_basis = strengthTotal > 0 ? 'Faction strength normalized to 100 delegates.' : 'All faction strengths are zero; temporary equal 20-delegate fallback used.';
+        for (var j = 0; j < factions.length; j++) {
+            var delegateFaction = factions[j];
+            var delegateValue = strengthTotal > 0 ? 100*qualities[delegateFaction]/strengthTotal : 20;
+            qualities[delegateFaction + '_delegates'] = delegateValue;
+            qualities[delegateFaction + '_delegates_display'] = (Math.round(delegateValue*10)/10).toFixed(1);
+        }
+        var issues = globalThis.ddpCongressIssues;
+        for (var issueKey in issues) {
+            var issue = issues[issueKey];
+            for (var p = 0; p < issue.positions.length; p++) {
+                var position = issue.positions[p];
+                var supportTotal = 0;
+                var opposeTotal = 0;
+                for (var s = 0; s < position.support.length; s++) {
+                    supportTotal += qualities[position.support[s] + '_delegates'] || 0;
+                }
+                for (var o = 0; o < position.oppose.length; o++) {
+                    opposeTotal += qualities[position.oppose[o] + '_delegates'] || 0;
+                }
+                var prefix = 'ddp_congress_' + issueKey + '_' + position.code;
+                qualities[prefix + '_support'] = Math.round(supportTotal*10)/10;
+                qualities[prefix + '_oppose'] = Math.round(opposeTotal*10)/10;
+                qualities[prefix + '_support_display'] = qualities[prefix + '_support'].toFixed(1);
+                qualities[prefix + '_oppose_display'] = qualities[prefix + '_oppose'].toFixed(1);
+                qualities[prefix + '_available'] = supportTotal > opposeTotal ? 1 : 0;
+                qualities[prefix + '_debug'] = 'Support ' + qualities[prefix + '_support_display'] + ' vs oppose ' + qualities[prefix + '_oppose_display'] + '. ' + (supportTotal > opposeTotal ? 'Available.' : 'Blocked: supporting delegates must outnumber opposing delegates.');
+            }
+        }
+    };
+    globalThis.adoptDdpCongressPosition = function(qualities, issueKey, positionCode) {
+        globalThis.prepareDdpCongress(qualities);
+        var issue = globalThis.ddpCongressIssues[issueKey];
+        if (!issue) { return; }
+        var selected = null;
+        for (var i = 0; i < issue.positions.length; i++) {
+            if (issue.positions[i].code == positionCode) {
+                selected = issue.positions[i];
+            }
+        }
+        if (!selected) { return; }
+        var prefix = 'ddp_congress_' + issueKey + '_' + selected.code;
+        if (!qualities[prefix + '_available']) { return; }
+        qualities[issue.variable] = selected.value;
+        qualities.ddp_congress_last_adopted = selected.label;
+        for (var s = 0; s < selected.support.length; s++) {
+            var supportFaction = selected.support[s];
+            qualities[supportFaction + '_dissent'] = Math.max(0, Math.min(100, (qualities[supportFaction + '_dissent'] || 0) - 2));
+        }
+        for (var o = 0; o < selected.oppose.length; o++) {
+            var opposeFaction = selected.oppose[o];
+            qualities[opposeFaction + '_dissent'] = Math.max(0, Math.min(100, (qualities[opposeFaction + '_dissent'] || 0) + 5));
+        }
+        globalThis.prepareDdpCongress(qualities);
+    };
+}
+globalThis.prepareDdpCongress(Q);
+!}
+
+= DDP Party Congress
+
+Congress date: [+ ddp_congress_current_date +]
+
+Delegate calculation: [+ ddp_congress_delegate_basis +]
+
+= Delegate totals
+
+Left Progressive: [+ ddp_left_progressive_delegates_display +] delegates
+
+Laborist: [+ ddp_laborist_delegates_display +] delegates
+
+Left Liberal: [+ ddp_left_liberal_delegates_display +] delegates
+
+Left Bourgeois: [+ ddp_left_bourgeois_delegates_display +] delegates
+
+Regionalist: [+ ddp_regionalist_delegates_display +] delegates
+
+Temporary debug: a policy is available when supporting delegates are greater than opposing delegates. Neutral delegates do not count.
+
+- @nationalism: Nationalism
+- @economic: Economics
+- @republic: The Republic
+- @federalism: Federalism
+- @leader: Leader
+- @post_event: Finish congress
+
+@nationalism
+on-arrival: {! globalThis.prepareDdpCongress(Q); !}
+
+= Nationalism
+
+Current adopted position: [+ ddp_nationalism_position : ddp_nationalism_position +]
+
+Oppose Extreme Nationalism: [+ ddp_congress_nationalism_oppose_extreme_nationalism_debug +]
+Supports: left progressive; neutral: left liberal; opposes: laborist, left bourgeois, regionalist.
+
+Support Liberal Civic Nationalism: [+ ddp_congress_nationalism_liberal_civic_nationalism_debug +]
+Supports: left liberal; neutral: left progressive, laborist, left bourgeois; opposes: regionalist.
+
+Use Nationalism for Political Benefit: [+ ddp_congress_nationalism_political_benefit_nationalism_debug +]
+Supports: left bourgeois, regionalist; neutral: laborist, left liberal; opposes: left progressive.
+
+Support German Racial Nationalism: [+ ddp_congress_nationalism_german_racial_nationalism_debug +]
+Supports: regionalist; neutral: left bourgeois; opposes: left progressive, laborist, left liberal.
+
+- @nationalism_oppose_extreme_nationalism: Adopt: Oppose Extreme Nationalism
+- @nationalism_liberal_civic_nationalism: Adopt: Support Liberal Civic Nationalism
+- @nationalism_political_benefit_nationalism: Adopt: Use Nationalism for Political Benefit
+- @nationalism_german_racial_nationalism: Adopt: Support German Racial Nationalism
+- @ddp_congress: Back to congress overview
+
+@nationalism_oppose_extreme_nationalism
+title: Adopt: Oppose Extreme Nationalism
+choose-if: ddp_congress_nationalism_oppose_extreme_nationalism_available = 1 and ddp_nationalism_position != 1
+unavailable-subtitle: [+ ddp_congress_nationalism_oppose_extreme_nationalism_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'nationalism', 'oppose_extreme_nationalism'); !}
+go-to: nationalism
+
+Adopted Oppose Extreme Nationalism.
+
+@nationalism_liberal_civic_nationalism
+title: Adopt: Support Liberal Civic Nationalism
+choose-if: ddp_congress_nationalism_liberal_civic_nationalism_available = 1 and ddp_nationalism_position != 2
+unavailable-subtitle: [+ ddp_congress_nationalism_liberal_civic_nationalism_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'nationalism', 'liberal_civic_nationalism'); !}
+go-to: nationalism
+
+Adopted Support Liberal Civic Nationalism.
+
+@nationalism_political_benefit_nationalism
+title: Adopt: Use Nationalism for Political Benefit
+choose-if: ddp_congress_nationalism_political_benefit_nationalism_available = 1 and ddp_nationalism_position != 3
+unavailable-subtitle: [+ ddp_congress_nationalism_political_benefit_nationalism_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'nationalism', 'political_benefit_nationalism'); !}
+go-to: nationalism
+
+Adopted Use Nationalism for Political Benefit.
+
+@nationalism_german_racial_nationalism
+title: Adopt: Support German Racial Nationalism
+choose-if: ddp_congress_nationalism_german_racial_nationalism_available = 1 and ddp_nationalism_position != 4
+unavailable-subtitle: [+ ddp_congress_nationalism_german_racial_nationalism_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'nationalism', 'german_racial_nationalism'); !}
+go-to: nationalism
+
+Adopted Support German Racial Nationalism.
+
+@economic
+on-arrival: {! globalThis.prepareDdpCongress(Q); !}
+
+= Economics
+
+Current adopted position: [+ ddp_economic_position : ddp_economic_position +]
+
+Support Interventionist Economics: [+ ddp_congress_economic_interventionist_economics_debug +]
+Supports: left progressive, laborist; neutral: left liberal; opposes: left bourgeois, regionalist.
+
+Support a Social Liberal Economy: [+ ddp_congress_economic_social_liberal_economy_debug +]
+Supports: left progressive, laborist, left liberal; neutral: none; opposes: left bourgeois, regionalist.
+
+Support Liberal Economics: [+ ddp_congress_economic_liberal_economics_debug +]
+Supports: left bourgeois, regionalist; neutral: left liberal; opposes: left progressive, laborist.
+
+Focus on Agrarian Interests: [+ ddp_congress_economic_agrarian_interests_debug +]
+Supports: regionalist; neutral: none; opposes: left progressive, laborist, left liberal, left bourgeois.
+
+- @economic_interventionist_economics: Adopt: Support Interventionist Economics
+- @economic_social_liberal_economy: Adopt: Support a Social Liberal Economy
+- @economic_liberal_economics: Adopt: Support Liberal Economics
+- @economic_agrarian_interests: Adopt: Focus on Agrarian Interests
+- @ddp_congress: Back to congress overview
+
+@economic_interventionist_economics
+title: Adopt: Support Interventionist Economics
+choose-if: ddp_congress_economic_interventionist_economics_available = 1 and ddp_economic_position != 1
+unavailable-subtitle: [+ ddp_congress_economic_interventionist_economics_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'interventionist_economics'); !}
+go-to: economic
+
+Adopted Support Interventionist Economics.
+
+@economic_social_liberal_economy
+title: Adopt: Support a Social Liberal Economy
+choose-if: ddp_congress_economic_social_liberal_economy_available = 1 and ddp_economic_position != 2
+unavailable-subtitle: [+ ddp_congress_economic_social_liberal_economy_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'social_liberal_economy'); !}
+go-to: economic
+
+Adopted Support a Social Liberal Economy.
+
+@economic_liberal_economics
+title: Adopt: Support Liberal Economics
+choose-if: ddp_congress_economic_liberal_economics_available = 1 and ddp_economic_position != 3
+unavailable-subtitle: [+ ddp_congress_economic_liberal_economics_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'liberal_economics'); !}
+go-to: economic
+
+Adopted Support Liberal Economics.
+
+@economic_agrarian_interests
+title: Adopt: Focus on Agrarian Interests
+choose-if: ddp_congress_economic_agrarian_interests_available = 1 and ddp_economic_position != 4
+unavailable-subtitle: [+ ddp_congress_economic_agrarian_interests_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'agrarian_interests'); !}
+go-to: economic
+
+Adopted Focus on Agrarian Interests.
+
+@republic
+on-arrival: {! globalThis.prepareDdpCongress(Q); !}
+
+= The Republic
+
+Current adopted position: [+ ddp_republic_position : ddp_republic_position +]
+
+Make Ourselves the Cornerstone of the Republic: [+ ddp_congress_republic_cornerstone_republic_debug +]
+Supports: left liberal, left progressive, laborist; neutral: none; opposes: left bourgeois, regionalist.
+
+Support the Republic Quietly: [+ ddp_congress_republic_quiet_republic_debug +]
+Supports: left bourgeois, regionalist; neutral: none; opposes: left progressive, laborist, left liberal.
+
+- @republic_cornerstone_republic: Adopt: Make Ourselves the Cornerstone of the Republic
+- @republic_quiet_republic: Adopt: Support the Republic Quietly
+- @ddp_congress: Back to congress overview
+
+@republic_cornerstone_republic
+title: Adopt: Make Ourselves the Cornerstone of the Republic
+choose-if: ddp_congress_republic_cornerstone_republic_available = 1 and ddp_republic_position != 1
+unavailable-subtitle: [+ ddp_congress_republic_cornerstone_republic_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'republic', 'cornerstone_republic'); !}
+go-to: republic
+
+Adopted Make Ourselves the Cornerstone of the Republic.
+
+@republic_quiet_republic
+title: Adopt: Support the Republic Quietly
+choose-if: ddp_congress_republic_quiet_republic_available = 1 and ddp_republic_position != 2
+unavailable-subtitle: [+ ddp_congress_republic_quiet_republic_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'republic', 'quiet_republic'); !}
+go-to: republic
+
+Adopted Support the Republic Quietly.
+
+@federalism
+on-arrival: {! globalThis.prepareDdpCongress(Q); !}
+
+= Federalism
+
+Current adopted position: [+ ddp_federalism_position : ddp_federalism_position +]
+
+Expand Federal Powers: [+ ddp_congress_federalism_expand_federal_powers_debug +]
+Supports: regionalist; neutral: left progressive, laborist, left liberal, left bourgeois; opposes: none.
+
+Expand Central Power: [+ ddp_congress_federalism_expand_central_power_debug +]
+Supports: left progressive, laborist, left liberal, left bourgeois; neutral: none; opposes: regionalist.
+
+Support a Unitary State: [+ ddp_congress_federalism_unitary_state_debug +]
+Supports: left progressive; neutral: laborist, left liberal, left bourgeois; opposes: regionalist.
+
+- @federalism_expand_federal_powers: Adopt: Expand Federal Powers
+- @federalism_expand_central_power: Adopt: Expand Central Power
+- @federalism_unitary_state: Adopt: Support a Unitary State
+- @ddp_congress: Back to congress overview
+
+@federalism_expand_federal_powers
+title: Adopt: Expand Federal Powers
+choose-if: ddp_congress_federalism_expand_federal_powers_available = 1 and ddp_federalism_position != 1
+unavailable-subtitle: [+ ddp_congress_federalism_expand_federal_powers_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'federalism', 'expand_federal_powers'); !}
+go-to: federalism
+
+Adopted Expand Federal Powers.
+
+@federalism_expand_central_power
+title: Adopt: Expand Central Power
+choose-if: ddp_congress_federalism_expand_central_power_available = 1 and ddp_federalism_position != 2
+unavailable-subtitle: [+ ddp_congress_federalism_expand_central_power_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'federalism', 'expand_central_power'); !}
+go-to: federalism
+
+Adopted Expand Central Power.
+
+@federalism_unitary_state
+title: Adopt: Support a Unitary State
+choose-if: ddp_congress_federalism_unitary_state_available = 1 and ddp_federalism_position != 3
+unavailable-subtitle: [+ ddp_congress_federalism_unitary_state_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'federalism', 'unitary_state'); !}
+go-to: federalism
+
+Adopted Support a Unitary State.
+
+@leader
+on-arrival: {! globalThis.prepareDdpCongress(Q); !}
+
+= Leader
+
+Current adopted position: [+ ddp_leader : ddp_leader_position +]
+
+Anton Erkelenz: [+ ddp_congress_leader_anton_erkelenz_debug +]
+Supports: left progressive, laborist; neutral: none; opposes: left liberal, left bourgeois, regionalist.
+
+Theodor Heuss: [+ ddp_congress_leader_theodor_heuss_debug +]
+Supports: left progressive, left liberal; neutral: laborist; opposes: left bourgeois, regionalist.
+
+Theodor Maier: [+ ddp_congress_leader_theodor_maier_debug +]
+Supports: left liberal, left bourgeois; neutral: none; opposes: left progressive, laborist, regionalist.
+
+Otto Fischbeck: [+ ddp_congress_leader_otto_fischbeck_debug +]
+Supports: regionalist; neutral: left bourgeois; opposes: left progressive, laborist, left liberal.
+
+Erich Koch-Weser: [+ ddp_congress_leader_erich_koch_weser_debug +]
+Supports: left bourgeois, left liberal; neutral: left progressive, laborist, regionalist; opposes: none.
+
+Hermann Dietrich: [+ ddp_congress_leader_hermann_dietrich_debug +]
+Supports: regionalist, left bourgeois; neutral: none; opposes: left progressive, laborist, left liberal.
+
+- @leader_anton_erkelenz: Adopt: Anton Erkelenz
+- @leader_theodor_heuss: Adopt: Theodor Heuss
+- @leader_theodor_maier: Adopt: Theodor Maier
+- @leader_otto_fischbeck: Adopt: Otto Fischbeck
+- @leader_erich_koch_weser: Adopt: Erich Koch-Weser
+- @leader_hermann_dietrich: Adopt: Hermann Dietrich
+- @ddp_congress: Back to congress overview
+
+@leader_anton_erkelenz
+title: Adopt: Anton Erkelenz
+choose-if: ddp_congress_leader_anton_erkelenz_available = 1 and ddp_leader != 1
+unavailable-subtitle: [+ ddp_congress_leader_anton_erkelenz_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'anton_erkelenz'); !}
+go-to: leader
+
+Adopted Anton Erkelenz.
+
+@leader_theodor_heuss
+title: Adopt: Theodor Heuss
+choose-if: ddp_congress_leader_theodor_heuss_available = 1 and ddp_leader != 2
+unavailable-subtitle: [+ ddp_congress_leader_theodor_heuss_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'theodor_heuss'); !}
+go-to: leader
+
+Adopted Theodor Heuss.
+
+@leader_theodor_maier
+title: Adopt: Theodor Maier
+choose-if: ddp_congress_leader_theodor_maier_available = 1 and ddp_leader != 3
+unavailable-subtitle: [+ ddp_congress_leader_theodor_maier_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'theodor_maier'); !}
+go-to: leader
+
+Adopted Theodor Maier.
+
+@leader_otto_fischbeck
+title: Adopt: Otto Fischbeck
+choose-if: ddp_congress_leader_otto_fischbeck_available = 1 and ddp_leader != 4
+unavailable-subtitle: [+ ddp_congress_leader_otto_fischbeck_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'otto_fischbeck'); !}
+go-to: leader
+
+Adopted Otto Fischbeck.
+
+@leader_erich_koch_weser
+title: Adopt: Erich Koch-Weser
+choose-if: ddp_congress_leader_erich_koch_weser_available = 1 and ddp_leader != 5
+unavailable-subtitle: [+ ddp_congress_leader_erich_koch_weser_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'erich_koch_weser'); !}
+go-to: leader
+
+Adopted Erich Koch-Weser.
+
+@leader_hermann_dietrich
+title: Adopt: Hermann Dietrich
+choose-if: ddp_congress_leader_hermann_dietrich_available = 1 and ddp_leader != 6
+unavailable-subtitle: [+ ddp_congress_leader_hermann_dietrich_debug +]
+on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'hermann_dietrich'); !}
+go-to: leader
+
+Adopted Hermann Dietrich.
