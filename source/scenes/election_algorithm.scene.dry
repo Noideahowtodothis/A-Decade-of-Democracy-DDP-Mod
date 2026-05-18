@@ -444,8 +444,60 @@ window.calculateOldenburgLandtagResults = function(qualities) {
         q.oldenburg_landtag_total_seats += q['oldenburg_' + sp + '_r'];
     }
     q.oldenburg_landtag_seat_allocation_valid = q.oldenburg_landtag_total_seats == oldenburgSeatCount ? 1 : 0;
+    if (typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(q); }
 };
 window.calculateOldenburgLandtagResults(Q);
+
+
+window.updateOldenburgCoalitionOptions = function(qualities) {
+    var q = qualities || Q;
+    var threshold = 25;
+    var seatCount = 48;
+    q.oldenburg_landtag_seat_count = seatCount;
+    q.oldenburg_majority_threshold = threshold;
+    if (q.oldenburg_government == undefined) { q.oldenburg_government = 3; }
+
+    var before1930 = Number(q.year) < 1930;
+    var options = [
+        {id:1,key:'technocratic',name:'Technocratic',parties:'None',seats:0,technocratic:true},
+        {id:2,key:'spd_z_ddp',name:'SPD-Z-DDP',parties:'SPD + Z + DDP',seats:(Number(q.oldenburg_spd_r)||0)+(Number(q.oldenburg_z_r)||0)+(Number(q.oldenburg_ddp_r)||0)},
+        {id:3,key:'z_ddp_dvp',name:'Z-DDP-DVP',parties:'Z + DDP + DVP',seats:(Number(q.oldenburg_z_r)||0)+(Number(q.oldenburg_ddp_r)||0)+(Number(q.oldenburg_dvp_r)||0)},
+        {id:4,key:'ddp_dvp_wp',name:'DDP-DVP-WP',parties:'DDP + DVP + WP',seats:(Number(q.oldenburg_ddp_r)||0)+(Number(q.oldenburg_dvp_r)||0)+(Number(q.oldenburg_wp_r)||0)},
+        {id:5,key:'ddp_dnvp_z_dvp',name:'DDP-DNVP-Z-DVP',parties:'DDP + DNVP + Z + DVP',seats:(Number(q.oldenburg_ddp_r)||0)+(Number(q.oldenburg_dnvp_r)||0)+(Number(q.oldenburg_z_r)||0)+(Number(q.oldenburg_dvp_r)||0)},
+        {id:6,key:'dnvp_z_dvp_cnbl',name:'DNVP-Z-DVP-CNBL',parties:'DNVP + Z + DVP + CNBL',seats:(Number(q.oldenburg_dnvp_r)||0)+(Number(q.oldenburg_z_r)||0)+(Number(q.oldenburg_dvp_r)||0)+(Number(q.oldenburg_cnbl_r)||0)},
+        {id:7,key:'nsdap_dnvp',name:'NSDAP-DNVP',parties:'NSDAP + DNVP',seats:(Number(q.oldenburg_nsdap_r)||0)+(Number(q.oldenburg_dnvp_r)||0)},
+        {id:8,key:'nsdap_majority',name:'NSDAP Majority',parties:'NSDAP',seats:(Number(q.oldenburg_nsdap_r)||0)}
+    ];
+    var anyMajority = 0;
+    for (var i=0;i<options.length;i++) { if (!options[i].technocratic && options[i].seats >= threshold) { anyMajority = 1; } }
+    for (var j=0;j<options.length;j++) {
+        var option = options[j], prefix = 'oldenburg_' + option.key + '_coalition', hasMajority = option.seats >= threshold;
+        var technocraticSelectable = option.technocratic && before1930;
+        var incumbentFallback = !anyMajority && Number(q.oldenburg_government) === option.id;
+        q[prefix + '_name'] = option.name; q[prefix + '_parties'] = option.parties; q[prefix + '_seats'] = option.seats;
+        q[prefix + '_majority'] = hasMajority ? 1 : 0; q[prefix + '_status'] = hasMajority ? 'Majority' : 'Minority';
+        q[prefix + '_selectable'] = (hasMajority || technocraticSelectable || incumbentFallback) ? 1 : 0;
+    }
+    var selected = options[(Number(q.oldenburg_government) || 3) - 1] || options[2];
+    q.oldenburg_current_government_name = selected.name; q.oldenburg_current_government_parties = selected.parties; q.oldenburg_current_government_seats = selected.seats;
+    q.oldenburg_majority_cabinet = selected.seats >= threshold ? 1 : 0; q.oldenburg_current_government_status = q.oldenburg_majority_cabinet ? 'Majority' : 'Minority';
+    var parties = selected.parties;
+    q.oldenburg_spd_in_government = parties.indexOf('SPD') >= 0 ? 1 : 0; q.oldenburg_ddp_in_government = parties.indexOf('DDP') >= 0 ? 1 : 0;
+    q.oldenburg_z_in_government = parties.indexOf('Z') >= 0 ? 1 : 0; q.oldenburg_dvp_in_government = parties.indexOf('DVP') >= 0 ? 1 : 0;
+    q.oldenburg_dnvp_in_government = parties.indexOf('DNVP') >= 0 ? 1 : 0; q.oldenburg_nsdap_in_government = parties.indexOf('NSDAP') >= 0 ? 1 : 0;
+    q.oldenburg_leader_carl_rover_available = q.oldenburg_nsdap_in_government;
+    q.oldenburg_leader_eugen_von_finckh_available = selected.technocratic ? 1 : 0;
+    q.oldenburg_leader_friedrich_cassebohm_available = (q.oldenburg_dvp_in_government || q.oldenburg_dnvp_in_government) ? 1 : 0;
+    q.oldenburg_leader_franz_driver_available = q.oldenburg_z_in_government;
+    q.oldenburg_leader_theodor_tantzen_available = q.oldenburg_ddp_in_government;
+    q.oldenburg_leader_paul_hug_available = q.oldenburg_spd_in_government;
+    if (q.oldenburg_nsdap_in_government) { q.oldenburg_leader = 'Carl Röver'; }
+    else if (selected.technocratic) { q.oldenburg_leader = 'Eugen von Finckh'; }
+    else if (q.oldenburg_dvp_in_government || q.oldenburg_dnvp_in_government) { q.oldenburg_leader = 'Friedrich Cassebohm'; }
+    else if (q.oldenburg_z_in_government) { q.oldenburg_leader = 'Franz Driver'; }
+    else if (q.oldenburg_ddp_in_government) { q.oldenburg_leader = 'Theodor Tantzen'; }
+    else if (q.oldenburg_spd_in_government) { q.oldenburg_leader = 'Paul Hug'; }
+};
 
 // Calculate Prussian Landtag support from federal party support using Prussian party weights.
 // This intentionally does not select a Prussian coalition or add Prussian policies.
