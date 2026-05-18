@@ -300,6 +300,7 @@ for (var cultureVar of Q.culture_vars) {
 // Tiny monthly pressure from republican legitimacy toward/away from constitutional parties.
 var REPUBLICANISM_MONTHLY_DRIFT_RATE = 0.05;
 var PACIFISM_MONTHLY_DRIFT_RATE = 0.025;
+var NATIONALISM_MONTHLY_DRIFT_RATE = 0.025;
 var FEMINISM_MONTHLY_DRIFT_RATE = 0.015;
 function transferVoteSupport(className, sourceParties, targetParties, totalTransfer) {
     if (totalTransfer <= 0) {
@@ -366,6 +367,23 @@ if (Q.month_actions >= 1) {
                     transferVoteSupport(pacifismClass, militaristBeneficiaryParties, pacifistBeneficiaryParties, pacifismMonthlyDrift);
                 } else {
                     transferVoteSupport(pacifismClass, pacifistBeneficiaryParties, militaristBeneficiaryParties, pacifismMonthlyDrift);
+                }
+            }
+        }
+    }
+
+    var nationalismDriftScale = (Q.nationalism - 50)/50;
+    var nationalismMonthlyDrift = Math.abs(nationalismDriftScale)*NATIONALISM_MONTHLY_DRIFT_RATE;
+    var nationalistSourceParties = ['z', 'ddp', 'spd'];
+    var nationalistBeneficiaryParties = ['nsdap', 'dnvp', 'dvp'];
+    // TODO: future party ideology/leader states should redirect some nationalist drift.
+    if (nationalismMonthlyDrift > 0) {
+        for (var nationalismClass of monthlyVoteDriftClasses) {
+            if (Q.classes.indexOf(nationalismClass) >= 0) {
+                if (nationalismDriftScale > 0) {
+                    transferVoteSupport(nationalismClass, nationalistSourceParties, nationalistBeneficiaryParties, nationalismMonthlyDrift);
+                } else {
+                    transferVoteSupport(nationalismClass, nationalistBeneficiaryParties, nationalistSourceParties, nationalismMonthlyDrift);
                 }
             }
         }
