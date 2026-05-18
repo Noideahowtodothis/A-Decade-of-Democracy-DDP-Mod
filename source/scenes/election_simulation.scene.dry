@@ -285,8 +285,8 @@ set-jump: post_election
 
 @post_election
 on-arrival: {!
-// Allocate a normalized 100-seat Reichstag with the shared D'Hondt helper; vote shares remain unchanged.
-var reichstagSeatCount = Q.reichstag_seat_count || 100;
+// Allocate a simplified 500-seat Reichstag with the shared D'Hondt helper; vote shares remain unchanged.
+var reichstagSeatCount = Q.reichstag_seat_count || 500;
 var threshold = Q.electoral_threshold || 0;
 var partyVoteShares = {};
 var bannedParties = {};
