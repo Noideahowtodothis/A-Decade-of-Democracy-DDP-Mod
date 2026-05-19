@@ -142,42 +142,49 @@ title: Choose the Württemberg leader
 
 @wurttemberg_leader_keil
 title: Wilhelm Keil
+subtitle: SPD coalition leader option.
 view-if: wurttemberg_spd_in_government = 1
 on-arrival: wurttemberg_leader = "Wilhelm Keil"
 go-to: wurttemberg_government_confirmed
 
 @wurttemberg_leader_schumacher
 title: Kurt Schumacher
+subtitle: SPD coalition leader option.
 view-if: wurttemberg_spd_in_government = 1
 on-arrival: wurttemberg_leader = "Kurt Schumacher"
 go-to: wurttemberg_government_confirmed
 
 @wurttemberg_leader_bolz
 title: Eugen Bolz
+subtitle: Zentrum coalition leader option.
 view-if: wurttemberg_z_in_government = 1
 on-arrival: wurttemberg_leader = "Eugen Bolz"
 go-to: wurttemberg_government_confirmed
 
 @wurttemberg_leader_bazille
 title: Wilhelm Bazille
+subtitle: DNVP coalition leader option.
 view-if: wurttemberg_dnvp_in_government = 1
 on-arrival: wurttemberg_leader = "Wilhelm Bazille"
 go-to: wurttemberg_government_confirmed
 
 @wurttemberg_leader_maier
 title: Reinhold Maier
+subtitle: DDP coalition leader option.
 view-if: wurttemberg_ddp_in_government = 1
 on-arrival: wurttemberg_leader = "Reinhold Maier"
 go-to: wurttemberg_government_confirmed
 
 @wurttemberg_leader_hieber
 title: Johannes Hieber
+subtitle: DDP coalition leader option.
 view-if: wurttemberg_ddp_in_government = 1
 on-arrival: wurttemberg_leader = "Johannes Hieber"
 go-to: wurttemberg_government_confirmed
 
 @wurttemberg_leader_mergenthaler
 title: Christian Mergenthaler
+subtitle: NSDAP coalition leader option.
 view-if: wurttemberg_nsdap_in_government = 1
 on-arrival: wurttemberg_leader = "Christian Mergenthaler"
 go-to: wurttemberg_government_confirmed

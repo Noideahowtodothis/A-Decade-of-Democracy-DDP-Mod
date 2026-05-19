@@ -698,7 +698,7 @@ if (typeof window !== 'undefined') {
             kpd: 0.76,
             nsdap: 0.834,
             other: 1.00,
-            peasant_from_other: 0.016
+            peasant_from_other: 1.00
         };
         q.bavaria_party_weights = bavarianWeights;
         function federalShare(party) {
@@ -808,7 +808,7 @@ if (typeof window !== 'undefined') {
         q.bremen_landtag_seat_count = 120;
         var bremenWeights = {
             spd: 1.42,
-            dvp_other: 3.00,
+            dvp_other: 1.50,
             dnvp: 0.65,
             ddp: 1.93,
             kpd: 0.78,

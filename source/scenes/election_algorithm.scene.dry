@@ -128,7 +128,7 @@ window.calculateBavarianLandtagResults = function(qualities) {
         kpd: 0.76,
         nsdap: 0.834,
         other: 1.00,
-        peasant_from_other: 0.016
+        peasant_from_other: 1.00
     };
     q.bavaria_party_weights = bavarianWeights;
     function federalShare(party) {
