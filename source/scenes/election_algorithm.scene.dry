@@ -227,6 +227,68 @@ window.updateBavarianCoalitionOptions = function(qualities) {
 };
 window.calculateBavarianLandtagResults(Q);
 
+// Calculate Baden Landtag support from federal party support using Baden party weights.
+window.calculateBadenLandtagResults = function(qualities) {
+    var q = qualities || Q;
+    var badenParties = ['spd', 'z', 'ddp', 'dvp', 'dnvp', 'kpd', 'wp', 'nsdap', 'other'];
+    q.baden_parties = badenParties;
+    var badenSeatCount = 88;
+    q.baden_landtag_seat_count = 88;
+    var badenWeights = {
+        z: 2.88,
+        dvp: 1.75,
+        spd: 0.84,
+        ddp: 0.74,
+        kpd: 0.55,
+        dnvp: 0.54,
+        wp: 0.49,
+        nsdap: 0.44,
+        other: 1.00
+    };
+    q.baden_party_weights = badenWeights;
+    function federalShare(party) {
+        var share = Number(q[party + '_votes_raw']);
+        if (isNaN(share)) {
+            share = 100*(Number(q[party + '_normalized']) || 0);
+        }
+        if (isNaN(share) || share < 0) {
+            share = 0;
+        }
+        return share;
+    }
+    var weightedVotes = {};
+    var weightedTotal = 0;
+    for (var badenWeightedParty of badenParties) {
+        weightedVotes[badenWeightedParty] = federalShare(badenWeightedParty)*(badenWeights[badenWeightedParty] || 0);
+        weightedTotal += weightedVotes[badenWeightedParty] || 0;
+    }
+    var badenVoteShares = {};
+    for (var badenShareParty of badenParties) {
+        var badenRawShare = weightedTotal > 0 ? 100*(weightedVotes[badenShareParty] || 0)/weightedTotal : 0;
+        q['baden_' + badenShareParty + '_votes_raw'] = badenRawShare;
+        q['baden_' + badenShareParty + '_votes'] = Math.round(badenRawShare*10)/10;
+        q['baden_' + badenShareParty + '_votes_disp'] = q['baden_' + badenShareParty + '_votes'].toFixed(1);
+        q['baden_' + badenShareParty + '_votes_display'] = q['baden_' + badenShareParty + '_votes_disp'];
+        q['baden_' + badenShareParty + '_result_votes'] = q['baden_' + badenShareParty + '_votes'];
+        badenVoteShares[badenShareParty] = q['baden_' + badenShareParty + '_votes'];
+    }
+    var badenBannedParties = {};
+    for (var badenBannedParty of badenParties) {
+        badenBannedParties[badenBannedParty] = q[badenBannedParty + '_banned'];
+    }
+    var badenThreshold = q.baden_electoral_threshold || q.electoral_threshold || 0;
+    var badenSeats = window.allocateDhondtSeats(badenVoteShares, badenSeatCount, badenThreshold, {parties: badenParties, banned: badenBannedParties});
+    q.baden_landtag_total_seats = 0;
+    for (var badenSeatParty of badenParties) {
+        q['baden_' + badenSeatParty + '_r'] = badenSeats[badenSeatParty] || 0;
+        q['baden_' + badenSeatParty + '_seats'] = q['baden_' + badenSeatParty + '_r'];
+        q['baden_' + badenSeatParty + '_seat_share_disp'] = (Math.round((100*q['baden_' + badenSeatParty + '_r']/badenSeatCount)*10)/10).toFixed(1);
+        q.baden_landtag_total_seats += q['baden_' + badenSeatParty + '_r'];
+    }
+    q.baden_landtag_seat_allocation_valid = q.baden_landtag_total_seats == badenSeatCount ? 1 : 0;
+};
+window.calculateBadenLandtagResults(Q);
+
 // Calculate Hamburg Bürgerschaft/Landtag support from federal party support using Hamburg party weights.
 window.calculateHamburgLandtagResults = function(qualities) {
     var q = qualities || Q;
