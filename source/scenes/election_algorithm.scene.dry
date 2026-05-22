@@ -288,6 +288,81 @@ window.calculateBadenLandtagResults = function(qualities) {
     q.baden_landtag_seat_allocation_valid = q.baden_landtag_total_seats == badenSeatCount ? 1 : 0;
 };
 window.calculateBadenLandtagResults(Q);
+if (typeof window.updateBadenCoalitionOptions === 'function') {
+    window.updateBadenCoalitionOptions(Q);
+}
+
+
+
+window.updateBadenCoalitionOptions = function(qualities) {
+    var q = qualities || Q;
+    q.baden_landtag_seat_count = 88;
+    var threshold = 45;
+    if (q.baden_government == undefined) {
+        q.baden_government = 0;
+    }
+    var options = [
+        {id: 1, key: 'ddp_spd', name: 'DDP-SPD', parties: 'DDP + SPD', seats: (Number(q.baden_ddp_r) || 0) + (Number(q.baden_spd_r) || 0)},
+        {id: 2, key: 'spd_ddp_z', name: 'SPD-DDP-Z', parties: 'SPD + DDP + Z', seats: (Number(q.baden_spd_r) || 0) + (Number(q.baden_ddp_r) || 0) + (Number(q.baden_z_r) || 0)},
+        {id: 3, key: 'z_ddp', name: 'Z-DDP', parties: 'Z + DDP', seats: (Number(q.baden_z_r) || 0) + (Number(q.baden_ddp_r) || 0)},
+        {id: 4, key: 'z_ddp_dvp', name: 'Z-DDP-DVP', parties: 'Z + DDP + DVP', seats: (Number(q.baden_z_r) || 0) + (Number(q.baden_ddp_r) || 0) + (Number(q.baden_dvp_r) || 0)},
+        {id: 5, key: 'z_ddp_dnvp_dvp', name: 'Z-DDP-DNVP-DVP', parties: 'Z + DDP + DNVP + DVP', seats: (Number(q.baden_z_r) || 0) + (Number(q.baden_ddp_r) || 0) + (Number(q.baden_dnvp_r) || 0) + (Number(q.baden_dvp_r) || 0)},
+        {id: 6, key: 'z_dvp_dnvp', name: 'Z-DVP-DNVP', parties: 'Z + DVP + DNVP', seats: (Number(q.baden_z_r) || 0) + (Number(q.baden_dvp_r) || 0) + (Number(q.baden_dnvp_r) || 0)},
+        {id: 7, key: 'spd_dvp_z', name: 'SPD-DVP-Z', parties: 'SPD + DVP + Z', seats: (Number(q.baden_spd_r) || 0) + (Number(q.baden_dvp_r) || 0) + (Number(q.baden_z_r) || 0)},
+        {id: 8, key: 'nsdap_dvp_dnvp', name: 'NSDAP-DVP-DNVP', parties: 'NSDAP + DVP + DNVP', seats: (Number(q.baden_nsdap_r) || 0) + (Number(q.baden_dvp_r) || 0) + (Number(q.baden_dnvp_r) || 0)},
+        {id: 9, key: 'nsdap_dnvp', name: 'NSDAP-DNVP', parties: 'NSDAP + DNVP', seats: (Number(q.baden_nsdap_r) || 0) + (Number(q.baden_dnvp_r) || 0)}
+    ];
+    q.baden_majority_threshold = threshold;
+    var anyMajority = 0;
+    for (var i = 0; i < options.length; i++) {
+        if (options[i].seats >= threshold) {
+            anyMajority = 1;
+        }
+    }
+    q.baden_any_majority_coalition = anyMajority;
+    for (var j = 0; j < options.length; j++) {
+        var option = options[j];
+        var prefix = 'baden_' + option.key + '_coalition';
+        var hasMajority = option.seats >= threshold;
+        var isIncumbent = Number(q.baden_government) === option.id;
+        q[prefix + '_name'] = option.name;
+        q[prefix + '_parties'] = option.parties;
+        q[prefix + '_seats'] = option.seats;
+        q[prefix + '_majority'] = hasMajority ? 1 : 0;
+        q[prefix + '_status'] = hasMajority ? 'Majority' : 'Minority';
+        q[prefix + '_selectable'] = hasMajority || (!anyMajority && isIncumbent) ? 1 : 0;
+    }
+
+    var selected = options[(Number(q.baden_government) || 1) - 1];
+    if (!selected) {
+        selected = {name: 'Incumbent', parties: 'Incumbent', seats: 0};
+    }
+    q.baden_current_government_name = selected.name;
+    q.baden_current_government_parties = selected.parties;
+    q.baden_current_government_seats = selected.seats;
+
+    q.baden_ddp_in_government = selected.parties.indexOf('DDP') >= 0 ? 1 : 0;
+    q.baden_spd_in_government = selected.parties.indexOf('SPD') >= 0 ? 1 : 0;
+    q.baden_z_in_government = selected.parties.indexOf('Z') >= 0 ? 1 : 0;
+    q.baden_dvp_in_government = selected.parties.indexOf('DVP') >= 0 ? 1 : 0;
+    q.baden_dnvp_in_government = selected.parties.indexOf('DNVP') >= 0 ? 1 : 0;
+    q.baden_nsdap_in_government = selected.parties.indexOf('NSDAP') >= 0 ? 1 : 0;
+
+    q.baden_majority_cabinet = selected.seats >= threshold ? 1 : 0;
+    q.baden_current_government_status = q.baden_majority_cabinet ? 'Majority' : 'Minority';
+
+    // TODO(baden-leader): Wire Willy Hellpach gating to explicit Baden DSTP formation variable when available.
+    var ddpFormedDstp = Number(q.ddp_formed_dstp || q.ddp_dstp_formed || q.baden_ddp_formed_dstp || 0) === 1;
+    var allowHellpach = !ddpFormedDstp;
+
+    q.baden_leader_robert_wagner_selectable = q.baden_nsdap_in_government;
+    q.baden_leader_josef_schmitt_selectable = q.baden_z_in_government;
+    q.baden_leader_gustav_trunk_selectable = q.baden_z_in_government;
+    q.baden_leader_adam_remmele_selectable = q.baden_spd_in_government;
+    q.baden_leader_hermann_hummel_selectable = q.baden_ddp_in_government;
+    q.baden_leader_willy_hellpach_selectable = q.baden_ddp_in_government && allowHellpach ? 1 : 0;
+    q.baden_leader_wilhelm_mattes_selectable = q.baden_dvp_in_government;
+};
 
 // Calculate Hamburg Bürgerschaft/Landtag support from federal party support using Hamburg party weights.
 window.calculateHamburgLandtagResults = function(qualities) {
