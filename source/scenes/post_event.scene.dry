@@ -124,6 +124,23 @@ if (Q.wurttemberg_snap_election_called == undefined) {
     Q.wurttemberg_snap_election_called = 0;
 }
 Q.wurttemberg_landtag_seat_count = 80;
+
+if (Q.lubeck_election_month == undefined) {
+    Q.lubeck_election_month = 11; // TODO: Confirm exact Lübeck election month cadence.
+}
+if (Q.lubeck_election_year == undefined) {
+    Q.lubeck_election_year = 1927;
+}
+if (Q.lubeck_government == undefined) {
+    Q.lubeck_government = 3;
+}
+if (Q.lubeck_majority_cabinet == undefined) {
+    Q.lubeck_majority_cabinet = 1;
+}
+if (Q.lubeck_snap_election_called == undefined) {
+    Q.lubeck_snap_election_called = 0;
+}
+Q.lubeck_landtag_seat_count = 80;
 if (Q.wurttemberg_csvd_party_name == undefined) {
     Q.wurttemberg_csvd_party_name = "Christlich-Sozialer Volksdienst";
 }
@@ -1110,6 +1127,87 @@ if (typeof window !== 'undefined') {
         q.wurttemberg_nsdap_in_government = selected.parties.indexOf('NSDAP') >= 0 ? 1 : 0;
     };
     window.calculateWurttembergLandtagResults(Q);
+
+    window.calculateLubeckLandtagResults = function(qualities) {
+        var q = qualities || Q;
+        var parties = ['spd', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap', 'hvb', 'z', 'other'];
+        q.lubeck_parties = parties;
+        var seatCount = 80;
+        q.lubeck_landtag_seat_count = seatCount;
+        var weights = {spd: 1.67, kpd: 0.80, nsdap: 0.78, dnvp: 0.65, dvp: 0.52, ddp: 0.32, hvb: 6.00, z: 0, other: 1.00};
+        q.lubeck_party_weights = weights;
+        q.lubeck_hvb_name = 'Hanseatischer Volksbund';
+        function fed(party) {
+            var share = Number(q[party + '_votes_raw']);
+            if (isNaN(share)) { share = 100*(Number(q[party + '_normalized']) || 0); }
+            return isNaN(share) || share < 0 ? 0 : share;
+        }
+        var weightedVotes = {
+            spd: fed('spd')*weights.spd,
+            kpd: fed('kpd')*weights.kpd,
+            ddp: fed('ddp')*weights.ddp,
+            dvp: fed('dvp')*weights.dvp,
+            dnvp: fed('dnvp')*weights.dnvp,
+            nsdap: fed('nsdap')*weights.nsdap,
+            hvb: fed('other')*weights.hvb,
+            z: 0,
+            other: fed('other')*weights.other
+        };
+        var total = 0;
+        for (var pty of parties) { total += weightedVotes[pty] || 0; }
+        var voteShares = {};
+        for (var party of parties) {
+            var raw = total > 0 ? 100*(weightedVotes[party] || 0)/total : 0;
+            q['lubeck_' + party + '_votes_raw'] = raw;
+            q['lubeck_' + party + '_votes'] = Math.round(raw*10)/10;
+            q['lubeck_' + party + '_votes_disp'] = q['lubeck_' + party + '_votes'].toFixed(1);
+            q['lubeck_' + party + '_result_votes'] = q['lubeck_' + party + '_votes'];
+            voteShares[party] = q['lubeck_' + party + '_votes'];
+        }
+        var banned = {};
+        for (var b of parties) { banned[b] = q[b + '_banned']; }
+        banned.z = 1;
+        var threshold = q.lubeck_electoral_threshold || q.electoral_threshold || 0;
+        var seats = window.allocateDhondtSeats(voteShares, seatCount, threshold, {parties: parties, banned: banned});
+        q.lubeck_landtag_total_seats = 0;
+        for (var seatParty of parties) {
+            q['lubeck_' + seatParty + '_r'] = seats[seatParty] || 0;
+            q['lubeck_' + seatParty + '_seats'] = q['lubeck_' + seatParty + '_r'];
+            q.lubeck_landtag_total_seats += q['lubeck_' + seatParty + '_r'];
+        }
+        q.lubeck_z_votes_raw = 0; q.lubeck_z_votes = 0; q.lubeck_z_votes_disp = '0.0'; q.lubeck_z_r = 0; q.lubeck_z_seats = 0;
+        q.lubeck_landtag_seat_allocation_valid = q.lubeck_landtag_total_seats == seatCount ? 1 : 0;
+        if (typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(q); }
+    };
+    window.updateLubeckCoalitionOptions = function(qualities) {
+        var q = qualities || Q;
+        var threshold = 41;
+        if (q.lubeck_government == undefined) { q.lubeck_government = 3; }
+        var options = [
+            {id:1,key:'spd_ddp',name:'SPD-DDP',parties:'SPD + DDP',seats:(Number(q.lubeck_spd_r)||0)+(Number(q.lubeck_ddp_r)||0)},
+            {id:2,key:'spd_ddp_dvp',name:'SPD-DDP-DVP',parties:'SPD + DDP + DVP',seats:(Number(q.lubeck_spd_r)||0)+(Number(q.lubeck_ddp_r)||0)+(Number(q.lubeck_dvp_r)||0)},
+            {id:3,key:'ddp_dvp_hvb',name:'DDP-DVP-HVB',parties:'DDP + DVP + HVB',seats:(Number(q.lubeck_ddp_r)||0)+(Number(q.lubeck_dvp_r)||0)+(Number(q.lubeck_hvb_r)||0)},
+            {id:4,key:'ddp_dvp_dnvp_hvb',name:'DDP-DVP-DNVP-HVB',parties:'DDP + DVP + DNVP + HVB',seats:(Number(q.lubeck_ddp_r)||0)+(Number(q.lubeck_dvp_r)||0)+(Number(q.lubeck_dnvp_r)||0)+(Number(q.lubeck_hvb_r)||0)},
+            {id:5,key:'dvp_dnvp_nsdap',name:'DVP-DNVP-NSDAP',parties:'DVP + DNVP + NSDAP',seats:(Number(q.lubeck_dvp_r)||0)+(Number(q.lubeck_dnvp_r)||0)+(Number(q.lubeck_nsdap_r)||0)}
+        ];
+        var anyMajority = 0;
+        for (var i=0;i<options.length;i++) { if (options[i].seats >= threshold) { anyMajority = 1; } }
+        for (var j=0;j<options.length;j++) {
+            var option = options[j], prefix = 'lubeck_' + option.key + '_coalition', hasMajority = option.seats >= threshold, isIncumbent = Number(q.lubeck_government) === option.id;
+            q[prefix + '_seats'] = option.seats; q[prefix + '_status'] = hasMajority ? 'Majority' : 'Minority'; q[prefix + '_selectable'] = hasMajority || (!anyMajority && isIncumbent) ? 1 : 0;
+        }
+        var selected = options[(Number(q.lubeck_government) || 3) - 1] || options[2];
+        q.lubeck_current_government_name = selected.name; q.lubeck_current_government_parties = selected.parties; q.lubeck_current_government_seats = selected.seats;
+        q.lubeck_majority_cabinet = selected.seats >= threshold ? 1 : 0; q.lubeck_current_government_status = q.lubeck_majority_cabinet ? 'Majority' : 'Minority';
+        q.lubeck_spd_in_government = selected.parties.indexOf('SPD') >= 0 ? 1 : 0;
+        q.lubeck_ddp_in_government = selected.parties.indexOf('DDP') >= 0 ? 1 : 0;
+        q.lubeck_dvp_in_government = selected.parties.indexOf('DVP') >= 0 ? 1 : 0;
+        q.lubeck_hvb_in_government = selected.parties.indexOf('HVB') >= 0 ? 1 : 0;
+        q.lubeck_nsdap_in_government = selected.parties.indexOf('NSDAP') >= 0 ? 1 : 0;
+        var currentYear = Number(q.year) || 0;
+        q.lubeck_leader_default = q.lubeck_nsdap_in_government ? 'Otto-Heinrich Drechsler' : (q.lubeck_spd_in_government ? 'Paul Löwigt' : (q.lubeck_hvb_in_government ? (currentYear >= 1928 ? 'Rudolf Keibel' : 'Johann Martin Andreas Neumann') : (q.lubeck_dvp_in_government ? (q.lubeck_spd_in_government ? 'Carl Heinsohn' : 'Hans Ewers') : (q.lubeck_ddp_in_government ? 'Heinrich Eckholdt' : ''))));
+    };
+    window.calculateLubeckLandtagResults(Q);
 
     window.calculateOldenburgLandtagResults = function(qualities) {
         var q = qualities || Q;

@@ -1,0 +1,167 @@
+title: Lübeck Bürgerschaft/Landtag Elections
+new-page: true
+tags: event
+priority: -2
+view-if: (year = lubeck_election_year and month >= lubeck_election_month) or (year > lubeck_election_year)
+on-departure: month_actions += 1; lubeck_election_year = lubeck_election_year + 4 if lubeck_snap_election_called == 0; lubeck_election_year = year + 4 if lubeck_snap_election_called == 1; lubeck_election_month = month if lubeck_snap_election_called == 1; lubeck_snap_election_called = 0
+set-jump: lubeck_landtag_results
+
+= Lübeck Bürgerschaft/Landtag Elections, [+ month : month +] [+ year +]
+
+Lübeck holds elections with **80** seats allocated by D’Hondt.
+
+- @calculate_lubeck_landtag: Count the votes.
+
+@calculate_lubeck_landtag
+on-arrival: lubeck_government = 3 if lubeck_government == undefined; lubeck_leader = "Rudolf Keibel" if lubeck_leader == undefined; lubeck_majority_cabinet = 1 if lubeck_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: lubeck_landtag_results
+
+@lubeck_landtag_results
+on-arrival: {! var isSnap = Number(Q.lubeck_snap_election_called) === 1; Q.lubeck_next_election_year_preview = (isSnap ? (Number(Q.year) || 0) : (Number(Q.lubeck_election_year) || Number(Q.year) || 0)) + 4; Q.lubeck_next_election_month_preview = isSnap ? Q.month : Q.lubeck_election_month; if (typeof window !== 'undefined' && typeof window.calculateLubeckLandtagResults === 'function') { window.calculateLubeckLandtagResults(Q); } !}
+
+= Lübeck election results
+
+Next Lübeck election is due in **[+ lubeck_next_election_month_preview : month +] [+ lubeck_next_election_year_preview +]**.
+
+Lübeck seats: **[+ lubeck_landtag_total_seats +] / 80**
+
+Current Lübeck government: **[+ lubeck_current_government_name +]** ([+ lubeck_current_government_parties +]) led by **[+ lubeck_leader +]**.
+
+Current government seats: **[+ lubeck_current_government_seats +] / 80**. Status: **[+ lubeck_current_government_status +]**. Majority cabinet: **[+ lubeck_majority_cabinet +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Lübeck vote share</td><td>Seats (out of 80)</td></tr>!}
+{!<tr><td>SPD</td><td>[+ lubeck_spd_votes_disp +]%</td><td>[+ lubeck_spd_r +]</td></tr>!}
+{!<tr><td>KPD</td><td>[+ lubeck_kpd_votes_disp +]%</td><td>[+ lubeck_kpd_r +]</td></tr>!}
+{!<tr><td>[+ ddp_name +]</td><td>[+ lubeck_ddp_votes_disp +]%</td><td>[+ lubeck_ddp_r +]</td></tr>!}
+{!<tr><td>DVP</td><td>[+ lubeck_dvp_votes_disp +]%</td><td>[+ lubeck_dvp_r +]</td></tr>!}
+{!<tr><td>DNVP</td><td>[+ lubeck_dnvp_votes_disp +]%</td><td>[+ lubeck_dnvp_r +]</td></tr>!}
+{!<tr><td>NSDAP</td><td>[+ lubeck_nsdap_votes_disp +]%</td><td>[+ lubeck_nsdap_r +]</td></tr>!}
+{!<tr><td>HVB</td><td>[+ lubeck_hvb_votes_disp +]%</td><td>[+ lubeck_hvb_r +]</td></tr>!}
+{!<tr><td>Z</td><td>[+ lubeck_z_votes_disp +]%</td><td>[+ lubeck_z_r +]</td></tr>!}
+{!<tr><td>Other</td><td>[+ lubeck_other_votes_disp +]%</td><td>[+ lubeck_other_r +]</td></tr>!}
+{!</table>!}
+
+= Choose a Lübeck coalition
+
+A coalition is selectable if it controls at least **41** of the **80** seats. If no listed coalition has a majority, the incumbent Lübeck government may continue as a minority cabinet.
+
+- @lubeck_select_spd_ddp
+- @lubeck_select_spd_ddp_dvp
+- @lubeck_select_ddp_dvp_hvb
+- @lubeck_select_ddp_dvp_dnvp_hvb
+- @lubeck_select_dvp_dnvp_nsdap
+- @new_lubeck_elections: Call new Lübeck elections.
+- @root: Continue without changing the Lübeck government.
+
+@lubeck_select_spd_ddp
+title: SPD-DDP
+subtitle: SPD + DDP — [+ lubeck_spd_ddp_coalition_seats +] / 80 — [+ lubeck_spd_ddp_coalition_status +]
+view-if: lubeck_spd_ddp_coalition_selectable = 1
+on-arrival: {! Q.lubeck_government = 1; if (typeof window !== 'undefined' && typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(Q); } !}
+go-to: lubeck_leader_selection
+
+@lubeck_select_spd_ddp_dvp
+title: SPD-DDP-DVP
+subtitle: SPD + DDP + DVP — [+ lubeck_spd_ddp_dvp_coalition_seats +] / 80 — [+ lubeck_spd_ddp_dvp_coalition_status +]
+view-if: lubeck_spd_ddp_dvp_coalition_selectable = 1
+on-arrival: {! Q.lubeck_government = 2; if (typeof window !== 'undefined' && typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(Q); } !}
+go-to: lubeck_leader_selection
+
+@lubeck_select_ddp_dvp_hvb
+title: DDP-DVP-HVB
+subtitle: DDP + DVP + HVB — [+ lubeck_ddp_dvp_hvb_coalition_seats +] / 80 — [+ lubeck_ddp_dvp_hvb_coalition_status +]
+view-if: lubeck_ddp_dvp_hvb_coalition_selectable = 1
+on-arrival: {! Q.lubeck_government = 3; if (typeof window !== 'undefined' && typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(Q); } !}
+go-to: lubeck_leader_selection
+
+@lubeck_select_ddp_dvp_dnvp_hvb
+title: DDP-DVP-DNVP-HVB
+subtitle: DDP + DVP + DNVP + HVB — [+ lubeck_ddp_dvp_dnvp_hvb_coalition_seats +] / 80 — [+ lubeck_ddp_dvp_dnvp_hvb_coalition_status +]
+view-if: lubeck_ddp_dvp_dnvp_hvb_coalition_selectable = 1
+on-arrival: {! Q.lubeck_government = 4; if (typeof window !== 'undefined' && typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(Q); } !}
+go-to: lubeck_leader_selection
+
+@lubeck_select_dvp_dnvp_nsdap
+title: DVP-DNVP-NSDAP
+subtitle: DVP + DNVP + NSDAP — [+ lubeck_dvp_dnvp_nsdap_coalition_seats +] / 80 — [+ lubeck_dvp_dnvp_nsdap_coalition_status +]
+view-if: lubeck_dvp_dnvp_nsdap_coalition_selectable = 1
+on-arrival: {! Q.lubeck_government = 5; if (typeof window !== 'undefined' && typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(Q); } !}
+go-to: lubeck_leader_selection
+
+@new_lubeck_elections
+title: Call new Lübeck elections.
+on-arrival: lubeck_election_year = year; lubeck_election_month = month; lubeck_snap_election_called = 1
+go-to: calculate_lubeck_landtag
+
+@lubeck_leader_selection
+title: Choose the Lübeck leader
+
+= Choose the Lübeck leader
+- @lubeck_leader_lowigt
+- @lubeck_leader_drechsler
+- @lubeck_leader_heinsohn
+- @lubeck_leader_ewers
+- @lubeck_leader_neumann
+- @lubeck_leader_keibel
+- @lubeck_leader_eckholdt
+
+@lubeck_leader_lowigt
+title: Paul Löwigt
+view-if: lubeck_spd_in_government = 1
+on-arrival: lubeck_leader = "Paul Löwigt"
+go-to: lubeck_government_confirmed
+
+@lubeck_leader_drechsler
+title: Otto-Heinrich Drechsler
+view-if: lubeck_nsdap_in_government = 1
+on-arrival: lubeck_leader = "Otto-Heinrich Drechsler"
+go-to: lubeck_government_confirmed
+
+@lubeck_leader_heinsohn
+title: Carl Heinsohn
+view-if: lubeck_dvp_in_government = 1 and lubeck_spd_in_government = 1
+on-arrival: lubeck_leader = "Carl Heinsohn"
+go-to: lubeck_government_confirmed
+
+@lubeck_leader_ewers
+title: Hans Ewers
+view-if: lubeck_dvp_in_government = 1 and lubeck_spd_in_government = 0
+on-arrival: lubeck_leader = "Hans Ewers"
+go-to: lubeck_government_confirmed
+
+@lubeck_leader_neumann
+title: Johann Martin Andreas Neumann
+view-if: lubeck_hvb_in_government = 1 and year < 1928
+on-arrival: lubeck_leader = "Johann Martin Andreas Neumann"
+go-to: lubeck_government_confirmed
+
+@lubeck_leader_keibel
+title: Rudolf Keibel
+view-if: lubeck_hvb_in_government = 1 and year >= 1928
+on-arrival: lubeck_leader = "Rudolf Keibel"
+go-to: lubeck_government_confirmed
+
+@lubeck_leader_eckholdt
+title: Heinrich Eckholdt
+view-if: lubeck_ddp_in_government = 1
+on-arrival: lubeck_leader = "Heinrich Eckholdt"
+go-to: lubeck_government_confirmed
+
+@lubeck_government_confirmed
+title: Lübeck government formed
+on-arrival: {! if (typeof window !== 'undefined' && typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(Q); } if (!Q.lubeck_leader || Q.lubeck_leader === '') { Q.lubeck_leader = Q.lubeck_leader_default || ''; } !}
+
+= Lübeck government formed
+Coalition: **[+ lubeck_current_government_name +]**
+
+Seats: **[+ lubeck_current_government_seats +] / 80**
+
+Status: **[+ lubeck_current_government_status +]**
+
+Leader: **[+ lubeck_leader +]**
+
+Next Lübeck election: **[+ lubeck_next_election_month_preview : month +] [+ lubeck_next_election_year_preview +]**.
+
+- @root: Continue.
