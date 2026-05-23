@@ -91,7 +91,62 @@ Selected coalition: **[+ saxony_current_government_name +]** ([+ saxony_current_
 
 Coalition seats: **[+ saxony_current_government_seats +] / 96**. Status: **[+ saxony_current_government_status +]**.
 
-- @saxony_government_confirmed: Continue (leader selection placeholder).
+- @saxony_leader_erich_zeigner
+- @saxony_leader_hermann_fleissner
+- @saxony_leader_richard_seyfert
+- @saxony_leader_willibalt_apelt
+- @saxony_leader_max_heldt
+- @saxony_leader_bernhard_blueher
+- @saxony_leader_hugo_weber
+- @saxony_leader_wilhelm_buenger
+
+@saxony_leader_erich_zeigner
+title: Erich Zeigner
+view-if: saxony_leader_erich_zeigner_selectable = 1
+on-arrival: saxony_leader = "Erich Zeigner"
+go-to: saxony_government_confirmed
+
+@saxony_leader_hermann_fleissner
+title: Hermann Fleißner
+view-if: saxony_leader_hermann_fleissner_selectable = 1
+on-arrival: saxony_leader = "Hermann Fleißner"
+go-to: saxony_government_confirmed
+
+@saxony_leader_richard_seyfert
+title: Richard Seyfert
+view-if: saxony_leader_richard_seyfert_selectable = 1
+on-arrival: saxony_leader = "Richard Seyfert"
+go-to: saxony_government_confirmed
+
+@saxony_leader_willibalt_apelt
+title: Willibalt Apelt
+view-if: saxony_leader_willibalt_apelt_selectable = 1
+on-arrival: saxony_leader = "Willibalt Apelt"
+go-to: saxony_government_confirmed
+
+@saxony_leader_max_heldt
+title: Max Heldt
+view-if: saxony_leader_max_heldt_selectable = 1
+on-arrival: saxony_leader = "Max Heldt"
+go-to: saxony_government_confirmed
+
+@saxony_leader_bernhard_blueher
+title: Bernhard Blüher
+view-if: saxony_leader_bernhard_blueher_selectable = 1
+on-arrival: saxony_leader = "Bernhard Blüher"
+go-to: saxony_government_confirmed
+
+@saxony_leader_hugo_weber
+title: Hugo Weber
+view-if: saxony_leader_hugo_weber_selectable = 1
+on-arrival: saxony_leader = "Hugo Weber"
+go-to: saxony_government_confirmed
+
+@saxony_leader_wilhelm_buenger
+title: Wilhelm Bünger
+view-if: saxony_leader_wilhelm_buenger_selectable = 1
+on-arrival: saxony_leader = "Wilhelm Bünger"
+go-to: saxony_government_confirmed
 
 @saxony_government_confirmed
 title: Saxony government formed
