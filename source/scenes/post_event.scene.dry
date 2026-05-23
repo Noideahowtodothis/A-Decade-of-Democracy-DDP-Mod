@@ -1064,6 +1064,83 @@ if (typeof window !== 'undefined') {
     };
     window.calculateHamburgLandtagResults(Q);
 
+    // Calculate Saxony Landtag support from federal party support using Saxony party weights.
+    // Saxony has a state-only ASPD split from the weighted SPD pool.
+    window.calculateSaxonyLandtagResults = function(qualities) {
+        var q = qualities || Q;
+        var saxonyParties = ['spd', 'kpd', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'aspd', 'other'];
+        q.saxony_parties = saxonyParties;
+        q.saxony_aspd_party_name = 'Alte Sozialdemokratische Partei Deutschlands';
+        var saxonySeatCount = 96;
+        q.saxony_landtag_seat_count = 96;
+        var saxonyWeights = {
+            spd: 1.50,
+            kpd: 1.40,
+            wp: 3.10,
+            dvp: 1.90,
+            nsdap: 0.55,
+            dnvp: 0.72,
+            ddp: 0.55,
+            other: 1.00
+        };
+        q.saxony_party_weights = saxonyWeights;
+        function federalShare(party) {
+            var share = Number(q[party + '_votes_raw']);
+            if (isNaN(share)) {
+                share = 100*(Number(q[party + '_normalized']) || 0);
+            }
+            if (isNaN(share) || share < 0) {
+                share = 0;
+            }
+            return share;
+        }
+        var weightedSpdPool = federalShare('spd')*saxonyWeights.spd;
+        var aspdSplitShare = 0.05;
+        q.saxony_spd_pool_weighted_raw = weightedSpdPool;
+        q.saxony_spd_split_aspd_share = aspdSplitShare;
+        q.saxony_spd_split_spd_share = 1 - aspdSplitShare;
+        var weightedVotes = {
+            spd: weightedSpdPool*(1 - aspdSplitShare),
+            aspd: weightedSpdPool*aspdSplitShare,
+            kpd: federalShare('kpd')*saxonyWeights.kpd,
+            ddp: federalShare('ddp')*saxonyWeights.ddp,
+            dvp: federalShare('dvp')*saxonyWeights.dvp,
+            wp: federalShare('wp')*saxonyWeights.wp,
+            dnvp: federalShare('dnvp')*saxonyWeights.dnvp,
+            nsdap: federalShare('nsdap')*saxonyWeights.nsdap,
+            other: federalShare('other')*saxonyWeights.other
+        };
+        var weightedTotal = 0;
+        for (var saxonyWeightedParty of saxonyParties) {
+            weightedTotal += weightedVotes[saxonyWeightedParty] || 0;
+        }
+        var saxonyVoteShares = {};
+        for (var saxonyShareParty of saxonyParties) {
+            var saxonyRawShare = weightedTotal > 0 ? 100*(weightedVotes[saxonyShareParty] || 0)/weightedTotal : 0;
+            q['saxony_' + saxonyShareParty + '_votes_raw'] = saxonyRawShare;
+            q['saxony_' + saxonyShareParty + '_votes'] = Math.round(saxonyRawShare*10)/10;
+            q['saxony_' + saxonyShareParty + '_votes_disp'] = q['saxony_' + saxonyShareParty + '_votes'].toFixed(1);
+            q['saxony_' + saxonyShareParty + '_votes_display'] = q['saxony_' + saxonyShareParty + '_votes_disp'];
+            q['saxony_' + saxonyShareParty + '_result_votes'] = q['saxony_' + saxonyShareParty + '_votes'];
+            saxonyVoteShares[saxonyShareParty] = q['saxony_' + saxonyShareParty + '_votes'];
+        }
+        var saxonyBannedParties = {};
+        for (var saxonyBannedParty of saxonyParties) {
+            saxonyBannedParties[saxonyBannedParty] = q[saxonyBannedParty + '_banned'];
+        }
+        var saxonyThreshold = q.saxony_electoral_threshold || q.electoral_threshold || 0;
+        var saxonySeats = window.allocateDhondtSeats(saxonyVoteShares, saxonySeatCount, saxonyThreshold, {parties: saxonyParties, banned: saxonyBannedParties});
+        q.saxony_landtag_total_seats = 0;
+        for (var saxonySeatParty of saxonyParties) {
+            q['saxony_' + saxonySeatParty + '_r'] = saxonySeats[saxonySeatParty] || 0;
+            q['saxony_' + saxonySeatParty + '_seats'] = q['saxony_' + saxonySeatParty + '_r'];
+            q['saxony_' + saxonySeatParty + '_seat_share_disp'] = (Math.round((100*q['saxony_' + saxonySeatParty + '_r']/saxonySeatCount)*10)/10).toFixed(1);
+            q.saxony_landtag_total_seats += q['saxony_' + saxonySeatParty + '_r'];
+        }
+        q.saxony_landtag_seat_allocation_valid = q.saxony_landtag_total_seats == saxonySeatCount ? 1 : 0;
+    };
+    window.calculateSaxonyLandtagResults(Q);
+
     
     window.calculateWurttembergLandtagResults = function(qualities) {
         var q = qualities || Q;
