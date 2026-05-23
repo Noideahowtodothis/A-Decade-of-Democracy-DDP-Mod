@@ -105,6 +105,30 @@ if (Q.hamburg_snap_election_called == undefined) {
 // Hamburg uses a fixed 160-seat Bürgerschaft/Landtag.
 Q.hamburg_landtag_seat_count = 160;
 
+if (Q.saxony_election_year == undefined) {
+    Q.saxony_election_year = 1926;
+}
+if (Q.saxony_election_month == undefined) {
+    Q.saxony_election_month = 10;
+}
+if (Q.saxony_government == undefined) {
+    Q.saxony_government = 0;
+}
+if (Q.saxony_majority_cabinet == undefined) {
+    Q.saxony_majority_cabinet = 0;
+}
+if (Q.saxony_leader == undefined) {
+    Q.saxony_leader = "";
+}
+Q.saxony_landtag_seat_count = 96;
+Q.saxony_majority_threshold = 49;
+if (Q.saxony_landtag_total_seats == undefined) {
+    Q.saxony_landtag_total_seats = 96;
+}
+if (Q.saxony_landtag_seat_allocation_valid == undefined) {
+    Q.saxony_landtag_seat_allocation_valid = 1;
+}
+
 if (Q.wurttemberg_election_year == undefined) {
     Q.wurttemberg_election_year = 1928;
 }
