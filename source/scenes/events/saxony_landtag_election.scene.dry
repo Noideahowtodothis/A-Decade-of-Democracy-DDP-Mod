@@ -1,0 +1,109 @@
+title: Saxony Landtag Elections
+new-page: true
+tags: event
+priority: -2
+view-if: (year = saxony_election_year and month >= saxony_election_month) or (year > saxony_election_year)
+on-departure: month_actions += 1; saxony_election_year = saxony_election_year + 4 if saxony_snap_election_called == 0; saxony_election_year = year + 4 if saxony_snap_election_called == 1; saxony_election_month = month if saxony_snap_election_called == 1; saxony_snap_election_called = 0
+set-jump: saxony_landtag_results
+
+= Saxony Landtag Elections, [+ month : month +] [+ year +]
+
+Saxony holds Landtag elections. This system reuses federal party support, applies Saxony weights and the SPD/ASPD split rules, normalizes results, and allocates **96** seats with D'Hondt.
+
+- @calculate_saxony_landtag: Count the votes.
+
+@calculate_saxony_landtag
+on-arrival: saxony_government = 1 if saxony_government == undefined; saxony_majority_cabinet = 0 if saxony_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: saxony_landtag_results
+
+@saxony_landtag_results
+on-arrival: {! var isSaxonySnapElection = Number(Q.saxony_snap_election_called) === 1; Q.saxony_next_election_year_preview = (isSaxonySnapElection ? (Number(Q.year) || 0) : (Number(Q.saxony_election_year) || Number(Q.year) || 0)) + 4; Q.saxony_next_election_month_preview = isSaxonySnapElection ? Q.month : Q.saxony_election_month; if (typeof window !== 'undefined' && typeof window.calculateSaxonyLandtagResults === 'function') { window.calculateSaxonyLandtagResults(Q); } if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
+
+= Saxony Landtag election results
+
+Next Saxony election after this Landtag is due in **[+ saxony_next_election_month_preview : month +] [+ saxony_next_election_year_preview +]**.
+
+Saxony Landtag seats: **[+ saxony_landtag_total_seats +] / 96**
+
+Current Saxony government: **[+ saxony_current_government_name +]** ([+ saxony_current_government_parties +]).
+
+Current government seats: **[+ saxony_current_government_seats +] / 96**. Status: **[+ saxony_current_government_status +]**. Majority cabinet: **[+ saxony_majority_cabinet +]**.
+
+= Choose a Saxony coalition
+
+A coalition is selectable if it controls at least **49** of the **96** Landtag seats. If no listed coalition has a majority, the incumbent Saxony government may continue as a minority cabinet.
+
+- @saxony_select_kpd_spd
+- @saxony_select_spd_aspd_ddp
+- @saxony_select_spd_aspd_ddp_dvp
+- @saxony_select_aspd_dvp_ddp_wp_dnvp
+- @saxony_select_dvp_wp_dnvp_nsdap
+- @new_saxony_elections: Call new Saxony Landtag elections.
+- @root: Continue without changing the Saxony government.
+
+@saxony_select_kpd_spd
+title: KPD-SPD
+subtitle: KPD + SPD — [+ saxony_kpd_spd_coalition_seats +] / 96 — [+ saxony_kpd_spd_coalition_status +]
+view-if: saxony_kpd_spd_coalition_selectable = 1
+on-arrival: {! Q.saxony_government = 1; if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
+go-to: saxony_leader_selection
+
+@saxony_select_spd_aspd_ddp
+title: SPD-ASPD-DDP
+subtitle: SPD + ASPD + DDP — [+ saxony_spd_aspd_ddp_coalition_seats +] / 96 — [+ saxony_spd_aspd_ddp_coalition_status +]
+view-if: saxony_spd_aspd_ddp_coalition_selectable = 1
+on-arrival: {! Q.saxony_government = 2; if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
+go-to: saxony_leader_selection
+
+@saxony_select_spd_aspd_ddp_dvp
+title: SPD-ASPD-DDP-DVP
+subtitle: SPD + ASPD + DDP + DVP — [+ saxony_spd_aspd_ddp_dvp_coalition_seats +] / 96 — [+ saxony_spd_aspd_ddp_dvp_coalition_status +]
+view-if: saxony_spd_aspd_ddp_dvp_coalition_selectable = 1
+on-arrival: {! Q.saxony_government = 3; if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
+go-to: saxony_leader_selection
+
+@saxony_select_aspd_dvp_ddp_wp_dnvp
+title: ASPD-DVP-DDP-WP-DNVP
+subtitle: ASPD + DVP + DDP + WP + DNVP — [+ saxony_aspd_dvp_ddp_wp_dnvp_coalition_seats +] / 96 — [+ saxony_aspd_dvp_ddp_wp_dnvp_coalition_status +]
+view-if: saxony_aspd_dvp_ddp_wp_dnvp_coalition_selectable = 1
+on-arrival: {! Q.saxony_government = 4; if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
+go-to: saxony_leader_selection
+
+@saxony_select_dvp_wp_dnvp_nsdap
+title: DVP-WP-DNVP-NSDAP
+subtitle: DVP + WP + DNVP + NSDAP — [+ saxony_dvp_wp_dnvp_nsdap_coalition_seats +] / 96 — [+ saxony_dvp_wp_dnvp_nsdap_coalition_status +]
+view-if: saxony_dvp_wp_dnvp_nsdap_coalition_selectable = 1
+on-arrival: {! Q.saxony_government = 5; if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
+go-to: saxony_leader_selection
+
+@new_saxony_elections
+title: Call new Saxony Landtag elections.
+on-arrival: saxony_election_year = year; saxony_election_month = month; saxony_snap_election_called = 1
+go-to: calculate_saxony_landtag
+
+@saxony_leader_selection
+title: Choose the Saxony leader
+
+= Choose the Saxony leader
+
+Selected coalition: **[+ saxony_current_government_name +]** ([+ saxony_current_government_parties +]).
+
+Coalition seats: **[+ saxony_current_government_seats +] / 96**. Status: **[+ saxony_current_government_status +]**.
+
+- @saxony_government_confirmed: Continue (leader selection placeholder).
+
+@saxony_government_confirmed
+title: Saxony government formed
+
+= Saxony government formed
+
+Coalition: **[+ saxony_current_government_name +]**
+
+Parties: **[+ saxony_current_government_parties +]**
+
+Seats: **[+ saxony_current_government_seats +] / 96**
+
+Status: **[+ saxony_current_government_status +]**
+
+- @root: Continue.

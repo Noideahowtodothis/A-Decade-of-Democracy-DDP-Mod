@@ -533,6 +533,36 @@ window.updateThuringiaCoalitionOptions = function(qualities) {
 window.calculateThuringiaLandtagResults(Q);
 
 // Calculate Oldenburg Landtag support from federal party support using Oldenburg party weights and DNVP/CNBL split.
+window.updateSaxonyCoalitionOptions = function(qualities) {
+    var q = qualities || Q;
+    var majority = 49;
+    var options = [
+        {id: 1, key: 'kpd_spd', name: 'KPD-SPD', parties: 'KPD + SPD', seats: (Number(q.saxony_kpd_r)||0)+(Number(q.saxony_spd_r)||0)},
+        {id: 2, key: 'spd_aspd_ddp', name: 'SPD-ASPD-DDP', parties: 'SPD + ASPD + DDP', seats: (Number(q.saxony_spd_r)||0)+(Number(q.saxony_aspd_r)||0)+(Number(q.saxony_ddp_r)||0)},
+        {id: 3, key: 'spd_aspd_ddp_dvp', name: 'SPD-ASPD-DDP-DVP', parties: 'SPD + ASPD + DDP + DVP', seats: (Number(q.saxony_spd_r)||0)+(Number(q.saxony_aspd_r)||0)+(Number(q.saxony_ddp_r)||0)+(Number(q.saxony_dvp_r)||0)},
+        {id: 4, key: 'aspd_dvp_ddp_wp_dnvp', name: 'ASPD-DVP-DDP-WP-DNVP', parties: 'ASPD + DVP + DDP + WP + DNVP', seats: (Number(q.saxony_aspd_r)||0)+(Number(q.saxony_dvp_r)||0)+(Number(q.saxony_ddp_r)||0)+(Number(q.saxony_wp_r)||0)+(Number(q.saxony_dnvp_r)||0)},
+        {id: 5, key: 'dvp_wp_dnvp_nsdap', name: 'DVP-WP-DNVP-NSDAP', parties: 'DVP + WP + DNVP + NSDAP', seats: (Number(q.saxony_dvp_r)||0)+(Number(q.saxony_wp_r)||0)+(Number(q.saxony_dnvp_r)||0)+(Number(q.saxony_nsdap_r)||0)}
+    ];
+    var anyMajority = 0;
+    for (var i = 0; i < options.length; i++) { if (options[i].seats >= majority) { anyMajority = 1; } }
+    for (var j = 0; j < options.length; j++) {
+        var option = options[j];
+        var prefix = 'saxony_' + option.key + '_coalition';
+        var hasMajority = option.seats >= majority;
+        var isIncumbent = Number(q.saxony_government) === option.id;
+        q[prefix + '_name'] = option.name;
+        q[prefix + '_parties'] = option.parties;
+        q[prefix + '_seats'] = option.seats;
+        q[prefix + '_status'] = hasMajority ? 'Majority' : 'Minority';
+        q[prefix + '_selectable'] = (hasMajority || (!anyMajority && isIncumbent)) ? 1 : 0;
+    }
+    var selected = options[(Number(q.saxony_government) || 1) - 1] || options[0];
+    q.saxony_current_government_name = selected.name;
+    q.saxony_current_government_parties = selected.parties;
+    q.saxony_current_government_seats = selected.seats;
+    q.saxony_current_government_status = selected.seats >= majority ? 'Majority' : 'Minority';
+    q.saxony_majority_cabinet = selected.seats >= majority ? 1 : 0;
+};
 
 window.calculateMecklenburgSchwerinLandtagResults = function(qualities) {
     var q = qualities || Q;
