@@ -30,6 +30,8 @@ Current Lübeck government: **[+ lubeck_current_government_name +]** ([+ lubeck_
 
 Current government seats: **[+ lubeck_current_government_seats +] / 80**. Status: **[+ lubeck_current_government_status +]**. Majority cabinet: **[+ lubeck_majority_cabinet +]**.
 
+Current government leverage: **[+ lubeck_leverage +]**.
+
 {!<table>!}
 {!<tr><td>Party</td><td>Lübeck vote share</td><td>Seats (out of 80)</td></tr>!}
 {!<tr><td>SPD</td><td>[+ lubeck_spd_votes_disp +]%</td><td>[+ lubeck_spd_r +]</td></tr>!}

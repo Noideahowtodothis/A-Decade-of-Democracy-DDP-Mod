@@ -30,6 +30,8 @@ Current Mecklenburg-Schwerin government: **[+ mecklenburg_schwerin_current_gover
 
 Current government seats: **[+ mecklenburg_schwerin_current_government_seats +] / 51**. Status: **[+ mecklenburg_schwerin_current_government_status +]**. Majority cabinet: **[+ mecklenburg_schwerin_majority_cabinet +]**.
 
+Current government leverage: **[+ mecklenburg_schwerin_leverage +]**.
+
 {!<table>!}
 {!<tr><td>Party</td><td>Mecklenburg-Schwerin vote share</td><td>Seats (out of 51)</td></tr>!}
 {!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ mecklenburg_schwerin_spd_votes_disp +]% {!</td><td>!} [+ mecklenburg_schwerin_spd_r +] {!</td></tr>!}

@@ -30,6 +30,8 @@ Current Bremen government: **[+ bremen_current_government_name +]** ([+ bremen_c
 
 Current government seats: **[+ bremen_current_government_seats +] / 120**. Status: **[+ bremen_current_government_status +]**. Majority cabinet: **[+ bremen_majority_cabinet +]**.
 
+Current government leverage: **[+ bremen_leverage +]**.
+
 {!<table>!}
 {!<tr><td>Party</td><td>Bremen vote share</td><td>Seats (out of 120)</td></tr>!}
 {!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ bremen_spd_votes_disp +]% {!</td><td>!} [+ bremen_spd_r +] {!</td></tr>!}

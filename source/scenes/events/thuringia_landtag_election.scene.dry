@@ -30,6 +30,8 @@ Current Thuringia government: **[+ thuringia_current_government_name +]** ([+ th
 
 Current government seats: **[+ thuringia_current_government_seats +] / 56**. Status: **[+ thuringia_current_government_status +]**. Majority cabinet: **[+ thuringia_majority_cabinet +]**.
 
+Current government leverage: **[+ thuringia_leverage +]**.
+
 {!<table>!}
 {!<tr><td>Party</td><td>Thuringia vote share</td><td>Seats (out of 56)</td></tr>!}
 {!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ thuringia_spd_votes_disp +]% {!</td><td>!} [+ thuringia_spd_r +] {!</td></tr>!}

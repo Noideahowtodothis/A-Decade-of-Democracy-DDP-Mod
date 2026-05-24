@@ -38,6 +38,11 @@ if (Q.prussia_majority_cabinet == undefined) {
 if (Q.prussia_leader == undefined || Q.prussia_leader == "Braun") {
     Q.prussia_leader = "Otto Braun";
 }
+
+if (Q.prussia_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.prussia_leverage = 0;
+}
 if (Q.prussia_landtag_seat_count == undefined) {
     Q.prussia_landtag_seat_count = 450;
 }
@@ -56,10 +61,19 @@ if (Q.bavaria_majority_cabinet == undefined) {
 if (Q.bavaria_leader == undefined) {
     Q.bavaria_leader = "Heinrich Held";
 }
+
+if (Q.bavaria_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.bavaria_leverage = 0;
+}
 // Bavaria uses a fixed 128-seat Landtag; force the value so older saves or test states cannot carry a stale seat count.
 Q.bavaria_landtag_seat_count = 128;
 if (Q.bavaria_peasant_party_name == undefined) {
     Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
+}
+if (Q.baden_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.baden_leverage = 0;
 }
 if (Q.bremen_election_year == undefined) {
     Q.bremen_election_year = 1927;
@@ -75,6 +89,11 @@ if (Q.bremen_majority_cabinet == undefined) {
 }
 if (Q.bremen_leader == undefined) {
     Q.bremen_leader = "Theodor Spitta";
+}
+
+if (Q.bremen_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.bremen_leverage = 0;
 }
 if (Q.bremen_snap_election_called == undefined) {
     Q.bremen_snap_election_called = 0;
@@ -99,11 +118,21 @@ if (Q.hamburg_majority_cabinet == undefined) {
 if (Q.hamburg_leader == undefined) {
     Q.hamburg_leader = "Rudolf Ross";
 }
+
+if (Q.hamburg_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.hamburg_leverage = 0;
+}
 if (Q.hamburg_snap_election_called == undefined) {
     Q.hamburg_snap_election_called = 0;
 }
 // Hamburg uses a fixed 160-seat Bürgerschaft/Landtag.
 Q.hamburg_landtag_seat_count = 160;
+
+if (Q.thuringia_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.thuringia_leverage = 0;
+}
 
 if (Q.saxony_election_year == undefined) {
     Q.saxony_election_year = 1926;
@@ -119,6 +148,11 @@ if (Q.saxony_majority_cabinet == undefined) {
 }
 if (Q.saxony_leader == undefined) {
     Q.saxony_leader = "";
+}
+
+if (Q.saxony_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.saxony_leverage = 0;
 }
 Q.saxony_landtag_seat_count = 96;
 Q.saxony_majority_threshold = 49;
@@ -144,6 +178,11 @@ if (Q.wurttemberg_majority_cabinet == undefined) {
 if (Q.wurttemberg_leader == undefined) {
     Q.wurttemberg_leader = "Eugen Bolz";
 }
+
+if (Q.wurttemberg_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.wurttemberg_leverage = 0;
+}
 if (Q.wurttemberg_snap_election_called == undefined) {
     Q.wurttemberg_snap_election_called = 0;
 }
@@ -155,6 +194,11 @@ if (Q.lubeck_election_month == undefined) {
 if (Q.lubeck_election_year == undefined) {
     Q.lubeck_election_year = 1927;
 }
+
+if (Q.lubeck_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.lubeck_leverage = 0;
+}
 if (Q.lubeck_government == undefined) {
     Q.lubeck_government = 3;
 }
@@ -165,6 +209,11 @@ if (Q.lubeck_snap_election_called == undefined) {
     Q.lubeck_snap_election_called = 0;
 }
 Q.lubeck_landtag_seat_count = 80;
+
+if (Q.oldenburg_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.oldenburg_leverage = 0;
+}
 if (Q.wurttemberg_csvd_party_name == undefined) {
     Q.wurttemberg_csvd_party_name = "Christlich-Sozialer Volksdienst";
 }
@@ -185,6 +234,11 @@ if (Q.mecklenburg_schwerin_majority_cabinet == undefined) {
 }
 if (Q.mecklenburg_schwerin_leader == undefined) {
     Q.mecklenburg_schwerin_leader = "";
+}
+
+if (Q.mecklenburg_schwerin_leverage == undefined) {
+    // Represents the DDP's ability to influence or block policies within this Land government.
+    Q.mecklenburg_schwerin_leverage = 0;
 }
 if (Q.mecklenburg_schwerin_snap_election_called == undefined) {
     Q.mecklenburg_schwerin_snap_election_called = 0;

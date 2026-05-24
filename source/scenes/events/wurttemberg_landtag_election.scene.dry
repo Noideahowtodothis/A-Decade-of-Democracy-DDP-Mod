@@ -30,6 +30,8 @@ Current Württemberg government: **[+ wurttemberg_current_government_name +]** (
 
 Current government seats: **[+ wurttemberg_current_government_seats +] / 80**. Status: **[+ wurttemberg_current_government_status +]**. Majority cabinet: **[+ wurttemberg_majority_cabinet +]**.
 
+Current government leverage: **[+ wurttemberg_leverage +]**.
+
 {!<table>!}
 {!<tr><td>Party</td><td>Württemberg vote share</td><td>Seats (out of 80)</td></tr>!}
 {!<tr><td>SPD</td><td>[+ wurttemberg_spd_votes_disp +]%</td><td>[+ wurttemberg_spd_r +]</td></tr>!}

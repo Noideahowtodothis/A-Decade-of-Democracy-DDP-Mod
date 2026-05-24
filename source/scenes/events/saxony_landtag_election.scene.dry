@@ -30,6 +30,8 @@ Current Saxony government: **[+ saxony_current_government_name +]** ([+ saxony_c
 
 Current government seats: **[+ saxony_current_government_seats +] / 96**. Status: **[+ saxony_current_government_status +]**. Majority cabinet: **[+ saxony_majority_cabinet +]**.
 
+Current government leverage: **[+ saxony_leverage +]**.
+
 = Choose a Saxony coalition
 
 A coalition is selectable if it controls at least **49** of the **96** Landtag seats. If no listed coalition has a majority, the incumbent Saxony government may continue as a minority cabinet.

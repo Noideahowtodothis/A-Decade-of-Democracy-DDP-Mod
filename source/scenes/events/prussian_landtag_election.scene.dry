@@ -28,6 +28,8 @@ Current Prussian government: **[+ prussia_current_government_name +]** ([+ pruss
 
 Current government seats: **[+ prussia_current_government_seats +] / 450**. Status: **[+ prussia_current_government_status +]**. Majority cabinet: **[+ prussia_majority_cabinet +]**.
 
+Current government leverage: **[+ prussia_leverage +]**.
+
 {!<table>!}
 {!<tr><td>Party</td><td>Prussian vote share</td><td>Seats (out of 450)</td></tr>!}
 {!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ prussia_spd_votes_disp +]% {!</td><td>!} [+ prussia_spd_r +] {!</td></tr>!}

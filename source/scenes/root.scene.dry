@@ -107,6 +107,9 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.prussia_government = 1;
     Q.prussia_majority_cabinet = 1;
     Q.prussia_leader = "Otto Braun";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.prussia_leverage = 0;
     Q.prussia_election_year = 1928;
     Q.prussia_election_month = 5;
     Q.prussia_landtag_seat_count = 450;
@@ -115,6 +118,9 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
 Q.bavaria_government = 2;
 Q.bavaria_majority_cabinet = 1;
 Q.bavaria_leader = "Heinrich Held";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.bavaria_leverage = 0;
 Q.bavaria_election_year = 1928;
 Q.bavaria_election_month = 4;
 Q.bavaria_landtag_seat_count = 128;
@@ -124,6 +130,9 @@ Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
 Q.baden_government = 0;
 Q.baden_majority_cabinet = 0;
 Q.baden_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.baden_leverage = 0;
 Q.baden_election_year = 1925;
 Q.baden_election_month = 10;
 Q.baden_landtag_seat_count = 88;
@@ -134,6 +143,9 @@ Q.baden_landtag_seat_allocation_valid = 1;
 Q.bremen_government = 5;
 Q.bremen_majority_cabinet = 1;
 Q.bremen_leader = "Theodor Spitta";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.bremen_leverage = 0;
 Q.bremen_election_year = 1927;
 Q.bremen_election_month = 11;
 Q.bremen_snap_election_called = 0;
@@ -144,6 +156,9 @@ Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
 Q.hamburg_government = 3;
 Q.hamburg_majority_cabinet = 1;
 Q.hamburg_leader = "Rudolf Ross";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.hamburg_leverage = 0;
 Q.hamburg_election_year = 1927;
 Q.hamburg_election_month = 10;
 Q.hamburg_snap_election_called = 0;
@@ -153,6 +168,9 @@ Q.hamburg_landtag_seat_allocation_valid = 1;
 Q.thuringia_government = 5;
 Q.thuringia_majority_cabinet = 1;
 Q.thuringia_leader = "Arnold Paulssen";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.thuringia_leverage = 0;
 Q.thuringia_election_year = 1927;
 Q.thuringia_election_month = 1;
 Q.thuringia_snap_election_called = 0;
@@ -163,6 +181,9 @@ Q.thuringia_landbund_party_name = "Thüringer Landbund";
 Q.saxony_government = 0;
 Q.saxony_majority_cabinet = 0;
 Q.saxony_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.saxony_leverage = 0;
 Q.saxony_election_year = 1926;
 Q.saxony_election_month = 10;
 Q.saxony_landtag_seat_count = 96;
@@ -172,6 +193,9 @@ Q.saxony_landtag_seat_allocation_valid = 1;
 Q.oldenburg_government = 0;
 Q.oldenburg_majority_cabinet = 0;
 Q.oldenburg_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.oldenburg_leverage = 0;
 Q.oldenburg_election_year = 1928;
 Q.oldenburg_election_month = 5;
 // TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
@@ -182,6 +206,9 @@ Q.oldenburg_landtag_seat_allocation_valid = 1;
 Q.mecklenburg_schwerin_government = 0;
 Q.mecklenburg_schwerin_majority_cabinet = 0;
 Q.mecklenburg_schwerin_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.mecklenburg_schwerin_leverage = 0;
 Q.mecklenburg_schwerin_election_year = 1930;
 Q.mecklenburg_schwerin_election_month = 6;
 Q.mecklenburg_schwerin_snap_election_called = 0;
@@ -311,6 +338,9 @@ Q.mecklenburg_schwerin_current_government_status = 'Minority';
     Q.prussia_government = 1;
     Q.prussia_majority_cabinet = 1;
     Q.prussia_leader = "Otto Braun";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.prussia_leverage = 0;
     Q.prussia_election_year = 1928;
     Q.prussia_election_month = 5;
     Q.prussia_landtag_seat_count = 450;
@@ -319,6 +349,9 @@ Q.mecklenburg_schwerin_current_government_status = 'Minority';
 Q.bavaria_government = 2;
 Q.bavaria_majority_cabinet = 1;
 Q.bavaria_leader = "Heinrich Held";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.bavaria_leverage = 0;
 Q.bavaria_election_year = 1928;
 Q.bavaria_election_month = 4;
 Q.bavaria_landtag_seat_count = 128;
@@ -328,6 +361,9 @@ Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
 Q.baden_government = 0;
 Q.baden_majority_cabinet = 0;
 Q.baden_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.baden_leverage = 0;
 Q.baden_election_year = 1925;
 Q.baden_election_month = 10;
 Q.baden_landtag_seat_count = 88;
@@ -338,6 +374,9 @@ Q.baden_landtag_seat_allocation_valid = 1;
 Q.bremen_government = 5;
 Q.bremen_majority_cabinet = 1;
 Q.bremen_leader = "Theodor Spitta";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.bremen_leverage = 0;
 Q.bremen_election_year = 1927;
 Q.bremen_election_month = 11;
 Q.bremen_snap_election_called = 0;
@@ -348,6 +387,9 @@ Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
 Q.hamburg_government = 3;
 Q.hamburg_majority_cabinet = 1;
 Q.hamburg_leader = "Rudolf Ross";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.hamburg_leverage = 0;
 Q.hamburg_election_year = 1927;
 Q.hamburg_election_month = 10;
 Q.hamburg_snap_election_called = 0;
@@ -357,6 +399,9 @@ Q.hamburg_landtag_seat_allocation_valid = 1;
 Q.thuringia_government = 5;
 Q.thuringia_majority_cabinet = 1;
 Q.thuringia_leader = "Arnold Paulssen";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.thuringia_leverage = 0;
 Q.thuringia_election_year = 1927;
 Q.thuringia_election_month = 1;
 Q.thuringia_snap_election_called = 0;
@@ -367,6 +412,9 @@ Q.thuringia_landbund_party_name = "Thüringer Landbund";
 Q.saxony_government = 0;
 Q.saxony_majority_cabinet = 0;
 Q.saxony_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.saxony_leverage = 0;
 Q.saxony_election_year = 1926;
 Q.saxony_election_month = 10;
 Q.saxony_landtag_seat_count = 96;
@@ -376,6 +424,9 @@ Q.saxony_landtag_seat_allocation_valid = 1;
 Q.oldenburg_government = 0;
 Q.oldenburg_majority_cabinet = 0;
 Q.oldenburg_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.oldenburg_leverage = 0;
 Q.oldenburg_election_year = 1928;
 Q.oldenburg_election_month = 5;
 // TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
@@ -386,6 +437,9 @@ Q.oldenburg_landtag_seat_allocation_valid = 1;
 Q.mecklenburg_schwerin_government = 0;
 Q.mecklenburg_schwerin_majority_cabinet = 0;
 Q.mecklenburg_schwerin_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.mecklenburg_schwerin_leverage = 0;
 Q.mecklenburg_schwerin_election_year = 1930;
 Q.mecklenburg_schwerin_election_month = 6;
 Q.mecklenburg_schwerin_snap_election_called = 0;
@@ -639,6 +693,9 @@ Q.prussian_government = 1;
 Q.prussia_government = 1;
 Q.prussia_majority_cabinet = 1;
 Q.prussia_leader = "Otto Braun";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.prussia_leverage = 0;
 Q.prussia_election_year = 1928;
 Q.prussia_election_month = 5;
 Q.prussia_landtag_seat_count = 450;
@@ -647,6 +704,9 @@ Q.prussia_landtag_seat_allocation_valid = 1;
 Q.bavaria_government = 2;
 Q.bavaria_majority_cabinet = 1;
 Q.bavaria_leader = "Heinrich Held";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.bavaria_leverage = 0;
 Q.bavaria_election_year = 1928;
 Q.bavaria_election_month = 4;
 Q.bavaria_landtag_seat_count = 128;
@@ -656,6 +716,9 @@ Q.bavaria_peasant_party_name = "Bavarian Peasant Party";
 Q.baden_government = 0;
 Q.baden_majority_cabinet = 0;
 Q.baden_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.baden_leverage = 0;
 Q.baden_election_year = 1925;
 Q.baden_election_month = 10;
 Q.baden_landtag_seat_count = 88;
@@ -666,6 +729,9 @@ Q.baden_landtag_seat_allocation_valid = 1;
 Q.bremen_government = 5;
 Q.bremen_majority_cabinet = 1;
 Q.bremen_leader = "Theodor Spitta";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.bremen_leverage = 0;
 Q.bremen_election_year = 1927;
 Q.bremen_election_month = 11;
 Q.bremen_snap_election_called = 0;
@@ -676,6 +742,9 @@ Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
 Q.hamburg_government = 3;
 Q.hamburg_majority_cabinet = 1;
 Q.hamburg_leader = "Rudolf Ross";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.hamburg_leverage = 0;
 Q.hamburg_election_year = 1927;
 Q.hamburg_election_month = 10;
 Q.hamburg_snap_election_called = 0;
@@ -685,6 +754,9 @@ Q.hamburg_landtag_seat_allocation_valid = 1;
 Q.thuringia_government = 5;
 Q.thuringia_majority_cabinet = 1;
 Q.thuringia_leader = "Arnold Paulssen";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.thuringia_leverage = 0;
 Q.thuringia_election_year = 1927;
 Q.thuringia_election_month = 1;
 Q.thuringia_snap_election_called = 0;
@@ -695,6 +767,9 @@ Q.thuringia_landbund_party_name = "Thüringer Landbund";
 Q.saxony_government = 0;
 Q.saxony_majority_cabinet = 0;
 Q.saxony_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.saxony_leverage = 0;
 Q.saxony_election_year = 1926;
 Q.saxony_election_month = 10;
 Q.saxony_landtag_seat_count = 96;
@@ -704,6 +779,9 @@ Q.saxony_landtag_seat_allocation_valid = 1;
 Q.oldenburg_government = 0;
 Q.oldenburg_majority_cabinet = 0;
 Q.oldenburg_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.oldenburg_leverage = 0;
 Q.oldenburg_election_year = 1928;
 Q.oldenburg_election_month = 5;
 // TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
@@ -714,6 +792,9 @@ Q.oldenburg_landtag_seat_allocation_valid = 1;
 Q.mecklenburg_schwerin_government = 0;
 Q.mecklenburg_schwerin_majority_cabinet = 0;
 Q.mecklenburg_schwerin_leader = "";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.mecklenburg_schwerin_leverage = 0;
 Q.mecklenburg_schwerin_election_year = 1930;
 Q.mecklenburg_schwerin_election_month = 6;
 Q.mecklenburg_schwerin_snap_election_called = 0;
