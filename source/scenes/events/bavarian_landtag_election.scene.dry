@@ -30,6 +30,8 @@ Current Bavarian government: **[+ bavaria_current_government_name +]** ([+ bavar
 
 Current government seats: **[+ bavaria_current_government_seats +] / 128**. Status: **[+ bavaria_current_government_status +]**. Majority cabinet: **[+ bavaria_majority_cabinet +]**.
 
+Current government leverage: **[+ bavaria_leverage +]**.
+
 {!<table>!}
 {!<tr><td>Party</td><td>Bavarian vote share</td><td>Seats (out of 128)</td></tr>!}
 {!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ bavaria_spd_votes_disp +]% {!</td><td>!} [+ bavaria_spd_r +] {!</td></tr>!}

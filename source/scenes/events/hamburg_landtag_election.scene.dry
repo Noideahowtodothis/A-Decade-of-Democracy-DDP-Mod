@@ -30,6 +30,8 @@ Current Hamburg government: **[+ hamburg_current_government_name +]** ([+ hambur
 
 Current government seats: **[+ hamburg_current_government_seats +] / 160**. Status: **[+ hamburg_current_government_status +]**. Majority cabinet: **[+ hamburg_majority_cabinet +]**.
 
+Current government leverage: **[+ hamburg_leverage +]**.
+
 {!<table>!}
 {!<tr><td>Party</td><td>Hamburg vote share</td><td>Seats (out of 160)</td></tr>!}
 {!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ hamburg_spd_votes_disp +]% {!</td><td>!} [+ hamburg_spd_r +] {!</td></tr>!}
