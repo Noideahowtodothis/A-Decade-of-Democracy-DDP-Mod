@@ -122,6 +122,71 @@ on-arrival: prussia_leader = "Hermann Göring"
 go-to: prussian_government_confirmed
 
 @prussian_government_confirmed
+on-arrival: {! 
+var totalSeats = Number(Q.prussia_landtag_total_seats) || 450;
+var ddpSeats = Number(Q.prussia_ddp_r) || 0;
+var ddpShare = totalSeats > 0 ? (ddpSeats / totalSeats) * 100 : 0;
+var base = 0;
+if (ddpShare >= 30) { base = 5; }
+else if (ddpShare >= 20) { base = 4; }
+else if (ddpShare >= 15) { base = 3; }
+else if (ddpShare >= 10) { base = 2; }
+else if (ddpShare >= 5) { base = 1; }
+
+var coalitionParties = [];
+var coalitionSeats = 0;
+var gov = Number(Q.prussia_government) || 1;
+if (gov === 1) {
+  coalitionParties = ['spd', 'z', 'ddp'];
+  coalitionSeats = Number(Q.prussia_weimar_coalition_seats) || 0;
+} else if (gov === 2) {
+  coalitionParties = ['spd', 'z', 'ddp', 'dvp'];
+  coalitionSeats = Number(Q.prussia_groko_coalition_seats) || 0;
+} else if (gov === 3) {
+  coalitionParties = ['dvp', 'dnvp', 'ddp', 'z'];
+  coalitionSeats = Number(Q.prussia_bourgeois_coalition_seats) || 0;
+} else if (gov === 4) {
+  coalitionParties = ['nsdap', 'dvp', 'dnvp', 'z'];
+  coalitionSeats = Number(Q.prussia_far_right_coalition_seats) || 0;
+}
+
+var majorityThreshold = Math.floor(totalSeats / 2) + 1;
+var pivotal = (coalitionSeats >= majorityThreshold && (coalitionSeats - ddpSeats) < majorityThreshold) ? 2 : 0;
+
+var ddpInCoalition = coalitionParties.indexOf('ddp') !== -1;
+var dominant = 0;
+if (ddpInCoalition) {
+  dominant = 1;
+  for (var i = 0; i < coalitionParties.length; i += 1) {
+    var party = coalitionParties[i];
+    if (party === 'ddp') { continue; }
+    var partySeats = Number(Q['prussia_' + party + '_r']) || 0;
+    if (partySeats >= ddpSeats) { dominant = 0; break; }
+  }
+}
+
+var hostilePenalty = 0;
+if (coalitionParties.indexOf('dnvp') !== -1) { hostilePenalty += 1; }
+if (coalitionParties.indexOf('nsdap') !== -1) { hostilePenalty += 1; }
+if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
+
+var ddpLeaderPenalty = 0;
+if (Q.prussia_leader === "DDP") {
+  ddpLeaderPenalty = 1;
+}
+// TODO: DDP-led Land governments should later make DDP-initiated policies more effective.
+
+var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+if (leverage < 0) { leverage = 0; }
+if (leverage > 8) { leverage = 8; }
+Q.prussia_leverage = leverage;
+
+Q.prussia_leverage_base = base;
+Q.prussia_leverage_pivotal = pivotal;
+Q.prussia_leverage_dominant = dominant;
+Q.prussia_leverage_hostile_penalty = hostilePenalty;
+Q.prussia_leverage_ddp_leader_penalty = ddpLeaderPenalty;
+!}
 
 = Prussian government formed
 
@@ -134,5 +199,9 @@ Seats: **[+ prussia_current_government_seats +] / 450**
 Status: **[+ prussia_current_government_status +]**
 
 Leader: **[+ prussia_leader +]**
+
+Government leverage: **[+ prussia_leverage +]**.
+
+Debug leverage breakdown: base **[+ prussia_leverage_base +]**, pivotal **[+ prussia_leverage_pivotal +]**, dominant **[+ prussia_leverage_dominant +]**, hostile penalty **-[+ prussia_leverage_hostile_penalty +]**, DDP leader penalty **-[+ prussia_leverage_ddp_leader_penalty +]**, final **[+ prussia_leverage +]**.
 
 - @root: Continue.
