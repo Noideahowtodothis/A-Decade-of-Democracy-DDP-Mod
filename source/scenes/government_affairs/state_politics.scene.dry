@@ -1,9 +1,9 @@
 title: Länder Politics
 new-page: true
 is-card: true
-tags: govt_affairs
+is-pinned-card: true
+view-if: time >= 6
 card-image: img/reichstag_2.jpg
-on-arrival: month_actions += 1
 
 = Länder Politics Overview
 
