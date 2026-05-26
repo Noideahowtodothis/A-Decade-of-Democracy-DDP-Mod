@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = wurttemberg_election_year and month >= wurttemberg_election_month) or (year > wurttemberg_election_year)
-on-departure: month_actions += 1; wurttemberg_election_year = wurttemberg_election_year + 4 if wurttemberg_snap_election_called == 0; wurttemberg_election_year = year + 4 if wurttemberg_snap_election_called == 1; wurttemberg_election_month = month if wurttemberg_snap_election_called == 1; wurttemberg_snap_election_called = 0
+on-departure: wurttemberg_election_year = wurttemberg_election_year + 4 if wurttemberg_snap_election_called == 0; wurttemberg_election_year = year + 4 if wurttemberg_snap_election_called == 1; wurttemberg_election_month = month if wurttemberg_snap_election_called == 1; wurttemberg_snap_election_called = 0
 set-jump: wurttemberg_landtag_results
 
 = Württemberg Landtag Elections, [+ month : month +] [+ year +]

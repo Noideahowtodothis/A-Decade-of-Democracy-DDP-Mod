@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = mecklenburg_schwerin_election_year and month >= mecklenburg_schwerin_election_month) or (year > mecklenburg_schwerin_election_year)
-on-departure: month_actions += 1; mecklenburg_schwerin_election_year = mecklenburg_schwerin_election_year + 4 if mecklenburg_schwerin_snap_election_called == 0; mecklenburg_schwerin_election_year = year + 4 if mecklenburg_schwerin_snap_election_called == 1; mecklenburg_schwerin_election_month = month if mecklenburg_schwerin_snap_election_called == 1; mecklenburg_schwerin_snap_election_called = 0
+on-departure: mecklenburg_schwerin_election_year = mecklenburg_schwerin_election_year + 4 if mecklenburg_schwerin_snap_election_called == 0; mecklenburg_schwerin_election_year = year + 4 if mecklenburg_schwerin_snap_election_called == 1; mecklenburg_schwerin_election_month = month if mecklenburg_schwerin_snap_election_called == 1; mecklenburg_schwerin_snap_election_called = 0
 set-jump: mecklenburg_schwerin_landtag_results
 
 = Mecklenburg-Schwerin Landtag Elections, [+ month : month +] [+ year +]
