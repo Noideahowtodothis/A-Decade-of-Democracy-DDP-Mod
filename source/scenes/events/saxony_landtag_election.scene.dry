@@ -93,14 +93,14 @@ Selected coalition: **[+ saxony_current_government_name +]** ([+ saxony_current_
 
 Coalition seats: **[+ saxony_current_government_seats +] / 96**. Status: **[+ saxony_current_government_status +]**.
 
-- @saxony_leader_erich_zeigner
-- @saxony_leader_hermann_fleissner
-- @saxony_leader_richard_seyfert
-- @saxony_leader_willibalt_apelt
-- @saxony_leader_max_heldt
-- @saxony_leader_bernhard_blueher
-- @saxony_leader_hugo_weber
-- @saxony_leader_wilhelm_buenger
+- @saxony_leader_erich_zeigner: Erich Zeigner
+- @saxony_leader_hermann_fleissner: Hermann Fleißner
+- @saxony_leader_richard_seyfert: Richard Seyfert
+- @saxony_leader_willibalt_apelt: Willibalt Apelt
+- @saxony_leader_max_heldt: Max Heldt
+- @saxony_leader_bernhard_blueher: Bernhard Blüher
+- @saxony_leader_hugo_weber: Hugo Weber
+- @saxony_leader_wilhelm_buenger: Wilhelm Bünger
 
 @saxony_leader_erich_zeigner
 title: Erich Zeigner

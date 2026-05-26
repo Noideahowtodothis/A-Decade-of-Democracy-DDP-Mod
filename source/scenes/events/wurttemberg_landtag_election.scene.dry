@@ -134,13 +134,13 @@ go-to: calculate_wurttemberg_landtag
 title: Choose the Württemberg leader
 
 = Choose the Württemberg leader
-- @wurttemberg_leader_keil
-- @wurttemberg_leader_schumacher
-- @wurttemberg_leader_bolz
-- @wurttemberg_leader_bazille
-- @wurttemberg_leader_maier
-- @wurttemberg_leader_hieber
-- @wurttemberg_leader_mergenthaler
+- @wurttemberg_leader_keil: Wilhelm Keil
+- @wurttemberg_leader_schumacher: Kurt Schumacher
+- @wurttemberg_leader_bolz: Eugen Bolz
+- @wurttemberg_leader_bazille: Wilhelm Bazille
+- @wurttemberg_leader_maier: Reinhold Maier
+- @wurttemberg_leader_hieber: Johannes Hieber
+- @wurttemberg_leader_mergenthaler: Christian Mergenthaler
 
 @wurttemberg_leader_keil
 title: Wilhelm Keil
