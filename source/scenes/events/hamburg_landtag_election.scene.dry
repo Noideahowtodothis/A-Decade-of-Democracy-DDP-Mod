@@ -131,6 +131,56 @@ go-to: hamburg_government_confirmed
 
 @hamburg_government_confirmed
 
+on-arrival: {!
+var ddpShare = Number(Q.hamburg_ddp_votes_raw);
+if (!isFinite(ddpShare)) { ddpShare = Number(Q.hamburg_ddp_votes) || 0; }
+var ddpSeats = Number(Q.hamburg_ddp_r) || 0;
+var totalSeats = Number(Q.hamburg_landtag_total_seats) || 160;
+
+var base = 0;
+if (ddpShare >= 30) { base = 5; }
+else if (ddpShare >= 20) { base = 4; }
+else if (ddpShare >= 15) { base = 3; }
+else if (ddpShare >= 10) { base = 2; }
+else if (ddpShare >= 5) { base = 1; }
+
+var coalitionParties = [];
+var coalitionSeats = Number(Q.hamburg_current_government_seats) || 0;
+var gov = Number(Q.hamburg_government) || 1;
+if (gov === 1) { coalitionParties = ['spd', 'kpd']; }
+else if (gov === 2) { coalitionParties = ['spd']; }
+else if (gov === 3) { coalitionParties = ['spd', 'ddp']; }
+else if (gov === 4) { coalitionParties = ['spd', 'ddp', 'dvp']; }
+else if (gov === 5) { coalitionParties = ['ddp', 'dnvp', 'wp', 'dvp']; }
+
+var majorityThreshold = Math.floor(totalSeats / 2) + 1;
+var pivotal = (coalitionSeats >= majorityThreshold && (coalitionSeats - ddpSeats) < majorityThreshold) ? 2 : 0;
+
+var ddpInCoalition = coalitionParties.indexOf('ddp') !== -1;
+var dominant = 0;
+if (ddpInCoalition) {
+  dominant = 1;
+  for (var i = 0; i < coalitionParties.length; i += 1) {
+    var party = coalitionParties[i];
+    if (party === 'ddp') { continue; }
+    var partySeats = Number(Q['hamburg_' + party + '_r']) || 0;
+    if (partySeats >= ddpSeats) { dominant = 0; break; }
+  }
+}
+
+var hostilePenalty = 0;
+if (coalitionParties.indexOf('dnvp') !== -1) { hostilePenalty += 1; }
+if (coalitionParties.indexOf('nsdap') !== -1) { hostilePenalty += 1; }
+if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
+
+var ddpLeaderPenalty = 0;
+if (Q.hamburg_leader === "DDP") { ddpLeaderPenalty = 1; }
+
+var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+if (leverage < 0) { leverage = 0; }
+if (leverage > 8) { leverage = 8; }
+Q.hamburg_leverage = leverage;
+!}
 = Hamburg government formed
 
 Coalition: **[+ hamburg_current_government_name +]**
