@@ -153,7 +153,62 @@ go-to: lubeck_government_confirmed
 
 @lubeck_government_confirmed
 title: Lübeck government formed
-on-arrival: {! if (typeof window !== 'undefined' && typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(Q); } if (!Q.lubeck_leader || Q.lubeck_leader === '') { Q.lubeck_leader = Q.lubeck_leader_default || ''; } !}
+on-arrival: {! if (typeof window !== 'undefined' && typeof window.updateLubeckCoalitionOptions === 'function') { window.updateLubeckCoalitionOptions(Q); } if (!Q.lubeck_leader || Q.lubeck_leader === '') { Q.lubeck_leader = Q.lubeck_leader_default || ''; }
+
+var totalSeats = Number(Q.lubeck_landtag_seat_count) || 80;
+var ddpSeats = Number(Q.lubeck_ddp_r) || 0;
+var base = ddpSeats >= 10 ? 3 : (ddpSeats >= 6 ? 2 : (ddpSeats >= 3 ? 1 : 0));
+
+var gov = Number(Q.lubeck_government) || 0;
+var coalitionParties = [];
+var coalitionSeats = Number(Q.lubeck_current_government_seats) || 0;
+if (gov === 1) {
+  coalitionParties = ['spd', 'ddp'];
+  coalitionSeats = Number(Q.lubeck_spd_ddp_coalition_seats) || 0;
+} else if (gov === 2) {
+  coalitionParties = ['spd', 'ddp', 'dvp'];
+  coalitionSeats = Number(Q.lubeck_spd_ddp_dvp_coalition_seats) || 0;
+} else if (gov === 3) {
+  coalitionParties = ['ddp', 'dvp', 'hvb'];
+  coalitionSeats = Number(Q.lubeck_ddp_dvp_hvb_coalition_seats) || 0;
+} else if (gov === 4) {
+  coalitionParties = ['ddp', 'dvp', 'dnvp', 'hvb'];
+  coalitionSeats = Number(Q.lubeck_ddp_dvp_dnvp_hvb_coalition_seats) || 0;
+} else if (gov === 5) {
+  coalitionParties = ['dvp', 'dnvp', 'nsdap'];
+  coalitionSeats = Number(Q.lubeck_dvp_dnvp_nsdap_coalition_seats) || 0;
+}
+
+var majorityThreshold = Math.floor(totalSeats / 2) + 1;
+var pivotal = (coalitionSeats >= majorityThreshold && (coalitionSeats - ddpSeats) < majorityThreshold) ? 2 : 0;
+
+var ddpInCoalition = coalitionParties.indexOf('ddp') !== -1;
+var dominant = 0;
+if (ddpInCoalition) {
+  dominant = 1;
+  for (var i = 0; i < coalitionParties.length; i += 1) {
+    var party = coalitionParties[i];
+    if (party === 'ddp') { continue; }
+    var partySeats = Number(Q['lubeck_' + party + '_r']) || 0;
+    if (partySeats >= ddpSeats) { dominant = 0; break; }
+  }
+}
+
+var hostilePenalty = 0;
+if (coalitionParties.indexOf('dnvp') !== -1) { hostilePenalty += 1; }
+if (coalitionParties.indexOf('nsdap') !== -1) { hostilePenalty += 1; }
+if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
+
+var ddpLeaderPenalty = 0;
+if (Q.lubeck_leader === "DDP") {
+  ddpLeaderPenalty = 1;
+}
+
+var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+if (leverage < 0) { leverage = 0; }
+if (leverage > 8) { leverage = 8; }
+Q.lubeck_leverage = leverage;
+!}
 
 = Lübeck government formed
 Coalition: **[+ lubeck_current_government_name +]**
