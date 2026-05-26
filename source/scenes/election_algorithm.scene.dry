@@ -362,6 +362,57 @@ window.updateBadenCoalitionOptions = function(qualities) {
     q.baden_leader_hermann_hummel_selectable = q.baden_ddp_in_government;
     q.baden_leader_willy_hellpach_selectable = q.baden_ddp_in_government && allowHellpach ? 1 : 0;
     q.baden_leader_wilhelm_mattes_selectable = q.baden_dvp_in_government;
+
+    var totalSeats = Number(q.baden_landtag_total_seats) || 88;
+    var ddpSeats = Number(q.baden_ddp_r) || 0;
+    var ddpShare = totalSeats > 0 ? (ddpSeats / totalSeats) * 100 : 0;
+    var base = 0;
+    if (ddpShare >= 30) { base = 5; }
+    else if (ddpShare >= 20) { base = 4; }
+    else if (ddpShare >= 15) { base = 3; }
+    else if (ddpShare >= 10) { base = 2; }
+    else if (ddpShare >= 5) { base = 1; }
+
+    var coalitionParties = [];
+    var gov = Number(q.baden_government) || 1;
+    if (gov === 1) { coalitionParties = ['ddp', 'spd']; }
+    else if (gov === 2) { coalitionParties = ['spd', 'ddp', 'z']; }
+    else if (gov === 3) { coalitionParties = ['z', 'ddp']; }
+    else if (gov === 4) { coalitionParties = ['z', 'ddp', 'dvp']; }
+    else if (gov === 5) { coalitionParties = ['z', 'ddp', 'dnvp', 'dvp']; }
+    else if (gov === 6) { coalitionParties = ['z', 'dvp', 'dnvp']; }
+    else if (gov === 7) { coalitionParties = ['spd', 'dvp', 'z']; }
+    else if (gov === 8) { coalitionParties = ['nsdap', 'dvp', 'dnvp']; }
+    else if (gov === 9) { coalitionParties = ['nsdap', 'dnvp']; }
+
+    var coalitionSeats = Number(q.baden_current_government_seats) || 0;
+    var majorityThreshold = Math.floor(totalSeats / 2) + 1;
+    var pivotal = (coalitionSeats >= majorityThreshold && (coalitionSeats - ddpSeats) < majorityThreshold) ? 2 : 0;
+
+    var ddpInCoalition = coalitionParties.indexOf('ddp') !== -1;
+    var dominant = 0;
+    if (ddpInCoalition) {
+        dominant = 1;
+        for (var k = 0; k < coalitionParties.length; k++) {
+            var party = coalitionParties[k];
+            if (party === 'ddp') { continue; }
+            var partySeats = Number(q['baden_' + party + '_r']) || 0;
+            if (partySeats >= ddpSeats) { dominant = 0; break; }
+        }
+    }
+
+    var hostilePenalty = 0;
+    if (coalitionParties.indexOf('dnvp') !== -1) { hostilePenalty += 1; }
+    if (coalitionParties.indexOf('nsdap') !== -1) { hostilePenalty += 1; }
+    if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
+
+    var ddpLeaderPenalty = 0;
+    if (q.baden_leader === "DDP") { ddpLeaderPenalty = 1; }
+
+    var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+    if (leverage < 0) { leverage = 0; }
+    if (leverage > 8) { leverage = 8; }
+    q.baden_leverage = leverage;
 };
 
 // Calculate Hamburg Bürgerschaft/Landtag support from federal party support using Hamburg party weights.
