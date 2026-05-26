@@ -858,6 +858,68 @@ window.updateOldenburgCoalitionOptions = function(qualities) {
     else if (q.oldenburg_z_in_government) { q.oldenburg_leader = 'Franz Driver'; }
     else if (q.oldenburg_ddp_in_government) { q.oldenburg_leader = 'Theodor Tantzen'; }
     else if (q.oldenburg_spd_in_government) { q.oldenburg_leader = 'Paul Hug'; }
+
+    var ddpSeats = Number(q.oldenburg_ddp_r) || 0;
+    var base = ddpSeats >= 10 ? 3 : (ddpSeats >= 6 ? 2 : (ddpSeats >= 3 ? 1 : 0));
+
+    var gov = Number(q.oldenburg_government) || 0;
+    var coalitionParties = [];
+    var coalitionSeats = Number(q.oldenburg_current_government_seats) || 0;
+    if (gov === 1) {
+        coalitionParties = [];
+        coalitionSeats = Number(q.oldenburg_technocratic_coalition_seats) || 0;
+    } else if (gov === 2) {
+        coalitionParties = ['spd', 'z', 'ddp'];
+        coalitionSeats = Number(q.oldenburg_spd_z_ddp_coalition_seats) || 0;
+    } else if (gov === 3) {
+        coalitionParties = ['z', 'ddp', 'dvp'];
+        coalitionSeats = Number(q.oldenburg_z_ddp_dvp_coalition_seats) || 0;
+    } else if (gov === 4) {
+        coalitionParties = ['ddp', 'dvp', 'wp'];
+        coalitionSeats = Number(q.oldenburg_ddp_dvp_wp_coalition_seats) || 0;
+    } else if (gov === 5) {
+        coalitionParties = ['ddp', 'dnvp', 'z', 'dvp'];
+        coalitionSeats = Number(q.oldenburg_ddp_dnvp_z_dvp_coalition_seats) || 0;
+    } else if (gov === 6) {
+        coalitionParties = ['dnvp', 'z', 'dvp', 'cnbl'];
+        coalitionSeats = Number(q.oldenburg_dnvp_z_dvp_cnbl_coalition_seats) || 0;
+    } else if (gov === 7) {
+        coalitionParties = ['nsdap', 'dnvp'];
+        coalitionSeats = Number(q.oldenburg_nsdap_dnvp_coalition_seats) || 0;
+    } else if (gov === 8) {
+        coalitionParties = ['nsdap'];
+        coalitionSeats = Number(q.oldenburg_nsdap_majority_coalition_seats) || 0;
+    }
+
+    var majorityThreshold = Math.floor(seatCount / 2) + 1;
+    var pivotal = (coalitionSeats >= majorityThreshold && (coalitionSeats - ddpSeats) < majorityThreshold) ? 2 : 0;
+
+    var ddpInCoalition = coalitionParties.indexOf('ddp') !== -1;
+    var dominant = 0;
+    if (ddpInCoalition) {
+        dominant = 1;
+        for (var i2 = 0; i2 < coalitionParties.length; i2 += 1) {
+            var party = coalitionParties[i2];
+            if (party === 'ddp') { continue; }
+            var partySeats = Number(q['oldenburg_' + party + '_r']) || 0;
+            if (partySeats >= ddpSeats) { dominant = 0; break; }
+        }
+    }
+
+    var hostilePenalty = 0;
+    if (coalitionParties.indexOf('dnvp') !== -1) { hostilePenalty += 1; }
+    if (coalitionParties.indexOf('nsdap') !== -1) { hostilePenalty += 1; }
+    if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
+
+    var ddpLeaderPenalty = 0;
+    if (q.oldenburg_leader === 'DDP') {
+        ddpLeaderPenalty = 1;
+    }
+
+    var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+    if (leverage < 0) { leverage = 0; }
+    if (leverage > 8) { leverage = 8; }
+    q.oldenburg_leverage = leverage;
 };
 
 // Calculate Prussian Landtag support from federal party support using Prussian party weights.
