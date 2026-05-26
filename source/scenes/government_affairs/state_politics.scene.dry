@@ -1,0 +1,129 @@
+title: Länder Politics
+new-page: true
+is-card: true
+tags: govt_affairs
+card-image: img/reichstag_2.jpg
+on-arrival: month_actions += 1
+
+= Länder Politics Overview
+
+Select a Land to review coalition control, Landtag strength, and DDP leverage.
+
+- @land_prussia: Prussia
+- @land_bavaria: Bavaria
+- @land_baden: Baden
+- @land_wurttemberg: Württemberg
+- @land_saxony: Saxony
+- @land_thuringia: Thuringia
+- @land_hamburg: Hamburg
+- @land_bremen: Bremen
+- @land_lubeck: Lübeck
+- @land_oldenburg: Oldenburg
+- @land_mecklenburg_schwerin: Mecklenburg-Schwerin
+- @root: Return
+- @easy_discard
+
+@land_prussia
+on-arrival: state_land = 'prussia'
+go-to: state_land_overview
+@land_bavaria
+on-arrival: state_land = 'bavaria'
+go-to: state_land_overview
+@land_baden
+on-arrival: state_land = 'baden'
+go-to: state_land_overview
+@land_wurttemberg
+on-arrival: state_land = 'wurttemberg'
+go-to: state_land_overview
+@land_saxony
+on-arrival: state_land = 'saxony'
+go-to: state_land_overview
+@land_thuringia
+on-arrival: state_land = 'thuringia'
+go-to: state_land_overview
+@land_hamburg
+on-arrival: state_land = 'hamburg'
+go-to: state_land_overview
+@land_bremen
+on-arrival: state_land = 'bremen'
+go-to: state_land_overview
+@land_lubeck
+on-arrival: state_land = 'lubeck'
+go-to: state_land_overview
+@land_oldenburg
+on-arrival: state_land = 'oldenburg'
+go-to: state_land_overview
+@land_mecklenburg_schwerin
+on-arrival: state_land = 'mecklenburg_schwerin'
+go-to: state_land_overview
+
+@state_land_overview
+new-page: true
+on-arrival: {!
+var stateNames = {
+    prussia: 'Prussia', bavaria: 'Bavaria', baden: 'Baden', wurttemberg: 'Württemberg', saxony: 'Saxony',
+    thuringia: 'Thuringia', hamburg: 'Hamburg', bremen: 'Bremen', lubeck: 'Lübeck', oldenburg: 'Oldenburg', mecklenburg_schwerin: 'Mecklenburg-Schwerin'
+};
+var p = Q.state_land;
+Q.state_land_name = stateNames[p] || 'Unknown Land';
+Q.state_government_name = Q[p + '_current_government_name'] || Q[p + '_government'] || 'No government recorded';
+Q.state_leader_name = Q[p + '_leader'] || 'No leader recorded';
+Q.state_government_status = Q[p + '_current_government_status'] || (Q[p + '_majority_cabinet'] ? 'Majority' : 'Minority');
+Q.state_ddp_seats = Q[p + '_ddp_seats'];
+Q.state_total_seats = Q[p + '_landtag_total_seats'] || Q[p + '_landtag_seat_count'] || 0;
+Q.state_leverage_value = Q[p + '_leverage'] || 0;
+Q.state_next_election_month = Q[p + '_election_month'] || '-';
+Q.state_next_election_year = Q[p + '_election_year'] || '-';
+var parties = (Q[p + '_current_government_parties'] || '').toUpperCase();
+Q.state_ddp_in_government = parties.indexOf('DDP') !== -1 ? 1 : 0;
+!}
+
+= [+ state_land_name +] State Affairs
+
+Current coalition/government: [+ state_government_name +]
+
+Minister-President / state leader: [+ state_leader_name +]
+
+Cabinet status: [+ state_government_status +]
+
+DDP seats: [+ state_ddp_seats +] / [+ state_total_seats +]
+
+DDP leverage: [+ state_leverage_value +]
+
+Next election date: [+ state_next_election_month : month +] [+ state_next_election_year +]
+
+- @state_landtag_breakdown: View Landtag composition details.
+- @state_policy_actions: Enact new policies in [+ state_land_name +].
+- @state_not_in_government: The DDP is not in government here.
+- @state_politics: Return to Länder overview.
+
+@state_landtag_breakdown
+view-if: state_total_seats > 0
+
+Landtag seats recorded: [+ state_total_seats +].
+
+@state_policy_actions
+view-if: state_ddp_in_government = 1
+go-to: state_policy_placeholder
+
+@state_not_in_government
+view-if: state_ddp_in_government = 0
+
+The DDP is not in government here.
+
+@state_policy_placeholder
+new-page: true
+
+= [+ state_land_name +] State Affairs
+
+No state policy initiatives are available yet.
+
+Current DDP leverage in [+ state_land_name +]: [+ state_leverage_value +]
+
+# TODO: DDP-initiated policies will be added here.
+# TODO: Coalition partner initiatives will be added here.
+# TODO: Add option to spend leverage to block coalition partner policy.
+# TODO: Add option to collapse the Land government and call a new election.
+
+- @state_land_overview: Return to [+ state_land_name +] state affairs.
+- @state_politics: Return to Länder overview.
