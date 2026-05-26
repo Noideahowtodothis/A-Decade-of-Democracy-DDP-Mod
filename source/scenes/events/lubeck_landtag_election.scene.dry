@@ -101,13 +101,13 @@ go-to: calculate_lubeck_landtag
 title: Choose the Lübeck leader
 
 = Choose the Lübeck leader
-- @lubeck_leader_lowigt
-- @lubeck_leader_drechsler
-- @lubeck_leader_heinsohn
-- @lubeck_leader_ewers
-- @lubeck_leader_neumann
-- @lubeck_leader_keibel
-- @lubeck_leader_eckholdt
+- @lubeck_leader_lowigt: Paul Löwigt
+- @lubeck_leader_drechsler: Otto-Heinrich Drechsler
+- @lubeck_leader_heinsohn: Carl Heinsohn
+- @lubeck_leader_ewers: Hans Ewers
+- @lubeck_leader_neumann: Johann Martin Andreas Neumann
+- @lubeck_leader_keibel: Rudolf Keibel
+- @lubeck_leader_eckholdt: Heinrich Eckholdt
 
 @lubeck_leader_lowigt
 title: Paul Löwigt

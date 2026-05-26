@@ -121,12 +121,12 @@ Selected coalition: **[+ mecklenburg_schwerin_current_government_name +]** ([+ m
 
 Coalition seats: **[+ mecklenburg_schwerin_current_government_seats +] / 51**. Status: **[+ mecklenburg_schwerin_current_government_status +]**.
 
-- @mecklenburg_schwerin_leader_johannes_stelling
-- @mecklenburg_schwerin_leader_paul_schroder
-- @mecklenburg_schwerin_leader_hermann_reincke_bloch
-- @mecklenburg_schwerin_leader_walter_granzow
-- @mecklenburg_schwerin_leader_karl_eschenburg
-- @mecklenburg_schwerin_leader_joachim_von_brandenstein
+- @mecklenburg_schwerin_leader_johannes_stelling: Johannes Stelling
+- @mecklenburg_schwerin_leader_paul_schroder: Paul Schröder
+- @mecklenburg_schwerin_leader_hermann_reincke_bloch: Hermann Reincke-Bloch
+- @mecklenburg_schwerin_leader_walter_granzow: Walter Granzow
+- @mecklenburg_schwerin_leader_karl_eschenburg: Karl Eschenburg
+- @mecklenburg_schwerin_leader_joachim_von_brandenstein: Joachim von Brandenstein
 
 @mecklenburg_schwerin_leader_johannes_stelling
 title: Johannes Stelling
