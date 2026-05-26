@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = bavaria_election_year and month >= bavaria_election_month) or (year > bavaria_election_year)
-on-departure: month_actions += 1; bavaria_election_year = year + 4; bavaria_election_month = month
+on-departure: bavaria_election_year = year + 4; bavaria_election_month = month
 set-jump: bavarian_landtag_results
 
 = Bavarian Landtag Elections, [+ month : month +] [+ year +]

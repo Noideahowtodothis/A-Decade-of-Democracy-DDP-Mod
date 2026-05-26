@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = prussia_election_year and month >= prussia_election_month) or (year > prussia_election_year)
-on-departure: month_actions += 1; prussia_election_year = prussia_election_year + 4; prussian_government = prussia_government
+on-departure: prussia_election_year = prussia_election_year + 4; prussian_government = prussia_government
 set-jump: prussian_landtag_results
 
 = Prussian Landtag Elections, [+ month : month +] [+ year +]

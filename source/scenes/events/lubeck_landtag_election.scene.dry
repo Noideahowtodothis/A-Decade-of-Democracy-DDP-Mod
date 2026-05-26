@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = lubeck_election_year and month >= lubeck_election_month) or (year > lubeck_election_year)
-on-departure: month_actions += 1; lubeck_election_year = lubeck_election_year + 4 if lubeck_snap_election_called == 0; lubeck_election_year = year + 4 if lubeck_snap_election_called == 1; lubeck_election_month = month if lubeck_snap_election_called == 1; lubeck_snap_election_called = 0
+on-departure: lubeck_election_year = lubeck_election_year + 4 if lubeck_snap_election_called == 0; lubeck_election_year = year + 4 if lubeck_snap_election_called == 1; lubeck_election_month = month if lubeck_snap_election_called == 1; lubeck_snap_election_called = 0
 set-jump: lubeck_landtag_results
 
 = Lübeck Bürgerschaft/Landtag Elections, [+ month : month +] [+ year +]

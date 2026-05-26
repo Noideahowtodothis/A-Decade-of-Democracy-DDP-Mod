@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = hamburg_election_year and month >= hamburg_election_month) or (year > hamburg_election_year)
-on-departure: month_actions += 1; hamburg_election_year = hamburg_election_year + 4 if hamburg_snap_election_called == 0; hamburg_election_year = year + 4 if hamburg_snap_election_called == 1; hamburg_election_month = month if hamburg_snap_election_called == 1; hamburg_snap_election_called = 0
+on-departure: hamburg_election_year = hamburg_election_year + 4 if hamburg_snap_election_called == 0; hamburg_election_year = year + 4 if hamburg_snap_election_called == 1; hamburg_election_month = month if hamburg_snap_election_called == 1; hamburg_snap_election_called = 0
 set-jump: hamburg_landtag_results
 
 = Hamburg Bürgerschaft Elections, [+ month : month +] [+ year +]

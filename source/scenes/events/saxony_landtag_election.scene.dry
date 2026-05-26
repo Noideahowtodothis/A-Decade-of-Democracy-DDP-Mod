@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = saxony_election_year and month >= saxony_election_month) or (year > saxony_election_year)
-on-departure: month_actions += 1; saxony_election_year = saxony_election_year + 4 if saxony_snap_election_called == 0; saxony_election_year = year + 4 if saxony_snap_election_called == 1; saxony_election_month = month if saxony_snap_election_called == 1; saxony_snap_election_called = 0
+on-departure: saxony_election_year = saxony_election_year + 4 if saxony_snap_election_called == 0; saxony_election_year = year + 4 if saxony_snap_election_called == 1; saxony_election_month = month if saxony_snap_election_called == 1; saxony_snap_election_called = 0
 set-jump: saxony_landtag_results
 
 = Saxony Landtag Elections, [+ month : month +] [+ year +]

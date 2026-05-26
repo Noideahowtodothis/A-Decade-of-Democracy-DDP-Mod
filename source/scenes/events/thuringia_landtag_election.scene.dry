@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = thuringia_election_year and month >= thuringia_election_month) or (year > thuringia_election_year)
-on-departure: month_actions += 1; thuringia_election_year = thuringia_election_year + 4 if thuringia_snap_election_called == 0; thuringia_election_year = year + 4 if thuringia_snap_election_called == 1; thuringia_election_month = month if thuringia_snap_election_called == 1; thuringia_snap_election_called = 0
+on-departure: thuringia_election_year = thuringia_election_year + 4 if thuringia_snap_election_called == 0; thuringia_election_year = year + 4 if thuringia_snap_election_called == 1; thuringia_election_month = month if thuringia_snap_election_called == 1; thuringia_snap_election_called = 0
 set-jump: thuringia_landtag_results
 
 = Thuringia Landtag Elections, [+ month : month +] [+ year +]

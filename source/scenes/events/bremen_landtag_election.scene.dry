@@ -3,7 +3,7 @@ new-page: true
 tags: event
 priority: -2
 view-if: (year = bremen_election_year and month >= bremen_election_month) or (year > bremen_election_year)
-on-departure: month_actions += 1; bremen_election_year = bremen_election_year + 4 if bremen_snap_election_called == 0; bremen_election_year = year + 4 if bremen_snap_election_called == 1; bremen_election_month = month if bremen_snap_election_called == 1; bremen_snap_election_called = 0
+on-departure: bremen_election_year = bremen_election_year + 4 if bremen_snap_election_called == 0; bremen_election_year = year + 4 if bremen_snap_election_called == 1; bremen_election_month = month if bremen_snap_election_called == 1; bremen_snap_election_called = 0
 set-jump: bremen_landtag_results
 
 = Bremen Bürgerschaft Elections, [+ month : month +] [+ year +]
