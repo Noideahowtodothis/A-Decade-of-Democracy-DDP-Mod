@@ -69,13 +69,42 @@ Q.state_land_name = stateNames[p] || 'Unknown Land';
 Q.state_government_name = Q[p + '_current_government_name'] || Q[p + '_government'] || 'No government recorded';
 Q.state_leader_name = Q[p + '_leader'] || 'No leader recorded';
 Q.state_government_status = Q[p + '_current_government_status'] || (Q[p + '_majority_cabinet'] ? 'Majority' : 'Minority');
-Q.state_ddp_seats = Q[p + '_ddp_seats'];
+Q.state_ddp_seats = Q[p + '_ddp_r'];
 Q.state_total_seats = Q[p + '_landtag_total_seats'] || Q[p + '_landtag_seat_count'] || 0;
 Q.state_leverage_value = Q[p + '_leverage'] || 0;
 Q.state_next_election_month = Q[p + '_election_month'] || '-';
 Q.state_next_election_year = Q[p + '_election_year'] || '-';
 var parties = (Q[p + '_current_government_parties'] || '').toUpperCase();
 Q.state_ddp_in_government = parties.indexOf('DDP') !== -1 ? 1 : 0;
+
+var statePartyDisplayNames = {
+    spd: 'SPD', kpd: 'KPD', z: 'Z', bvp: 'BVP', ddp: (Q.ddp_name || 'DDP'), dvp: 'DVP', wp: 'WP', dnvp: 'DNVP', nsdap: 'NSDAP', other: 'Other',
+    aspd: 'ASPD', hvb: (Q.lubeck_hvb_name || 'HVB'), csvd: 'CSVD', wbwb: (Q.wurttemberg_wbwb_party_name || 'WBWB'), landbund: 'Thüringer Landbund',
+    cnbl: (Q.oldenburg_cnbl_name || 'CNBL')
+};
+var orderedPartiesByState = {
+    baden: ['spd','z','ddp','dvp','dnvp','kpd','nsdap','other'],
+    lubeck: ['spd','kpd','ddp','dvp','dnvp','nsdap','hvb','z','other'],
+    saxony: ['spd','aspd','kpd','ddp','dvp','dnvp','wp','nsdap','other'],
+    mecklenburg_schwerin: ['spd','ddp','dvp','wp','dnvp','kpd','nsdap','other'],
+    oldenburg: ['spd','z','ddp','dvp','wp','dnvp','cnbl','kpd','nsdap','other'],
+    wurttemberg: ['spd','ddp','dvp','z','kpd','dnvp','csvd','wbwb','nsdap','other'],
+    thuringia: ['spd','kpd','ddp','dvp','dnvp','landbund','nsdap','wp','z','other']
+};
+var defaultParties = Q[p + '_parties'] || ['spd','kpd','z','ddp','dvp','wp','dnvp','nsdap','other'];
+var partyOrder = orderedPartiesByState[p] || defaultParties;
+var lines = [];
+for (var idx = 0; idx < partyOrder.length; idx++) {
+  var key = partyOrder[idx];
+  var voteDisp = Q[p + '_' + key + '_votes_disp'];
+  if (voteDisp == undefined) { voteDisp = '0.0'; }
+  var seats = Number(Q[p + '_' + key + '_r']) || 0;
+  var label = statePartyDisplayNames[key] || key.toUpperCase();
+  lines.push('<tr><td>' + label + '</td><td>' + voteDisp + '%</td><td>' + seats + '</td></tr>');
+}
+Q.state_result_table_rows = lines.join('');
+Q.state_result_table_header = Q.state_land_name + ' vote share';
+
 !}
 
 = [+ state_land_name +] State Affairs
@@ -101,6 +130,11 @@ Next election date: [+ state_next_election_month : month +] [+ state_next_electi
 view-if: state_total_seats > 0
 
 Landtag seats recorded: [+ state_total_seats +].
+
+{!<table>!}
+{!<tr><td>Party</td><td>!}[+ state_result_table_header +]{!</td><td>Seats</td></tr>!}
+{! [+ state_result_table_rows +] !}
+{!</table>!}
 
 @state_policy_actions
 view-if: state_ddp_in_government = 1
