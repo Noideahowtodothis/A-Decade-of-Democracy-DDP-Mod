@@ -215,7 +215,7 @@ var ddpRepublicLabels = ['Not set', 'Make Ourselves the Cornerstone of the Repub
 var ddpFederalismLabels = ['Not set', 'Expand Federal Powers', 'Expand Central Power', 'Support a Unitary State'];
 var ddpLeaderLabels = ['Not set', 'Anton Erkelenz', 'Theodor Heuss', 'Theodor Maier', 'Otto Fischbeck', 'Erich Koch-Weser', 'Hermann Dietrich'];
 Q.ddp_nationalism_position_label = ddpNationalityLabels[Q.ddp_nationalism_position || 0] || 'Unknown DDP nationalism code';
-Q.ddp_economic_position_label = ddpEconomicLabels[Q.ddp_economic_position || 0] || 'Unknown DDP economic code';
+Q.ddp_economics_position_label = ddpEconomicLabels[Q.ddp_economics_position || 0] || 'Unknown DDP economic code';
 Q.ddp_republic_position_label = ddpRepublicLabels[Q.ddp_republic_position || 0] || 'Unknown DDP republic code';
 Q.ddp_federalism_position_label = ddpFederalismLabels[Q.ddp_federalism_position || 0] || 'Unknown DDP federalism code';
 Q.ddp_leader_label = ddpLeaderLabels[Q.ddp_leader || 0] || 'Unknown DDP leader code';
@@ -235,13 +235,15 @@ for (var ddpFactionDisplay of ['ddp_left_progressive', 'ddp_laborist', 'ddp_left
 
 Nationalism: [+ ddp_nationalism_position_label +]
 
-Economics: [+ ddp_economic_position_label +]
+Economics: [+ ddp_economics_position_label +]
 
 The Republic: [+ ddp_republic_position_label +]
 
 Federalism: [+ ddp_federalism_position_label +]
 
 Leader: [+ ddp_leader_label +]
+
+Ideology: [+ ddp_ideology : party_ideology +]
 
 = DDP Faction Strength and Dissent
 
