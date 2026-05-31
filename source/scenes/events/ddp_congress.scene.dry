@@ -76,6 +76,7 @@ if (typeof globalThis !== 'undefined') {
         var issues = globalThis.ddpCongressIssues;
         for (var issueKey in issues) {
             var issue = issues[issueKey];
+            qualities['ddp_congress_' + issueKey + '_selectable'] = 0;
             for (var p = 0; p < issue.positions.length; p++) {
                 var position = issue.positions[p];
                 var supportTotal = 0;
@@ -92,6 +93,9 @@ if (typeof globalThis !== 'undefined') {
                 qualities[prefix + '_support_display'] = qualities[prefix + '_support'].toFixed(1);
                 qualities[prefix + '_oppose_display'] = qualities[prefix + '_oppose'].toFixed(1);
                 qualities[prefix + '_available'] = supportTotal > opposeTotal ? 1 : 0;
+                if (qualities[prefix + '_available'] && qualities[issue.variable] != position.value) {
+                    qualities['ddp_congress_' + issueKey + '_selectable'] = 1;
+                }
                 qualities[prefix + '_debug'] = 'Support ' + qualities[prefix + '_support_display'] + ' vs oppose ' + qualities[prefix + '_oppose_display'] + '. ' + (supportTotal > opposeTotal ? 'Available.' : 'Blocked: supporting delegates must outnumber opposing delegates.');
             }
         }
@@ -195,10 +199,13 @@ Supports: left bourgeois, regionalist; neutral: laborist, left liberal; opposes:
 Support German Racial Nationalism: [+ ddp_congress_nationalism_german_racial_nationalism_debug +]
 Supports: regionalist; neutral: left bourgeois; opposes: left progressive, laborist, left liberal.
 
+[? if ddp_congress_nationalism_selectable = 0: No alternative position has majority support at this congress. ?]
+
 - @nationalism_oppose_extreme_nationalism: Adopt: Oppose Extreme Nationalism
 - @nationalism_liberal_civic_nationalism: Adopt: Support Liberal Civic Nationalism
 - @nationalism_political_benefit_nationalism: Adopt: Use Nationalism for Political Benefit
 - @nationalism_german_racial_nationalism: Adopt: Support German Racial Nationalism
+- @nationalism_continue: Continue
 
 @nationalism_oppose_extreme_nationalism
 title: Adopt: Oppose Extreme Nationalism
@@ -236,6 +243,13 @@ go-to: economic
 
 Adopted Support German Racial Nationalism.
 
+@nationalism_continue
+title: Continue
+view-if: ddp_congress_nationalism_selectable = 0
+go-to: economic
+
+No alternative position was adopted.
+
 @economic
 on-arrival: {! globalThis.prepareDdpCongress(Q); !}
 
@@ -255,10 +269,13 @@ Supports: left bourgeois, regionalist; neutral: left liberal; opposes: left prog
 Focus on Agrarian Interests: [+ ddp_congress_economic_agrarian_interests_debug +]
 Supports: regionalist; neutral: none; opposes: left progressive, laborist, left liberal, left bourgeois.
 
+[? if ddp_congress_economic_selectable = 0: No alternative position has majority support at this congress. ?]
+
 - @economic_interventionist_economics: Adopt: Support Interventionist Economics
 - @economic_social_liberal_economy: Adopt: Support a Social Liberal Economy
 - @economic_liberal_economics: Adopt: Support Liberal Economics
 - @economic_agrarian_interests: Adopt: Focus on Agrarian Interests
+- @economic_continue: Continue
 
 @economic_interventionist_economics
 title: Adopt: Support Interventionist Economics
@@ -296,6 +313,13 @@ go-to: republic
 
 Adopted Focus on Agrarian Interests.
 
+@economic_continue
+title: Continue
+view-if: ddp_congress_economic_selectable = 0
+go-to: republic
+
+No alternative position was adopted.
+
 @republic
 on-arrival: {! globalThis.prepareDdpCongress(Q); !}
 
@@ -309,8 +333,11 @@ Supports: left liberal, left progressive, laborist; neutral: none; opposes: left
 Support the Republic Quietly: [+ ddp_congress_republic_quiet_republic_debug +]
 Supports: left bourgeois, regionalist; neutral: none; opposes: left progressive, laborist, left liberal.
 
+[? if ddp_congress_republic_selectable = 0: No alternative position has majority support at this congress. ?]
+
 - @republic_cornerstone_republic: Adopt: Make Ourselves the Cornerstone of the Republic
 - @republic_quiet_republic: Adopt: Support the Republic Quietly
+- @republic_continue: Continue
 
 @republic_cornerstone_republic
 title: Adopt: Make Ourselves the Cornerstone of the Republic
@@ -330,6 +357,13 @@ go-to: federalism
 
 Adopted Support the Republic Quietly.
 
+@republic_continue
+title: Continue
+view-if: ddp_congress_republic_selectable = 0
+go-to: federalism
+
+No alternative position was adopted.
+
 @federalism
 on-arrival: {! globalThis.prepareDdpCongress(Q); !}
 
@@ -346,9 +380,12 @@ Supports: left progressive, laborist, left liberal, left bourgeois; neutral: non
 Support a Unitary State: [+ ddp_congress_federalism_unitary_state_debug +]
 Supports: left progressive; neutral: laborist, left liberal, left bourgeois; opposes: regionalist.
 
+[? if ddp_congress_federalism_selectable = 0: No alternative position has majority support at this congress. ?]
+
 - @federalism_expand_federal_powers: Adopt: Expand Federal Powers
 - @federalism_expand_central_power: Adopt: Expand Central Power
 - @federalism_unitary_state: Adopt: Support a Unitary State
+- @federalism_continue: Continue
 
 @federalism_expand_federal_powers
 title: Adopt: Expand Federal Powers
@@ -377,6 +414,13 @@ go-to: leader
 
 Adopted Support a Unitary State.
 
+@federalism_continue
+title: Continue
+view-if: ddp_congress_federalism_selectable = 0
+go-to: leader
+
+No alternative position was adopted.
+
 @leader
 on-arrival: {! globalThis.prepareDdpCongress(Q); !}
 
@@ -402,12 +446,15 @@ Supports: left bourgeois, left liberal; neutral: left progressive, laborist, reg
 Hermann Dietrich: [+ ddp_congress_leader_hermann_dietrich_debug +]
 Supports: regionalist, left bourgeois; neutral: none; opposes: left progressive, laborist, left liberal.
 
+[? if ddp_congress_leader_selectable = 0: No alternative position has majority support at this congress. ?]
+
 - @leader_anton_erkelenz: Adopt: Anton Erkelenz
 - @leader_theodor_heuss: Adopt: Theodor Heuss
 - @leader_theodor_maier: Adopt: Theodor Maier
 - @leader_otto_fischbeck: Adopt: Otto Fischbeck
 - @leader_erich_koch_weser: Adopt: Erich Koch-Weser
 - @leader_hermann_dietrich: Adopt: Hermann Dietrich
+- @leader_continue: Continue
 
 @leader_anton_erkelenz
 title: Adopt: Anton Erkelenz
@@ -462,6 +509,13 @@ on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'hermann_dietric
 go-to: conclusion
 
 Adopted Hermann Dietrich.
+
+@leader_continue
+title: Continue
+view-if: ddp_congress_leader_selectable = 0
+go-to: conclusion
+
+No alternative position was adopted.
 
 @conclusion
 on-arrival: ddp_congress_active = false
