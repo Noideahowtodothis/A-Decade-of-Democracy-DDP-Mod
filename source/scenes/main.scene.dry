@@ -18,9 +18,9 @@ max-cards: 3
 
 - @party
 - @govt
+- @state_politics
 - #advisor
 - @shuffle_leadership_pinned
-- @state_politics
 
 @main_easy
 set-bg: img/map_2.jpg
@@ -42,9 +42,9 @@ max-cards: 4
 
 - @party
 - @govt
+- @state_politics
 - #advisor
 - @shuffle_leadership_pinned
-- @state_politics
 
 
 @party
