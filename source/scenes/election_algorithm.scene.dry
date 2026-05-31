@@ -407,9 +407,9 @@ window.updateBadenCoalitionOptions = function(qualities) {
     if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
 
     var ddpLeaderPenalty = 0;
-    if (q.baden_leader === "DDP") { ddpLeaderPenalty = 1; }
+    if (["Hermann Hummel", "Willy Hellpach"].indexOf(q.baden_leader) !== -1) { ddpLeaderPenalty = 1; }
 
-    var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+    var leverage = ddpInCoalition ? base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty : 0;
     if (leverage < 0) { leverage = 0; }
     if (leverage > 8) { leverage = 8; }
     q.baden_leverage = leverage;
@@ -912,11 +912,11 @@ window.updateOldenburgCoalitionOptions = function(qualities) {
     if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
 
     var ddpLeaderPenalty = 0;
-    if (q.oldenburg_leader === 'DDP') {
+    if (q.oldenburg_leader === 'Theodor Tantzen') {
         ddpLeaderPenalty = 1;
     }
 
-    var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+    var leverage = ddpInCoalition ? base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty : 0;
     if (leverage < 0) { leverage = 0; }
     if (leverage > 8) { leverage = 8; }
     q.oldenburg_leverage = leverage;

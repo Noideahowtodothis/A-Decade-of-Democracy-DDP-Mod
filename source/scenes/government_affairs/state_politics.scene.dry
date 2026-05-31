@@ -64,17 +64,80 @@ var stateNames = {
     thuringia: 'Thuringia', hamburg: 'Hamburg', bremen: 'Bremen', lubeck: 'Lübeck', oldenburg: 'Oldenburg', mecklenburg_schwerin: 'Mecklenburg-Schwerin'
 };
 var p = Q.state_land;
+var coalitionUpdaterNames = {
+    prussia: 'updatePrussianCoalitionOptions', bavaria: 'updateBavarianCoalitionOptions', baden: 'updateBadenCoalitionOptions', wurttemberg: 'updateWurttembergCoalitionOptions',
+    saxony: 'updateSaxonyCoalitionOptions', thuringia: 'updateThuringiaCoalitionOptions', hamburg: 'updateHamburgCoalitionOptions', bremen: 'updateBremenCoalitionOptions',
+    lubeck: 'updateLubeckCoalitionOptions', oldenburg: 'updateOldenburgCoalitionOptions', mecklenburg_schwerin: 'updateMecklenburgSchwerinCoalitionOptions'
+};
+var coalitionUpdaterName = coalitionUpdaterNames[p];
+if (typeof window !== 'undefined' && coalitionUpdaterName && typeof window[coalitionUpdaterName] === 'function') {
+    window[coalitionUpdaterName](Q);
+}
 Q.state_land_name = stateNames[p] || 'Unknown Land';
 Q.state_government_name = Q[p + '_current_government_name'] || Q[p + '_government'] || 'No government recorded';
 Q.state_leader_name = Q[p + '_leader'] || 'No leader recorded';
 Q.state_government_status = Q[p + '_current_government_status'] || (Q[p + '_majority_cabinet'] ? 'Majority' : 'Minority');
-Q.state_ddp_seats = Q[p + '_ddp_r'];
-Q.state_total_seats = Q[p + '_landtag_total_seats'] || Q[p + '_landtag_seat_count'] || 0;
-Q.state_leverage_value = Q[p + '_leverage'] || 0;
+Q.state_ddp_seats = Number(Q[p + '_ddp_r']) || 0;
+Q.state_total_seats = Number(Q[p + '_landtag_total_seats']) || Number(Q[p + '_landtag_seat_count']) || 0;
 Q.state_next_election_month = Q[p + '_election_month'] || '-';
 Q.state_next_election_year = Q[p + '_election_year'] || '-';
 var parties = (Q[p + '_current_government_parties'] || '').toUpperCase();
 Q.state_ddp_in_government = parties.indexOf('DDP') !== -1 ? 1 : 0;
+
+// Recalculate and persist leverage from the selected coalition rather than relying on the initialized zero.
+// This also gives the Länder screen temporary diagnostics for validating every input to the formula.
+var coalitionPartyAliases = {'BVP/Z': 'bvp_z', 'PEASANT': 'peasant', 'HAUSBESITZER': 'hausbesitzer', 'HVB': 'hvb', 'LANDBUND': 'landbund', 'THÜRINGER LANDBUND': 'landbund', 'WBWB': 'wbwb', 'CSVD': 'csvd', 'ASPD': 'aspd', 'CNBL': 'cnbl'};
+var coalitionParties = [];
+if (parties && parties !== 'NONE' && parties !== 'INCUMBENT') {
+    var coalitionPartyLabels = parties.split(/\s*\+\s*/);
+    for (var coalitionPartyIndex = 0; coalitionPartyIndex < coalitionPartyLabels.length; coalitionPartyIndex += 1) {
+        var coalitionPartyLabel = coalitionPartyLabels[coalitionPartyIndex];
+        coalitionParties.push(coalitionPartyAliases[coalitionPartyLabel] || coalitionPartyLabel.toLowerCase());
+    }
+}
+var coalitionSeats = Number(Q[p + '_current_government_seats']) || 0;
+var majorityThreshold = Math.floor(Q.state_total_seats / 2) + 1;
+var ddpInCoalition = coalitionParties.indexOf('ddp') !== -1;
+var pivotal = ddpInCoalition && coalitionSeats >= majorityThreshold && (coalitionSeats - Q.state_ddp_seats) < majorityThreshold ? 2 : 0;
+var hostilePartyCount = 0;
+if (coalitionParties.indexOf('dnvp') !== -1) { hostilePartyCount += 1; }
+if (coalitionParties.indexOf('nsdap') !== -1) { hostilePartyCount += 1; }
+if (coalitionParties.indexOf('kpd') !== -1) { hostilePartyCount += 1; }
+var ddpLeaderNames = {
+    baden: ['Hermann Hummel', 'Willy Hellpach'], wurttemberg: ['Reinhold Maier', 'Johannes Hieber'], saxony: ['Richard Seyfert', 'Willibalt Apelt'],
+    thuringia: ['Arnold Paulssen'], hamburg: ['Carl Wilhelm Petersen'], bremen: ['Theodor Spitta'], lubeck: ['Heinrich Eckholdt'], oldenburg: ['Theodor Tantzen']
+};
+var ddpLeaderPenalty = (ddpLeaderNames[p] || []).indexOf(Q[p + '_leader']) !== -1 ? 1 : 0;
+var base = 0;
+if (p === 'oldenburg' || p === 'lubeck' || p === 'mecklenburg_schwerin') {
+    base = Q.state_ddp_seats >= 10 ? 3 : (Q.state_ddp_seats >= 6 ? 2 : (Q.state_ddp_seats >= 3 ? 1 : 0));
+} else {
+    var ddpShare = Q.state_total_seats > 0 ? 100 * Q.state_ddp_seats / Q.state_total_seats : 0;
+    base = ddpShare >= 30 ? 5 : (ddpShare >= 20 ? 4 : (ddpShare >= 15 ? 3 : (ddpShare >= 10 ? 2 : (ddpShare >= 5 ? 1 : 0))));
+}
+var dominant = 0;
+if (ddpInCoalition) {
+    dominant = 1;
+    for (var coalitionPartySeatIndex = 0; coalitionPartySeatIndex < coalitionParties.length; coalitionPartySeatIndex += 1) {
+        var coalitionParty = coalitionParties[coalitionPartySeatIndex];
+        if (coalitionParty === 'ddp') { continue; }
+        if ((Number(Q[p + '_' + coalitionParty + '_r']) || 0) >= Q.state_ddp_seats) { dominant = 0; break; }
+    }
+}
+var leverage = ddpInCoalition ? base + pivotal + dominant - hostilePartyCount - ddpLeaderPenalty : 0;
+if (leverage < 0) { leverage = 0; }
+if (leverage > 8) { leverage = 8; }
+Q[p + '_leverage'] = leverage;
+Q[p + '_leverage_ddp_seats'] = Q.state_ddp_seats;
+Q[p + '_leverage_coalition_seats'] = coalitionSeats;
+Q[p + '_leverage_pivotal'] = pivotal ? 1 : 0;
+Q[p + '_leverage_hostile_party_count'] = hostilePartyCount;
+Q[p + '_leverage_ddp_leader_penalty'] = ddpLeaderPenalty;
+Q.state_leverage_value = leverage;
+Q.state_leverage_coalition_seats = coalitionSeats;
+Q.state_leverage_pivotal = pivotal ? 'yes' : 'no';
+Q.state_leverage_hostile_party_count = hostilePartyCount;
+Q.state_leverage_ddp_leader_penalty = ddpLeaderPenalty ? 'yes' : 'no';
 
 var statePartyDisplayNames = {
     spd: 'SPD', kpd: 'KPD', z: 'Z', bvp: 'BVP', ddp: (Q.ddp_name || 'DDP'), dvp: 'DVP', wp: 'WP', dnvp: 'DNVP', nsdap: 'NSDAP', other: 'Other',
@@ -117,6 +180,8 @@ Cabinet status: [+ state_government_status +]
 DDP seats: [+ state_ddp_seats +] / [+ state_total_seats +]
 
 DDP leverage: [+ state_leverage_value +]
+
+Temporary leverage debug: DDP seats **[+ state_ddp_seats +]**; coalition seats **[+ state_leverage_coalition_seats +]**; DDP pivotal **[+ state_leverage_pivotal +]**; hostile party count **[+ state_leverage_hostile_party_count +]**; DDP leader penalty **[+ state_leverage_ddp_leader_penalty +]**; final leverage **[+ state_leverage_value +]**.
 
 Next election date: [+ state_next_election_month : month +] [+ state_next_election_year +]
 
