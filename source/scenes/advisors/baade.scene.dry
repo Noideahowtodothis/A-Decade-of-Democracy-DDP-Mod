@@ -1,10 +1,11 @@
 title: Fritz Baade
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 is-pinned-card: true
 tags: advisor, reformist
 card-image: img/portraits/BaadeFritz.jpg
 view-if: baade_advisor = 1
-new-page: true 
+new-page: true
 
 = Fritz Baade
 
@@ -29,7 +30,7 @@ title: Rural Campaign
 subtitle: Try to campaign among the rural populace.
 choose-if: advisor_action_timer == 0 and rural_policy > 0
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?][? if rural_policy == 0 : We have not enacted any rural policies. ?]
-on-arrival: advisor_action_timer = 6; rural_spd += 5*(1-dissent); peoples_party_support += 1
+on-arrival: advisor_action_timer = 6; rural_ddp += 5*(1-dissent); peoples_party_support += 1
 
 We have increased our campaigning among farmers and the rural populace.
 
@@ -38,7 +39,7 @@ title: Addressing the economic crisis
 subtitle: Formulate a plan to rescue us from the economic crisis.
 choose-if: advisor_action_timer <= 0 and wtb_adopted = 0 and black_thursday_seen
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?][? if black_thursday_seen == 0 : We are not currently in an economic crisis. ?][? if wtb_adopted > 0 : We have already adopted the WTB-Plan. ?]
-on-arrival: advisor_action_timer = 6; wtb_support += 2; center_dissent += 10; labor_strength += 1
+on-arrival: advisor_action_timer = 6; wtb_support += 2;
 
 The WTB-Plan, standing for its primary supporters Woytinsky, Tarnow, and Baade, has been adopted as the unions' plan for getting us out of the depression. Baade canvasses in favor of this plan throughout the party.
 

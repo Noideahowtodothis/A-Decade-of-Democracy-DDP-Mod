@@ -1,14 +1,15 @@
 title: Antonie Pfülf
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 is-pinned-card: true
 tags: advisor, centrist
 card-image: img/portraits/PfülfAntonie.jpg
 view-if: pfulf_advisor = 1
-new-page: true 
+new-page: true
 
 = Antonie Pfülf
 
-Pfülf is a former teacher from Bavaria who came from a conservative Catholic family. She is an activist for women's rights and for broadening the support of the SPD. 
+Pfülf is a former teacher from Bavaria who came from a conservative Catholic family. She is an activist for women's rights and for broadening the support of the SPD.
 
 - @support_peoples_party
 - @build_peoples_party
@@ -22,7 +23,7 @@ subtitle: Can we expand our party beyond the industrial working class?
 view-if: peoples_party = 0
 choose-if: peoples_party_support <= 4 and advisor_action_timer = 0 and peoples_party = 0
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?][? if peoples_party_support > 4: There is already substantial support for a People's Party. ?]
-on-arrival: advisor_action_timer = 6; peoples_party_support += 1; reformist_strength += 5;
+on-arrival: advisor_action_timer = 6; peoples_party_support += 1;
 
 We are building up support for the idea of a People's Party.
 

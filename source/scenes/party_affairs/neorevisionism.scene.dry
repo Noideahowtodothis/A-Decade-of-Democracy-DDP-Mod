@@ -1,4 +1,5 @@
 title: Neorevisionism: a new idea
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true
 is-card: true
@@ -19,7 +20,7 @@ Several young socialists, led by Carlo Mierendorff, are calling for a "new revis
 - @easy_discard
 
 @support_neo
-on-arrival: neorevisionist_strength += 10; nazi_urgency += 1; neorevisionism = 1; peoples_party_support += 1
+on-arrival: nazi_urgency += 1; neorevisionism = 1; peoples_party_support += 1
 
 We support the new leaders, and start using new-style propaganda techniques in our campaigns. The results are uncertain so far...
 
@@ -28,6 +29,6 @@ We support the new leaders, and start using new-style propaganda techniques in o
 
 
 @no_new_ideas
-on-arrival: neorevisionist_strength -= 5; center_strength += 5; neorevisionism = -1
+on-arrival: neorevisionism = -1
 
 We do not need these new ideas; they seem to imitate too closely those of the Nazis and Communists.

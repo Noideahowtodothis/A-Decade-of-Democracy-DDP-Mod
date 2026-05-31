@@ -1,6 +1,7 @@
 title: Hermann Müller
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
-is-pinned-card: true 
+is-pinned-card: true
 tags: advisor, centrist
 card-image: img/portraits/MüllerHermann.jpg
 new-page: true
@@ -31,9 +32,9 @@ title: Defending Toleration
 subtitle: Müller supports the toleration arrangement with the bourgeois parties.
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?][? if not spd_toleration: The SPD is not in toleration. ?]
 choose-if: spd_in_government = 0 and spd_toleration = 1 and advisor_action_timer = 0
-on-arrival: advisor_action_timer = 6; left_dissent -= 8; neorevisionist_dissent -= 8; center_dissent -= 5;
+on-arrival: advisor_action_timer = 6;
 
-We have reduced dissent among the anti-toleration factions. 
+We have reduced dissent among the anti-toleration factions.
 
 @snap_election
 title: Snap Election

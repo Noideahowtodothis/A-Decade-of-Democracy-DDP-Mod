@@ -1,4 +1,5 @@
 title: Coup in Prussia
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 subtitle: The Chancellor attempts to overthrow the Prussian government.
 view-if: (chancellor = "Papen" or chancellor = "Schleicher") and president = "Hindenburg" and year >= 1932 and month >= 8 and spd_in_government == 0 and spd_prussia = 1 and not presidential_powers
@@ -24,7 +25,7 @@ subtitle: Labor will call a general strike. The Reichsbanner and the loyal eleme
 unavailable-subtitle: We do not have the forces to resist.
 choose-if: rb_strength*rb_militancy >= 200
 
-The Reichswehr and Stahlhelm are already surrounding Berlin, and the SA is supporting them. This could be civil war. We do realize that, correct? 
+The Reichswehr and Stahlhelm are already surrounding Berlin, and the SA is supporting them. This could be civil war. We do realize that, correct?
 
 - @defend_2: We will fight, even if it leads to a civil war.
 - @surrender
@@ -34,7 +35,7 @@ on-arrival: resist_coup = 1; defense_strength = rb_strength*rb_militancy*(1-diss
 go-to: defend_2_civil_war if defense_strength < enemy_strength; defend_2_victory if defense_strength >= enemy_strength
 
 @defend_2_victory
-on-arrival: sa_strength *= 0.8; sh_strength *= 0.8; pro_republic += 10; workers_spd += 6; unemployed_spd += 6; workers_nsdap -= 6; unemployed_nsdap -= 6; coup_victory = 1
+on-arrival: sa_strength *= 0.8; sh_strength *= 0.8; pro_republic += 10; workers_ddp += 6; unemployed_ddp += 6; workers_nsdap -= 6; unemployed_nsdap -= 6; coup_victory = 1
 achievement: bollwerk_der_demokratie
 go-to: defend_2_victory_2
 
@@ -57,6 +58,6 @@ Our forces confront the government troops and their supporters on the streets of
 
 @surrender
 title: Give up on the Prussian government.
-on-arrival: spd_prussia = 0; workers_spd -= 5; left_dissent += 10; labor_dissent += 10; rb_militancy = rb_militancy/2; rb_strength -= 1000;
+on-arrival: spd_prussia = 0; workers_ddp -= 5; rb_militancy = rb_militancy/2; rb_strength -= 1000;
 
 A pall of hopelessness and despair descends over social democracy. We have failed. Many in the Reichsbanner simply quit, demoralized by their leaders' lack of a call to action.
