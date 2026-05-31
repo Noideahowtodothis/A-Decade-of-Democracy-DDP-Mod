@@ -131,6 +131,17 @@ globalThis.prepareDdpCongress(Q);
 
 = DDP Party Congress
 
+TODO: Congress introduction text.
+
+- @delegate_election: Continue to delegate election
+
+@delegate_election
+on-arrival: {! globalThis.prepareDdpCongress(Q); !}
+
+= Delegate Election
+
+TODO: Delegate election text.
+
 Congress date: [+ ddp_congress_current_date +]
 
 Delegate calculation: [+ ddp_congress_delegate_basis +]
@@ -163,16 +174,7 @@ Total delegates: [+ ddp_congress_delegate_share_total +]
 
 Temporary debug: a policy is available when supporting delegates are greater than opposing delegates. Neutral delegates do not count.
 
-- @nationalism: Nationalism
-- @economic: Economics
-- @republic: The Republic
-- @federalism: Federalism
-- @leader: Leader
-- @finish: Finish congress
-
-@finish
-on-arrival: ddp_congress_active = false
-go-to: post_event
+- @nationalism: Continue to Nationalism
 
 @nationalism
 on-arrival: {! globalThis.prepareDdpCongress(Q); !}
@@ -197,14 +199,13 @@ Supports: regionalist; neutral: left bourgeois; opposes: left progressive, labor
 - @nationalism_liberal_civic_nationalism: Adopt: Support Liberal Civic Nationalism
 - @nationalism_political_benefit_nationalism: Adopt: Use Nationalism for Political Benefit
 - @nationalism_german_racial_nationalism: Adopt: Support German Racial Nationalism
-- @ddp_congress: Back to congress overview
 
 @nationalism_oppose_extreme_nationalism
 title: Adopt: Oppose Extreme Nationalism
 choose-if: ddp_congress_nationalism_oppose_extreme_nationalism_available = 1 and ddp_nationalism_position != 1
 unavailable-subtitle: [+ ddp_congress_nationalism_oppose_extreme_nationalism_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'nationalism', 'oppose_extreme_nationalism'); !}
-go-to: nationalism
+go-to: economic
 
 Adopted Oppose Extreme Nationalism.
 
@@ -213,7 +214,7 @@ title: Adopt: Support Liberal Civic Nationalism
 choose-if: ddp_congress_nationalism_liberal_civic_nationalism_available = 1 and ddp_nationalism_position != 2
 unavailable-subtitle: [+ ddp_congress_nationalism_liberal_civic_nationalism_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'nationalism', 'liberal_civic_nationalism'); !}
-go-to: nationalism
+go-to: economic
 
 Adopted Support Liberal Civic Nationalism.
 
@@ -222,7 +223,7 @@ title: Adopt: Use Nationalism for Political Benefit
 choose-if: ddp_congress_nationalism_political_benefit_nationalism_available = 1 and ddp_nationalism_position != 3
 unavailable-subtitle: [+ ddp_congress_nationalism_political_benefit_nationalism_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'nationalism', 'political_benefit_nationalism'); !}
-go-to: nationalism
+go-to: economic
 
 Adopted Use Nationalism for Political Benefit.
 
@@ -231,7 +232,7 @@ title: Adopt: Support German Racial Nationalism
 choose-if: ddp_congress_nationalism_german_racial_nationalism_available = 1 and ddp_nationalism_position != 4
 unavailable-subtitle: [+ ddp_congress_nationalism_german_racial_nationalism_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'nationalism', 'german_racial_nationalism'); !}
-go-to: nationalism
+go-to: economic
 
 Adopted Support German Racial Nationalism.
 
@@ -258,14 +259,13 @@ Supports: regionalist; neutral: none; opposes: left progressive, laborist, left 
 - @economic_social_liberal_economy: Adopt: Support a Social Liberal Economy
 - @economic_liberal_economics: Adopt: Support Liberal Economics
 - @economic_agrarian_interests: Adopt: Focus on Agrarian Interests
-- @ddp_congress: Back to congress overview
 
 @economic_interventionist_economics
 title: Adopt: Support Interventionist Economics
 choose-if: ddp_congress_economic_interventionist_economics_available = 1 and ddp_economics_position != 1
 unavailable-subtitle: [+ ddp_congress_economic_interventionist_economics_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'interventionist_economics'); !}
-go-to: economic
+go-to: republic
 
 Adopted Support Interventionist Economics.
 
@@ -274,7 +274,7 @@ title: Adopt: Support a Social Liberal Economy
 choose-if: ddp_congress_economic_social_liberal_economy_available = 1 and ddp_economics_position != 2
 unavailable-subtitle: [+ ddp_congress_economic_social_liberal_economy_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'social_liberal_economy'); !}
-go-to: economic
+go-to: republic
 
 Adopted Support a Social Liberal Economy.
 
@@ -283,7 +283,7 @@ title: Adopt: Support Liberal Economics
 choose-if: ddp_congress_economic_liberal_economics_available = 1 and ddp_economics_position != 3
 unavailable-subtitle: [+ ddp_congress_economic_liberal_economics_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'liberal_economics'); !}
-go-to: economic
+go-to: republic
 
 Adopted Support Liberal Economics.
 
@@ -292,7 +292,7 @@ title: Adopt: Focus on Agrarian Interests
 choose-if: ddp_congress_economic_agrarian_interests_available = 1 and ddp_economics_position != 4
 unavailable-subtitle: [+ ddp_congress_economic_agrarian_interests_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'agrarian_interests'); !}
-go-to: economic
+go-to: republic
 
 Adopted Focus on Agrarian Interests.
 
@@ -311,14 +311,13 @@ Supports: left bourgeois, regionalist; neutral: none; opposes: left progressive,
 
 - @republic_cornerstone_republic: Adopt: Make Ourselves the Cornerstone of the Republic
 - @republic_quiet_republic: Adopt: Support the Republic Quietly
-- @ddp_congress: Back to congress overview
 
 @republic_cornerstone_republic
 title: Adopt: Make Ourselves the Cornerstone of the Republic
 choose-if: ddp_congress_republic_cornerstone_republic_available = 1 and ddp_republic_position != 1
 unavailable-subtitle: [+ ddp_congress_republic_cornerstone_republic_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'republic', 'cornerstone_republic'); !}
-go-to: republic
+go-to: federalism
 
 Adopted Make Ourselves the Cornerstone of the Republic.
 
@@ -327,7 +326,7 @@ title: Adopt: Support the Republic Quietly
 choose-if: ddp_congress_republic_quiet_republic_available = 1 and ddp_republic_position != 2
 unavailable-subtitle: [+ ddp_congress_republic_quiet_republic_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'republic', 'quiet_republic'); !}
-go-to: republic
+go-to: federalism
 
 Adopted Support the Republic Quietly.
 
@@ -350,14 +349,13 @@ Supports: left progressive; neutral: laborist, left liberal, left bourgeois; opp
 - @federalism_expand_federal_powers: Adopt: Expand Federal Powers
 - @federalism_expand_central_power: Adopt: Expand Central Power
 - @federalism_unitary_state: Adopt: Support a Unitary State
-- @ddp_congress: Back to congress overview
 
 @federalism_expand_federal_powers
 title: Adopt: Expand Federal Powers
 choose-if: ddp_congress_federalism_expand_federal_powers_available = 1 and ddp_federalism_position != 1
 unavailable-subtitle: [+ ddp_congress_federalism_expand_federal_powers_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'federalism', 'expand_federal_powers'); !}
-go-to: federalism
+go-to: leader
 
 Adopted Expand Federal Powers.
 
@@ -366,7 +364,7 @@ title: Adopt: Expand Central Power
 choose-if: ddp_congress_federalism_expand_central_power_available = 1 and ddp_federalism_position != 2
 unavailable-subtitle: [+ ddp_congress_federalism_expand_central_power_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'federalism', 'expand_central_power'); !}
-go-to: federalism
+go-to: leader
 
 Adopted Expand Central Power.
 
@@ -375,7 +373,7 @@ title: Adopt: Support a Unitary State
 choose-if: ddp_congress_federalism_unitary_state_available = 1 and ddp_federalism_position != 3
 unavailable-subtitle: [+ ddp_congress_federalism_unitary_state_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'federalism', 'unitary_state'); !}
-go-to: federalism
+go-to: leader
 
 Adopted Support a Unitary State.
 
@@ -410,14 +408,13 @@ Supports: regionalist, left bourgeois; neutral: none; opposes: left progressive,
 - @leader_otto_fischbeck: Adopt: Otto Fischbeck
 - @leader_erich_koch_weser: Adopt: Erich Koch-Weser
 - @leader_hermann_dietrich: Adopt: Hermann Dietrich
-- @ddp_congress: Back to congress overview
 
 @leader_anton_erkelenz
 title: Adopt: Anton Erkelenz
 choose-if: ddp_congress_leader_anton_erkelenz_available = 1 and ddp_leader != 1
 unavailable-subtitle: [+ ddp_congress_leader_anton_erkelenz_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'anton_erkelenz'); !}
-go-to: leader
+go-to: conclusion
 
 Adopted Anton Erkelenz.
 
@@ -426,7 +423,7 @@ title: Adopt: Theodor Heuss
 choose-if: ddp_congress_leader_theodor_heuss_available = 1 and ddp_leader != 2
 unavailable-subtitle: [+ ddp_congress_leader_theodor_heuss_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'theodor_heuss'); !}
-go-to: leader
+go-to: conclusion
 
 Adopted Theodor Heuss.
 
@@ -435,7 +432,7 @@ title: Adopt: Theodor Maier
 choose-if: ddp_congress_leader_theodor_maier_available = 1 and ddp_leader != 3
 unavailable-subtitle: [+ ddp_congress_leader_theodor_maier_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'theodor_maier'); !}
-go-to: leader
+go-to: conclusion
 
 Adopted Theodor Maier.
 
@@ -444,7 +441,7 @@ title: Adopt: Otto Fischbeck
 choose-if: ddp_congress_leader_otto_fischbeck_available = 1 and ddp_leader != 4
 unavailable-subtitle: [+ ddp_congress_leader_otto_fischbeck_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'otto_fischbeck'); !}
-go-to: leader
+go-to: conclusion
 
 Adopted Otto Fischbeck.
 
@@ -453,7 +450,7 @@ title: Adopt: Erich Koch-Weser
 choose-if: ddp_congress_leader_erich_koch_weser_available = 1 and ddp_leader != 5
 unavailable-subtitle: [+ ddp_congress_leader_erich_koch_weser_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'erich_koch_weser'); !}
-go-to: leader
+go-to: conclusion
 
 Adopted Erich Koch-Weser.
 
@@ -462,6 +459,15 @@ title: Adopt: Hermann Dietrich
 choose-if: ddp_congress_leader_hermann_dietrich_available = 1 and ddp_leader != 6
 unavailable-subtitle: [+ ddp_congress_leader_hermann_dietrich_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'leader', 'hermann_dietrich'); !}
-go-to: leader
+go-to: conclusion
 
 Adopted Hermann Dietrich.
+
+@conclusion
+on-arrival: ddp_congress_active = false
+
+= Congress Conclusion
+
+TODO: Congress conclusion text.
+
+- @post_event: Continue
