@@ -7,8 +7,8 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.startup_state_defaults_initialized = 1;
     Q.started = 0;
     Q.time = 1;
-    Q.year = 1928;
-    Q.month = 1;
+    Q.year = 1925;
+    Q.month = 5;
     Q.month_actions = 0;
     Q.difficulty = 0;
     Q.historical_mode = 0;
@@ -475,7 +475,7 @@ Q.mecklenburg_schwerin_current_government_status = 'Minority';
 
     Q.next_election_year = 1928;
     Q.next_election_month = 5;
-    Q.next_election_time = 5;
+    Q.next_election_time = 37;
     Q.n_elections = 0;
 
     Q.workers = 48;
@@ -526,8 +526,8 @@ on-arrival: {!
 Q.started = 1;
 // time elapsed (in months)
 Q.time = 1;
-Q.year = 1928;
-Q.month = 1;
+Q.year = 1925;
+Q.month = 5;
 // how many actions have been taken this month?
 Q.month_actions = 0;
 
@@ -1461,7 +1461,7 @@ Q.no_majority_elections = 0;
 Q.in_election = 1;
 Q.next_election_year = 1928;
 Q.next_election_month = 5;
-Q.next_election_time = 5;
+Q.next_election_time = 37;
 // government affairs timers
 Q.agricultural_policy_timer = 0;
 Q.domestic_enemies_timer = 0;
