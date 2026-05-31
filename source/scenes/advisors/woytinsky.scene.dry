@@ -1,10 +1,11 @@
 title: Wladimir Woytinsky
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 is-pinned-card: true
 tags: advisor, labor
 card-image: img/portraits/WoytinskyWladimir.jpg
 view-if: woytinsky_advisor = 1
-new-page: true 
+new-page: true
 
 = Wladimir Woytinsky
 
@@ -37,6 +38,6 @@ title: Addressing the economic crisis
 subtitle: Formulate a plan to get us out of the economic crisis.
 choose-if: advisor_action_timer <= 0 and wtb_adopted == 0 and black_thursday_seen == 1 and wtb_support <= 3
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?][? if black_thursday_seen == 0 : We are not currently in an economic crisis. ?][? if wtb_adopted > 0 : We have already adopted the WTB-Plan. ?]
-on-arrival: advisor_action_timer = 6; wtb_support += 2; center_dissent += 10; labor_strength += 1
+on-arrival: advisor_action_timer = 6; wtb_support += 2;
 
 The WTB-plan, named for its primary supporters Woytinsky, Tarnow, and Baade, has been adopted as the unions' plan for getting us out of the depression. Woytinsky canvasses in favor of this policy through the SPD and the unions.

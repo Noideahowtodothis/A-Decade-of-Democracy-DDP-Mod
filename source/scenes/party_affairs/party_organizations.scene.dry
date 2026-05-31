@@ -1,4 +1,5 @@
 title: Party Organizations
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true
 is-card: true
@@ -35,7 +36,7 @@ go-to: media
 choose-if: resources > 0
 unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
-on-arrival: resources -= 1; workers_aid += 1; unemployed_spd += 5*(1 - dissent);
+on-arrival: resources -= 1; workers_aid += 1; unemployed_ddp += 5*(1 - dissent);
 
 We have increased funding to Workers' Welfare. [? if black_thursday_seen > 0 : In an age of economic crisis, this will be helpful for improving our standing among the unemployed. ?]
 
@@ -43,7 +44,7 @@ We have increased funding to Workers' Welfare. [? if black_thursday_seen > 0 : I
 choose-if: resources > 0
 unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
-on-arrival: resources -= 1; cultural_organizations += 1; left_dissent -= 6; center_dissent -= 6; labor_dissent -= 6; reformist_dissent -= 6; neorevisionist_dissent -= 6
+on-arrival: resources -= 1; cultural_organizations += 1;
 
 It is not enough for the SPD to solely be a political party. The Worker Singer's League, Worker's Sports, and our schools and libraries are crucial to our members' lives. Funding these organizations makes our members more committed to the party, even when our policies might not be to their liking.
 
@@ -61,7 +62,7 @@ We have increased recruiting to the Reichsbanner.
 choose-if: resources > 0
 unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
-on-arrival: resources -= 1; rb_strength += 50; rb_militancy += 0.02; young_socialists += 1; left_strength += 5; neorevisionist_strength += 5; radicalization += 1;
+on-arrival: resources -= 1; rb_strength += 50; rb_militancy += 0.02; young_socialists += 1; radicalization += 1;
 
 Our new youth members flock to the left or neorevisionist wings of the party, and also bring new radicalism to the Reichsbanner.
 

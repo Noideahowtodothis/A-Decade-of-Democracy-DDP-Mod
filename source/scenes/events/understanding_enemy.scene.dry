@@ -1,4 +1,5 @@
 title: Understanding the Enemy
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 subtitle: Why did the Nazis gain so many votes?
 view-if: year >= 1929 and year <= 1932 and nsdap_r >= 15 and understanding_enemy_seen = 0 and understanding_enemy_timer = 0 and neorevisionism = 0
@@ -40,7 +41,7 @@ It is possible that all or none of these hypotheses are correct. Whatever the ca
 The Nazis are the fault of the petit bourgeoisie. It is not our responsibility as a working-class party to stop them.
 
 @p2
-on-arrival: peoples_party_support += 1; neorevisionist_strength += 5; left_strength -= 3; left_dissent += 4; center_dissent += 3;
+on-arrival: peoples_party_support += 1;
 
 We can combat the Nazis by adopting a "People's Party" posture that might compete for support among the middle class. In order to do this, we can create a new and inclusive vision of the party that encompasses all people who work for a living, which is almost everyone in the country save the aristocrats and top capitalists.
 
@@ -48,11 +49,11 @@ We can combat the Nazis by adopting a "People's Party" posture that might compet
 
 
 @p3
-on-arrival: neorevisionist_strength += 10; nazi_urgency += 1; neorevisionism += 1;
+on-arrival: nazi_urgency += 1; neorevisionism += 1;
 
 Working together with other "neorevisionists" such as Sergei Chakhotin, Mierendorff has developed new propaganda methods to fight the rise of the Nazis. They focus on visually striking symbols and repetitious slogans. Time will tell how effective they are.
 
 @p4
-on-arrival: left_strength += 4; center_strength += 4; labor_strength += 4; left_dissent -= 3; center_dissent -= 3; labor_dissent -= 3; workers_spd += 2*(1-dissent); unemployed_spd += 2*(1-dissent)
+on-arrival: workers_ddp += 2*(1-dissent); unemployed_ddp += 2*(1-dissent)
 
 The Nazis' appeals are making in-roads even among the working class, so we must redouble our propaganda campaigns among our base in order to prevent any Nazi attachment.

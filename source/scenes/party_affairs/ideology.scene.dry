@@ -1,4 +1,5 @@
 title: Questions of Ideology
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true
 is-card: true
@@ -28,7 +29,7 @@ if (Q.ideology && Q.ideology != "left") {
 }
 !}
 go-to: changed if changed = 1
-on-departure: ideology = "left"; left_strength += 10; communist_coalition += 1; left_dissent -= 5; z_relation -= 3; dvp_relation -= 5; nationalization_support += 1; kpd_relation += 3
+on-departure: ideology = "left"; communist_coalition += 1; z_relation -= 3; dvp_relation -= 5; nationalization_support += 1; kpd_relation += 3
 
 The radical left of the party supports a course of class struggle, and potentially a reconcilliation with the Communists.
 
@@ -39,7 +40,7 @@ if (Q.ideology && Q.ideology != "centrist") {
 }
 !}
 go-to: changed if changed = 1
-on-departure: ideology = "centrist"; center_strength += 10; center_dissent -= 10; left_dissent -= 5; reformist_dissent -= 5
+on-departure: ideology = "centrist";
 
 The Center Marxists, represented by Kautsky and Hilferding, support a middle course of preparing for revolution while building up the consciousness of the working class.
 
@@ -50,7 +51,7 @@ if (Q.ideology && Q.ideology != "labor") {
 }
 !}
 go-to: changed if changed = 1
-on-departure: ideology = "labor"; labor_strength += 10; wtb_support += 1; labor_dissent -= 5; kpd_relation -= 3
+on-departure: ideology = "labor"; wtb_support += 1; kpd_relation -= 3
 
 The labor wing of the party supports continued particpation in government in order to provide benefits to the workers, and the creation of public works programs for employment.
 
@@ -61,11 +62,10 @@ if (Q.ideology && Q.ideology != "reformist") {
 }
 !}
 go-to: changed if changed = 1
-on-departure: ideology = "reformist"; reformist_strength += 10; democratization += 1; reformist_dissent -= 5; z_relation += 5; dvp_relation += 5; kpd_relation -= 8; moderate_plan_support += 1
+on-departure: ideology = "reformist"; democratization += 1; z_relation += 5; dvp_relation += 5; kpd_relation -= 8; moderate_plan_support += 1
 
 The reformist wing of the party seeks to preserve the Republic and the democratic system of government, and is most supportive of coalitions with the other pro-democracy parties.
 
 @changed
-on-arrival: left_dissent += 5; center_dissent += 5; labor_dissent += 5; reformist_dissent += 5
 
 We have changed ideologies. Many in the party feel unmoored.

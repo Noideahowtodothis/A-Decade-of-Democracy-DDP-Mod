@@ -1,4 +1,5 @@
 title: Shuffle Leadership
+# TODO: Revisit inherited SPD faction effect during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 new-page: true
 is-card: true
@@ -22,7 +23,7 @@ Removing advisors will increase dissent from their faction of the party, while s
 
 @rm_main
 title: Remove advisors.
-tags: center_advisor, left_advisor, reformist_advisor, labor_advisor, neorev_advisor, nonfactional_advisor 
+tags: center_advisor, left_advisor, reformist_advisor, labor_advisor, neorev_advisor, nonfactional_advisor
 frequency: 1
 
 - #remove_advisor
@@ -37,7 +38,7 @@ tags: remove_advisor
 @remove_hilferding
 title: Remove Hilferding
 view-if: hilferding_advisor = 1
-on-arrival: hilferding_advisor = 0; center_dissent += 5; n_advisors -= 1
+on-arrival: hilferding_advisor = 0; n_advisors -= 1
 tags: remove_advisor
 go-to: rm_main
 
@@ -47,7 +48,7 @@ Hilferding has been removed as an advisor. The Centrist faction disapproves.
 title: Remove Wels
 view-if: wels_advisor = 1
 tags: remove_advisor
-on-arrival: wels_advisor = 0; center_dissent += 5; n_advisors -= 1
+on-arrival: wels_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Wels has been removed as an advisor. The Centrist faction disapproves.
@@ -56,7 +57,7 @@ Wels has been removed as an advisor. The Centrist faction disapproves.
 title: Remove Müller
 view-if: muller_advisor = 1
 tags: remove_advisor
-on-arrival: muller_advisor = 0; center_dissent += 5; n_advisors -= 1
+on-arrival: muller_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Müller has been removed as an advisor. The Centrist faction disapproves.
@@ -66,7 +67,7 @@ Müller has been removed as an advisor. The Centrist faction disapproves.
 title: Remove Breitscheid
 view-if: breitscheid_advisor = 1
 tags: remove_advisor
-on-arrival: breitscheid_advisor = 0; center_dissent += 5; n_advisors -= 1
+on-arrival: breitscheid_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Breitscheid has been removed as an advisor. The Centrist faction disapproves.
@@ -78,7 +79,7 @@ Breitscheid has been removed as an advisor. The Centrist faction disapproves.
 title: Remove Severing
 view-if: severing_advisor = 1
 tags: remove_advisor
-on-arrival: severing_advisor = 0; reformist_dissent += 5; n_advisors -= 1
+on-arrival: severing_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Severing has been removed as an advisor. The Reformist faction disapproves.
@@ -87,7 +88,7 @@ Severing has been removed as an advisor. The Reformist faction disapproves.
 title: Remove Braun
 view-if: braun_advisor = 1
 tags: remove_advisor
-on-arrival: braun_advisor = 0; reformist_dissent += 5; n_advisors -= 1
+on-arrival: braun_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Braun has been removed as an advisor. The Reformist faction disapproves.
@@ -96,7 +97,7 @@ Braun has been removed as an advisor. The Reformist faction disapproves.
 title: Remove Juchacz
 view-if: juchacz_advisor = 1
 tags: remove_advisor
-on-arrival: juchacz_advisor = 0; reformist_dissent += 5; n_advisors -= 1
+on-arrival: juchacz_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Juchacz has been removed as an advisor. The Reformist faction disapproves.
@@ -105,7 +106,7 @@ Juchacz has been removed as an advisor. The Reformist faction disapproves.
 title: Remove Pfülf
 view-if: pfulf_advisor = 1
 tags: remove_advisor
-on-arrival: pfulf_advisor = 0; reformist_dissent += 5; n_advisors -= 1
+on-arrival: pfulf_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Pfülf has been removed as an advisor. The Reformist faction disapproves.
@@ -117,7 +118,7 @@ Pfülf has been removed as an advisor. The Reformist faction disapproves.
 title: Remove Leipart
 view-if: leipart_advisor = 1
 tags: remove_advisor
-on-arrival: leipart_advisor = 0; labor_dissent += 5; n_advisors -= 1
+on-arrival: leipart_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Leipart has been removed as an advisor. The Labor faction disapproves.
@@ -126,7 +127,7 @@ Leipart has been removed as an advisor. The Labor faction disapproves.
 title: Remove Aufhäuser
 view-if: aufhauser_advisor = 1
 tags: remove_advisor
-on-arrival: aufhauser_advisor = 0; labor_dissent += 5; n_advisors -= 1
+on-arrival: aufhauser_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Aufhäuser has been removed as an advisor. The Labor faction disapproves.
@@ -135,7 +136,7 @@ Aufhäuser has been removed as an advisor. The Labor faction disapproves.
 title: Remove Wissell
 view-if: wissell_advisor = 1
 tags: remove_advisor
-on-arrival: wissell_advisor = 0; labor_dissent += 3; n_advisors -= 1
+on-arrival: wissell_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Wissell has been removed as an advisor. The Labor faction disapproves.
@@ -145,7 +146,7 @@ Wissell has been removed as an advisor. The Labor faction disapproves.
 title: Remove Woytinsky
 view-if: woytinsky_advisor = 1
 tags: remove_advisor
-on-arrival: woytinsky_advisor = 0; labor_dissent += 3; n_advisors -= 1
+on-arrival: woytinsky_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Woytinsky has been removed as an advisor. The Labor faction disapproves.
@@ -156,7 +157,7 @@ Woytinsky has been removed as an advisor. The Labor faction disapproves.
 title: Remove Levi
 view-if: levi_advisor = 1
 tags: remove_advisor
-on-arrival: levi_advisor = 0; left_dissent += 5; n_advisors -= 1
+on-arrival: levi_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Levi has been removed as an advisor. The Leftist faction disapproves.
@@ -165,7 +166,7 @@ Levi has been removed as an advisor. The Leftist faction disapproves.
 title: Remove Sender
 view-if: sender_advisor = 1
 tags: remove_advisor
-on-arrival: sender_advisor = 0; left_dissent += 3; n_advisors -= 1
+on-arrival: sender_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Sender has been removed as an advisor. The Leftist faction disapproves.
@@ -174,7 +175,7 @@ Sender has been removed as an advisor. The Leftist faction disapproves.
 title: Remove Rosenfeld
 view-if: rosenfeld_advisor = 1
 tags: remove_advisor
-on-arrival: rosenfeld_advisor = 0; left_dissent += 3; n_advisors -= 1
+on-arrival: rosenfeld_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Rosenfeld has been removed as an advisor. The Leftist faction disapproves.
@@ -183,7 +184,7 @@ Rosenfeld has been removed as an advisor. The Leftist faction disapproves.
 title: Remove Seydewitz
 view-if: seydewitz_advisor = 1
 tags: remove_advisor
-on-arrival: seydewitz_advisor = 0; left_dissent += 3; n_advisors -= 1
+on-arrival: seydewitz_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Seydewitz has been removed as an advisor. The Leftist faction disapproves.
@@ -192,7 +193,7 @@ Seydewitz has been removed as an advisor. The Leftist faction disapproves.
 title: Remove Siemsen
 view-if: siemsen_advisor = 1
 tags: remove_advisor
-on-arrival: siemsen_advisor = 0; left_dissent += 3; n_advisors -= 1
+on-arrival: siemsen_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Siemsen has been removed as an advisor. The Leftist faction disapproves.
@@ -206,7 +207,7 @@ Siemsen has been removed as an advisor. The Leftist faction disapproves.
 title: Remove Mierendorff
 view-if: mierendorff_advisor = 1
 tags: remove_advisor
-on-arrival: mierendorff_advisor = 0; neorevisionist_dissent += 5; n_advisors -= 1
+on-arrival: mierendorff_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Mierendorff has been removed as an advisor. The Neorevisionist faction disapproves.
@@ -215,7 +216,7 @@ Mierendorff has been removed as an advisor. The Neorevisionist faction disapprov
 title: Remove Leber
 view-if: leber_advisor = 1
 tags: remove_advisor
-on-arrival: leber_advisor = 0; neorevisionist_dissent += 3; n_advisors -= 1
+on-arrival: leber_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Leber has been removed as an advisor. The Neorevisionist faction disapproves.
@@ -224,7 +225,7 @@ Leber has been removed as an advisor. The Neorevisionist faction disapproves.
 title: Remove Schumacher
 view-if: schumacher_advisor = 1
 tags: remove_advisor
-on-arrival: schumacher_advisor = 0; neorevisionist_dissent += 3; n_advisors -= 1
+on-arrival: schumacher_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
 Schumacher has been removed as an advisor. The Neorevisionist faction disapproves.
@@ -253,7 +254,7 @@ tags: remove_advisor
 on-arrival: hirschfeld_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
-Hirschfeld has been removed as an advisor. 
+Hirschfeld has been removed as an advisor.
 
 @remove_stampfer
 title: Remove Stampfer
@@ -262,7 +263,7 @@ tags: remove_advisor
 on-arrival: stampfer_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
-Stampfer has been removed as an advisor. 
+Stampfer has been removed as an advisor.
 
 @remove_radbruch
 title: Remove Radbruch
@@ -271,7 +272,7 @@ tags: remove_advisor
 on-arrival: radbruch_advisor = 0; n_advisors -= 1
 go-to: rm_main
 
-Radbruch has been removed as an advisor. 
+Radbruch has been removed as an advisor.
 
 
 
@@ -388,7 +389,7 @@ is-card: true
 card-image: img/portraits/SeveringCarl.jpg
 tags: reformist_advisor
 view-if: severing_advisor = 0 and n_advisors < 3
-on-arrival: severing_advisor = 1; n_advisors += 1; reformist_strength += 5
+on-arrival: severing_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 
 Carl Severing is now an advisor.
@@ -400,7 +401,7 @@ is-card: true
 card-image: img/portraits/BraunOtto.jpg
 tags: reformist_advisor
 view-if: braun_advisor = 0 and n_advisors < 3
-on-arrival: braun_advisor = 1; n_advisors += 1; reformist_strength += 5
+on-arrival: braun_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 
 Otto Braun is now an advisor.
@@ -411,7 +412,7 @@ subtitle: Marie Juchacz is the founder of Worker's Welfare, a mutual-aid organiz
 is-card: true
 card-image: img/portraits/JuchaczMarie.jpg
 view-if: juchacz_advisor = 0 and n_advisors < 3
-on-arrival: juchacz_advisor = 1; n_advisors += 1; reformist_strength += 5
+on-arrival: juchacz_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 tags: reformist_advisor
 
@@ -439,7 +440,7 @@ subtitle: Paul Levi is a former KPD leader who was purged for criticizing Commun
 is-card: true
 card-image: img/portraits/LeviPaul.jpg
 view-if: levi_advisor = 0 and levi_dead = 0 and n_advisors < 3 and left_split = 0
-on-arrival: levi_advisor = 1; n_advisors += 1; left_strength += 5
+on-arrival: levi_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 tags: left_advisor
 
@@ -451,7 +452,7 @@ subtitle: Toni Sender is an anti-war and womens' rights advocate, and Reichstag 
 is-card: true
 card-image: img/portraits/SenderToni.jpg
 view-if: sender_advisor = 0 and n_advisors < 3
-on-arrival: sender_advisor = 1; n_advisors += 1; left_strength += 5
+on-arrival: sender_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 tags: left_advisor
 
@@ -463,7 +464,7 @@ subtitle: Kurt Rosenfeld is a lawyer, anti-militarist activist, and Reichstag me
 is-card: true
 card-image: img/portraits/RosenfeldKurt.jpg
 view-if: rosenfeld_advisor = 0 and n_advisors < 3 and left_split = 0
-on-arrival: rosenfeld_advisor = 1; n_advisors += 1; left_strength += 5
+on-arrival: rosenfeld_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 tags: left_advisor
 
@@ -475,7 +476,7 @@ subtitle: Max Seydewitz is a former leader of the youth wing, current supporter 
 is-card: true
 card-image: img/portraits/SeydewitzMax.jpg
 view-if: seydewitz_advisor = 0 and n_advisors < 3 and left_split = 0
-on-arrival: seydewitz_advisor = 1; n_advisors += 1; left_strength += 5
+on-arrival: seydewitz_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 tags: left_advisor
 
@@ -487,7 +488,7 @@ subtitle: Anna Siemsen is an and educational reform advocate and pacifist, who w
 is-card: true
 card-image: img/portraits/SiemsenAnna.jpg
 view-if: siemsen_advisor = 0 and n_advisors < 3 and left_split = 0
-on-arrival: siemsen_advisor = 1; n_advisors += 1; left_strength += 5
+on-arrival: siemsen_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 tags: left_advisor
 
@@ -504,7 +505,7 @@ is-card: true
 card-image: img/portraits/LeipartTheodor.jpg
 tags: labor_advisor
 view-if: leipart_advisor = 0 and n_advisors < 3 and unions_independent = 0
-on-arrival: leipart_advisor = 1; n_advisors += 1; labor_strength += 5
+on-arrival: leipart_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 
 Theodor Leipart is now an advisor.
@@ -516,7 +517,7 @@ is-card: true
 card-image: img/portraits/AufhäuserSiegfried.jpg
 tags: labor_advisor
 view-if: aufhauser_advisor = 0 and n_advisors < 3
-on-arrival: aufhauser_advisor = 1; n_advisors += 1; labor_strength += 5
+on-arrival: aufhauser_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 
 Siegfried Aufhäuser is now an advisor.
@@ -528,7 +529,7 @@ is-card: true
 card-image: img/portraits/WissellRudolf.jpg
 tags: labor_advisor
 view-if: wissell_advisor = 0 and n_advisors < 3 and unions_independent = 0
-on-arrival: wissell_advisor = 1; n_advisors += 1; labor_strength += 3
+on-arrival: wissell_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 
 Rudolf Wissell is now an advisor.
@@ -541,7 +542,7 @@ is-card: true
 card-image: img/portraits/WoytinskyWladimir.jpg
 tags: labor_advisor
 view-if: woytinsky_advisor = 0 and n_advisors < 3 and unions_independent = 0
-on-arrival: woytinsky_advisor = 1; n_advisors += 1; labor_strength += 3
+on-arrival: woytinsky_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 
 Wladimir Woytinsky is now an advisor.
@@ -555,7 +556,7 @@ subtitle: Carlo Mierendorff is one of the youngest members of the Reichstag, and
 is-card: true
 card-image: img/portraits/MierendorffCarlo.jpg
 view-if: mierendorff_advisor = 0 and n_advisors < 3
-on-arrival: mierendorff_advisor = 1; n_advisors += 1; neorevisionist_strength += 5
+on-arrival: mierendorff_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 tags: neorev_advisor
 
@@ -568,7 +569,7 @@ is-card: true
 card-image: img/portraits/SchumacherKurt.jpg
 tags: neorev_advisor
 view-if: schumacher_advisor = 0 and n_advisors < 3
-on-arrival: schumacher_advisor = 1; n_advisors += 1; neorevisionist_strength += 5
+on-arrival: schumacher_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 
 Kurt Schumacher is now an advisor.
@@ -579,7 +580,7 @@ subtitle: Julius Leber is a former Reichswehr officer who resigned in opposition
 is-card: true
 card-image: img/portraits/LeberJulius.jpg
 view-if: leber_advisor = 0 and n_advisors < 3
-on-arrival: leber_advisor = 1; n_advisors += 1; neorevisionist_strength += 5
+on-arrival: leber_advisor = 1; n_advisors += 1;
 go-to: advisor_menu
 tags: neorev_advisor
 

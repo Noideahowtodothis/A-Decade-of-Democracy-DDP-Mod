@@ -1,4 +1,5 @@
 title: Schleicher's Schemes
+# TODO: Ambiguous inherited SPD-player effects left unchanged; revisit during event rewrite.
 # TODO(DDP factions): Deprecated SPD faction variable references remain in this scene; migrate effects/conditions to DDP faction variables during future rebalancing.
 subtitle: Chancellor Schleicher claims to have a plan to save Germany...
 view-if: year >= 1932 and president = "Hindenburg" and chancellor = "Schleicher" and spd_in_government = 0 and largest_party = "NSDAP" and hitler_deported = 0 and not presidential_powers
