@@ -297,6 +297,9 @@ Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economics_position'
 if (!Q.ddp_congress_dates) {
     Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
 }
+if (Q.ddp_congress_active === undefined || Q.ddp_congress_active === null) {
+    Q.ddp_congress_active = false;
+}
 if ((Q.ddp_economics_position === undefined || Q.ddp_economics_position === null) && Q.ddp_economic_position !== undefined && Q.ddp_economic_position !== null) {
     Q.ddp_economics_position = Q.ddp_economic_position;
 }

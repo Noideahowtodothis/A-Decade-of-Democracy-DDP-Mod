@@ -34,6 +34,7 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.ddp_leader = 0;
     Q.ddp_ideology = 0;
     Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
+    Q.ddp_congress_active = false;
 
     Q.deprecated_spd_faction_vars = ['left_strength', 'left_dissent', 'center_strength', 'center_dissent', 'labor_strength', 'labor_dissent', 'reformist_strength', 'reformist_dissent', 'neorevisionist_strength', 'neorevisionist_dissent'];
     Q.left_strength = 15;
@@ -575,6 +576,7 @@ Q.ddp_federalism_position = 0;
 Q.ddp_leader = 0;
 Q.ddp_ideology = 0;
 Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
+Q.ddp_congress_active = false;
 
 // Deprecated SPD faction compatibility variables.
 // TODO(DDP factions): Migrate remaining SPD faction effects/conditions to DDP faction variables during future rebalancing.

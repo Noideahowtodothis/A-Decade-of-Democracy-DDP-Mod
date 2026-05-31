@@ -5,6 +5,7 @@ tags: event
 view-if: (year = 1925 and month = 12 and not ddp_congress_1925_12_done) or (year = 1927 and month = 4 and not ddp_congress_1927_04_done) or (year = 1929 and month = 10 and not ddp_congress_1929_10_done) or (year = 1931 and month = 3 and not ddp_congress_1931_03_done) or (year = 1933 and month = 8 and not ddp_congress_1933_08_done)
 max-visits: 5
 on-arrival: {!
+Q.ddp_congress_active = true;
 Q.ddp_congress_current_date = Q.year + '-' + (Q.month < 10 ? '0' + Q.month : '' + Q.month);
 if (Q.year == 1925 && Q.month == 12) { Q.ddp_congress_1925_12_done = 1; }
 if (Q.year == 1927 && Q.month == 4) { Q.ddp_congress_1927_04_done = 1; }
@@ -130,7 +131,11 @@ Temporary debug: a policy is available when supporting delegates are greater tha
 - @republic: The Republic
 - @federalism: Federalism
 - @leader: Leader
-- @post_event: Finish congress
+- @finish: Finish congress
+
+@finish
+on-arrival: ddp_congress_active = false
+go-to: post_event
 
 @nationalism
 on-arrival: {! globalThis.prepareDdpCongress(Q); !}
