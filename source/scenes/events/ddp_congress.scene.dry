@@ -21,7 +21,7 @@ if (typeof globalThis !== 'undefined') {
         ddp_left_bourgeois: 'Left Bourgeois',
         ddp_regionalist: 'Regionalist'
     };
-    globalThis.ddpCongressIssues = {nationalism:{label:'Nationalism', variable:'ddp_nationalism_position', positions:[{code:'oppose_extreme_nationalism', value:1, label:'Oppose Extreme Nationalism', support:['ddp_left_progressive'], neutral:['ddp_left_liberal'], oppose:['ddp_laborist','ddp_left_bourgeois','ddp_regionalist']},{code:'liberal_civic_nationalism', value:2, label:'Support Liberal Civic Nationalism', support:['ddp_left_liberal'], neutral:['ddp_left_progressive','ddp_laborist','ddp_left_bourgeois'], oppose:['ddp_regionalist']},{code:'political_benefit_nationalism', value:3, label:'Use Nationalism for Political Benefit', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:['ddp_laborist','ddp_left_liberal'], oppose:['ddp_left_progressive']},{code:'german_racial_nationalism', value:4, label:'Support German Racial Nationalism', support:['ddp_regionalist'], neutral:['ddp_left_bourgeois'], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]},economic:{label:'Economics', variable:'ddp_economic_position', positions:[{code:'interventionist_economics', value:1, label:'Support Interventionist Economics', support:['ddp_left_progressive','ddp_laborist'], neutral:['ddp_left_liberal'], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'social_liberal_economy', value:2, label:'Support a Social Liberal Economy', support:['ddp_left_progressive','ddp_laborist','ddp_left_liberal'], neutral:[], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'liberal_economics', value:3, label:'Support Liberal Economics', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:['ddp_left_liberal'], oppose:['ddp_left_progressive','ddp_laborist']},{code:'agrarian_interests', value:4, label:'Focus on Agrarian Interests', support:['ddp_regionalist'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois']}]},republic:{label:'The Republic', variable:'ddp_republic_position', positions:[{code:'cornerstone_republic', value:1, label:'Make Ourselves the Cornerstone of the Republic', support:['ddp_left_liberal','ddp_left_progressive','ddp_laborist'], neutral:[], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'quiet_republic', value:2, label:'Support the Republic Quietly', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]},federalism:{label:'Federalism', variable:'ddp_federalism_position', positions:[{code:'expand_federal_powers', value:1, label:'Expand Federal Powers', support:['ddp_regionalist'], neutral:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], oppose:[]},{code:'expand_central_power', value:2, label:'Expand Central Power', support:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], neutral:[], oppose:['ddp_regionalist']},{code:'unitary_state', value:3, label:'Support a Unitary State', support:['ddp_left_progressive'], neutral:['ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], oppose:['ddp_regionalist']}]},leader:{label:'Leader', variable:'ddp_leader', positions:[{code:'anton_erkelenz', value:1, label:'Anton Erkelenz', support:['ddp_left_progressive','ddp_laborist'], neutral:[], oppose:['ddp_left_liberal','ddp_left_bourgeois','ddp_regionalist']},{code:'theodor_heuss', value:2, label:'Theodor Heuss', support:['ddp_left_progressive','ddp_left_liberal'], neutral:['ddp_laborist'], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'theodor_maier', value:3, label:'Theodor Maier', support:['ddp_left_liberal','ddp_left_bourgeois'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_regionalist']},{code:'otto_fischbeck', value:4, label:'Otto Fischbeck', support:['ddp_regionalist'], neutral:['ddp_left_bourgeois'], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']},{code:'erich_koch_weser', value:5, label:'Erich Koch-Weser', support:['ddp_left_bourgeois','ddp_left_liberal'], neutral:['ddp_left_progressive','ddp_laborist','ddp_regionalist'], oppose:[]},{code:'hermann_dietrich', value:6, label:'Hermann Dietrich', support:['ddp_regionalist','ddp_left_bourgeois'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]}};
+    globalThis.ddpCongressIssues = {nationalism:{label:'Nationalism', variable:'ddp_nationalism_position', positions:[{code:'oppose_extreme_nationalism', value:1, label:'Oppose Extreme Nationalism', support:['ddp_left_progressive'], neutral:['ddp_left_liberal'], oppose:['ddp_laborist','ddp_left_bourgeois','ddp_regionalist']},{code:'liberal_civic_nationalism', value:2, label:'Support Liberal Civic Nationalism', support:['ddp_left_liberal'], neutral:['ddp_left_progressive','ddp_laborist','ddp_left_bourgeois'], oppose:['ddp_regionalist']},{code:'political_benefit_nationalism', value:3, label:'Use Nationalism for Political Benefit', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:['ddp_laborist','ddp_left_liberal'], oppose:['ddp_left_progressive']},{code:'german_racial_nationalism', value:4, label:'Support German Racial Nationalism', support:['ddp_regionalist'], neutral:['ddp_left_bourgeois'], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]},economic:{label:'Economics', variable:'ddp_economics_position', positions:[{code:'interventionist_economics', value:1, label:'Support Interventionist Economics', support:['ddp_left_progressive','ddp_laborist'], neutral:['ddp_left_liberal'], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'social_liberal_economy', value:2, label:'Support a Social Liberal Economy', support:['ddp_left_progressive','ddp_laborist','ddp_left_liberal'], neutral:[], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'liberal_economics', value:3, label:'Support Liberal Economics', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:['ddp_left_liberal'], oppose:['ddp_left_progressive','ddp_laborist']},{code:'agrarian_interests', value:4, label:'Focus on Agrarian Interests', support:['ddp_regionalist'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois']}]},republic:{label:'The Republic', variable:'ddp_republic_position', positions:[{code:'cornerstone_republic', value:1, label:'Make Ourselves the Cornerstone of the Republic', support:['ddp_left_liberal','ddp_left_progressive','ddp_laborist'], neutral:[], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'quiet_republic', value:2, label:'Support the Republic Quietly', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]},federalism:{label:'Federalism', variable:'ddp_federalism_position', positions:[{code:'expand_federal_powers', value:1, label:'Expand Federal Powers', support:['ddp_regionalist'], neutral:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], oppose:[]},{code:'expand_central_power', value:2, label:'Expand Central Power', support:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], neutral:[], oppose:['ddp_regionalist']},{code:'unitary_state', value:3, label:'Support a Unitary State', support:['ddp_left_progressive'], neutral:['ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], oppose:['ddp_regionalist']}]},leader:{label:'Leader', variable:'ddp_leader', positions:[{code:'anton_erkelenz', value:1, label:'Anton Erkelenz', ideology:'left-social liberal', support:['ddp_left_progressive','ddp_laborist'], neutral:[], oppose:['ddp_left_liberal','ddp_left_bourgeois','ddp_regionalist']},{code:'theodor_heuss', value:2, label:'Theodor Heuss', ideology:'progressive republican liberal', support:['ddp_left_progressive','ddp_left_liberal'], neutral:['ddp_laborist'], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'theodor_maier', value:3, label:'Theodor Maier', ideology:'left-liberal', support:['ddp_left_liberal','ddp_left_bourgeois'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_regionalist']},{code:'otto_fischbeck', value:4, label:'Otto Fischbeck', ideology:'federal/regional liberal', support:['ddp_regionalist'], neutral:['ddp_left_bourgeois'], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']},{code:'erich_koch_weser', value:5, label:'Erich Koch-Weser', ideology:'bourgeois republican liberal', support:['ddp_left_bourgeois','ddp_left_liberal'], neutral:['ddp_left_progressive','ddp_laborist','ddp_regionalist'], oppose:[]},{code:'hermann_dietrich', value:6, label:'Hermann Dietrich', ideology:'agrarian-bourgeois liberal', support:['ddp_regionalist','ddp_left_bourgeois'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]}};
     globalThis.prepareDdpCongress = function(qualities) {
         var factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
         qualities.ddp_factions = factions;
@@ -110,6 +110,10 @@ if (typeof globalThis !== 'undefined') {
         var prefix = 'ddp_congress_' + issueKey + '_' + selected.code;
         if (!qualities[prefix + '_available']) { return; }
         qualities[issue.variable] = selected.value;
+        if (issueKey == 'leader') {
+            qualities.ddp_ideology = selected.ideology;
+        }
+        // TODO(DDP congress): Add culture and election effects after the issue-voting layer is established.
         qualities.ddp_congress_last_adopted = selected.label;
         for (var s = 0; s < selected.support.length; s++) {
             var supportFaction = selected.support[s];
@@ -236,7 +240,7 @@ on-arrival: {! globalThis.prepareDdpCongress(Q); !}
 
 = Economics
 
-Current adopted position: [+ ddp_economic_position : ddp_economic_position +]
+Current adopted position: [+ ddp_economics_position : ddp_economics_position +]
 
 Support Interventionist Economics: [+ ddp_congress_economic_interventionist_economics_debug +]
 Supports: left progressive, laborist; neutral: left liberal; opposes: left bourgeois, regionalist.
@@ -258,7 +262,7 @@ Supports: regionalist; neutral: none; opposes: left progressive, laborist, left 
 
 @economic_interventionist_economics
 title: Adopt: Support Interventionist Economics
-choose-if: ddp_congress_economic_interventionist_economics_available = 1 and ddp_economic_position != 1
+choose-if: ddp_congress_economic_interventionist_economics_available = 1 and ddp_economics_position != 1
 unavailable-subtitle: [+ ddp_congress_economic_interventionist_economics_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'interventionist_economics'); !}
 go-to: economic
@@ -267,7 +271,7 @@ Adopted Support Interventionist Economics.
 
 @economic_social_liberal_economy
 title: Adopt: Support a Social Liberal Economy
-choose-if: ddp_congress_economic_social_liberal_economy_available = 1 and ddp_economic_position != 2
+choose-if: ddp_congress_economic_social_liberal_economy_available = 1 and ddp_economics_position != 2
 unavailable-subtitle: [+ ddp_congress_economic_social_liberal_economy_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'social_liberal_economy'); !}
 go-to: economic
@@ -276,7 +280,7 @@ Adopted Support a Social Liberal Economy.
 
 @economic_liberal_economics
 title: Adopt: Support Liberal Economics
-choose-if: ddp_congress_economic_liberal_economics_available = 1 and ddp_economic_position != 3
+choose-if: ddp_congress_economic_liberal_economics_available = 1 and ddp_economics_position != 3
 unavailable-subtitle: [+ ddp_congress_economic_liberal_economics_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'liberal_economics'); !}
 go-to: economic
@@ -285,7 +289,7 @@ Adopted Support Liberal Economics.
 
 @economic_agrarian_interests
 title: Adopt: Focus on Agrarian Interests
-choose-if: ddp_congress_economic_agrarian_interests_available = 1 and ddp_economic_position != 4
+choose-if: ddp_congress_economic_agrarian_interests_available = 1 and ddp_economics_position != 4
 unavailable-subtitle: [+ ddp_congress_economic_agrarian_interests_debug +]
 on-arrival: {! globalThis.adoptDdpCongressPosition(Q, 'economic', 'agrarian_interests'); !}
 go-to: economic
