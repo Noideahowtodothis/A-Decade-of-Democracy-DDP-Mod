@@ -292,22 +292,25 @@ if (!Q.ddp_factions) {
 if (!Q.ddp_faction_dissent_variables) {
     Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
 }
-if (!Q.ddp_ideology_variables) {
-    Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economic_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader'];
-}
+// Keep the canonical DDP variable registry complete when loading saves created before these trackers existed.
+Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economics_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader', 'ddp_ideology'];
 if (!Q.ddp_congress_dates) {
     Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
 }
+if ((Q.ddp_economics_position === undefined || Q.ddp_economics_position === null) && Q.ddp_economic_position !== undefined && Q.ddp_economic_position !== null) {
+    Q.ddp_economics_position = Q.ddp_economic_position;
+}
 var ddpIdeologyDefaults = {
     ddp_nationalism_position: 0,
-    ddp_economic_position: 0,
+    ddp_economics_position: 0,
     ddp_republic_position: 0,
     ddp_federalism_position: 0,
-    ddp_leader: 0
+    ddp_leader: 0,
+    ddp_ideology: 0
 };
 var ddpIdeologyMax = {
     ddp_nationalism_position: 4,
-    ddp_economic_position: 4,
+    ddp_economics_position: 4,
     ddp_republic_position: 2,
     ddp_federalism_position: 3,
     ddp_leader: 6

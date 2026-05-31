@@ -26,12 +26,13 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
         Q[startupDdpFaction + '_dissent'] = 0;
     }
     Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
-    Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economic_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader'];
+    Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economics_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader', 'ddp_ideology'];
     Q.ddp_nationalism_position = 0;
-    Q.ddp_economic_position = 0;
+    Q.ddp_economics_position = 0;
     Q.ddp_republic_position = 0;
     Q.ddp_federalism_position = 0;
     Q.ddp_leader = 0;
+    Q.ddp_ideology = 0;
     Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
 
     Q.deprecated_spd_faction_vars = ['left_strength', 'left_dissent', 'center_strength', 'center_dissent', 'labor_strength', 'labor_dissent', 'reformist_strength', 'reformist_dissent', 'neorevisionist_strength', 'neorevisionist_dissent'];
@@ -566,12 +567,13 @@ Q.ddp_left_bourgeois_dissent = 0;
 Q.ddp_regionalist_dissent = 0;
 
 // DDP congress ideology/state variables. Codes are displayed through DDP qdisplays and status labels.
-Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economic_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader'];
+Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economics_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader', 'ddp_ideology'];
 Q.ddp_nationalism_position = 0;
-Q.ddp_economic_position = 0;
+Q.ddp_economics_position = 0;
 Q.ddp_republic_position = 0;
 Q.ddp_federalism_position = 0;
 Q.ddp_leader = 0;
+Q.ddp_ideology = 0;
 Q.ddp_congress_dates = ['1925-12', '1927-04', '1929-10', '1931-03', '1933-08'];
 
 // Deprecated SPD faction compatibility variables.
