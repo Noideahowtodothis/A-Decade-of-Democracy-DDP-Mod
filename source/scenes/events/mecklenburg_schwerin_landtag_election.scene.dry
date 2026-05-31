@@ -222,12 +222,9 @@ if (coalitionParties.indexOf('dnvp') !== -1) { hostilePenalty += 1; }
 if (coalitionParties.indexOf('nsdap') !== -1) { hostilePenalty += 1; }
 if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
 
-var ddpLeaderPenalty = 0;
-if (Q.mecklenburg_schwerin_leader === "DDP") {
-  ddpLeaderPenalty = 1;
-}
+var ddpLeaderPenalty = 0; // No selectable Mecklenburg-Schwerin DDP leader.
 
-var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+var leverage = ddpInCoalition ? base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty : 0;
 if (leverage < 0) { leverage = 0; }
 if (leverage > 8) { leverage = 8; }
 Q.mecklenburg_schwerin_leverage = leverage;

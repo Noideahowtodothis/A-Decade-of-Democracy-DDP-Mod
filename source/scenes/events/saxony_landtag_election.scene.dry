@@ -195,9 +195,9 @@ if (coalitionParties.indexOf('nsdap') !== -1) { hostilePenalty += 1; }
 if (coalitionParties.indexOf('kpd') !== -1) { hostilePenalty += 1; }
 
 var ddpLeaderPenalty = 0;
-if (Q.saxony_leader === "DDP") { ddpLeaderPenalty = 1; }
+if (["Richard Seyfert", "Willibalt Apelt"].indexOf(Q.saxony_leader) !== -1) { ddpLeaderPenalty = 1; }
 
-var leverage = base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty;
+var leverage = ddpInCoalition ? base + pivotal + dominant - hostilePenalty - ddpLeaderPenalty : 0;
 if (leverage < 0) { leverage = 0; }
 if (leverage > 8) { leverage = 8; }
 Q.saxony_leverage = leverage;
