@@ -101,6 +101,7 @@ go-to: calculate_lubeck_landtag
 title: Choose the Lübeck leader
 
 = Choose the Lübeck leader
+
 - @lubeck_leader_lowigt: Paul Löwigt
 - @lubeck_leader_drechsler: Otto-Heinrich Drechsler
 - @lubeck_leader_heinsohn: Carl Heinsohn
