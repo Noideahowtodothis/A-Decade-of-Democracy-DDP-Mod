@@ -34,16 +34,16 @@ Current government leverage: **[+ wurttemberg_leverage +]**.
 
 {!<table>!}
 {!<tr><td>Party</td><td>Württemberg vote share</td><td>Seats (out of 80)</td></tr>!}
-{!<tr><td>SPD</td><td>[+ wurttemberg_spd_votes_disp +]%</td><td>[+ wurttemberg_spd_r +]</td></tr>!}
-{!<tr><td>[+ ddp_name +]</td><td>[+ wurttemberg_ddp_votes_disp +]%</td><td>[+ wurttemberg_ddp_r +]</td></tr>!}
-{!<tr><td>DVP</td><td>[+ wurttemberg_dvp_votes_disp +]%</td><td>[+ wurttemberg_dvp_r +]</td></tr>!}
-{!<tr><td>Z</td><td>[+ wurttemberg_z_votes_disp +]%</td><td>[+ wurttemberg_z_r +]</td></tr>!}
-{!<tr><td>KPD</td><td>[+ wurttemberg_kpd_votes_disp +]%</td><td>[+ wurttemberg_kpd_r +]</td></tr>!}
-{!<tr><td>DNVP</td><td>[+ wurttemberg_dnvp_votes_disp +]%</td><td>[+ wurttemberg_dnvp_r +]</td></tr>!}
-{!<tr><td>CSVD</td><td>[+ wurttemberg_csvd_votes_disp +]%</td><td>[+ wurttemberg_csvd_r +]</td></tr>!}
-{!<tr><td>WBWB</td><td>[+ wurttemberg_wbwb_votes_disp +]%</td><td>[+ wurttemberg_wbwb_r +]</td></tr>!}
-{!<tr><td>NSDAP</td><td>[+ wurttemberg_nsdap_votes_disp +]%</td><td>[+ wurttemberg_nsdap_r +]</td></tr>!}
-{!<tr><td>Other</td><td>[+ wurttemberg_other_votes_disp +]%</td><td>[+ wurttemberg_other_r +]</td></tr>!}
+{!<tr><td>SPD</td><td>!}[+ wurttemberg_spd_votes_disp +]{!%</td><td>!}[+ wurttemberg_spd_r +]{!</td></tr>!}
+{!<tr><td>!}[+ ddp_name +]{!</td><td>!}[+ wurttemberg_ddp_votes_disp +]{!%</td><td>!}[+ wurttemberg_ddp_r +]{!</td></tr>!}
+{!<tr><td>DVP</td><td>!}[+ wurttemberg_dvp_votes_disp +]{!%</td><td>!}[+ wurttemberg_dvp_r +]{!</td></tr>!}
+{!<tr><td>Z</td><td>!}[+ wurttemberg_z_votes_disp +]{!%</td><td>!}[+ wurttemberg_z_r +]{!</td></tr>!}
+{!<tr><td>KPD</td><td>!}[+ wurttemberg_kpd_votes_disp +]{!%</td><td>!}[+ wurttemberg_kpd_r +]{!</td></tr>!}
+{!<tr><td>DNVP</td><td>!}[+ wurttemberg_dnvp_votes_disp +]{!%</td><td>!}[+ wurttemberg_dnvp_r +]{!</td></tr>!}
+{!<tr><td>CSVD</td><td>!}[+ wurttemberg_csvd_votes_disp +]{!%</td><td>!}[+ wurttemberg_csvd_r +]{!</td></tr>!}
+{!<tr><td>WBWB</td><td>!}[+ wurttemberg_wbwb_votes_disp +]{!%</td><td>!}[+ wurttemberg_wbwb_r +]{!</td></tr>!}
+{!<tr><td>NSDAP</td><td>!}[+ wurttemberg_nsdap_votes_disp +]{!%</td><td>!}[+ wurttemberg_nsdap_r +]{!</td></tr>!}
+{!<tr><td>Other</td><td>!}[+ wurttemberg_other_votes_disp +]{!%</td><td>!}[+ wurttemberg_other_r +]{!</td></tr>!}
 {!</table>!}
 
 = Choose a Württemberg coalition
