@@ -1,7 +1,7 @@
 title: Bremen Bürgerschaft Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = bremen_election_year and month >= bremen_election_month) or (year > bremen_election_year)
 on-departure: bremen_election_year = bremen_election_year + 4 if bremen_snap_election_called == 0; bremen_election_year = year + 4 if bremen_snap_election_called == 1; bremen_election_month = month if bremen_snap_election_called == 1; bremen_snap_election_called = 0
 set-jump: bremen_landtag_results
@@ -18,7 +18,7 @@ go-to: election_algorithm
 set-jump: bremen_landtag_results
 
 @bremen_landtag_results
-on-arrival: {! var isBremenSnapElection = Number(Q.bremen_snap_election_called) === 1; Q.bremen_next_election_year_preview = (isBremenSnapElection ? (Number(Q.year) || 0) : (Number(Q.bremen_election_year) || Number(Q.year) || 0)) + 4; Q.bremen_next_election_month_preview = isBremenSnapElection ? Q.month : Q.bremen_election_month; if (typeof window !== 'undefined' && typeof window.calculateBremenLandtagResults === 'function') { window.calculateBremenLandtagResults(Q); } !}
+on-arrival: {! Q.bremen_next_election_year_preview = Number(Q.bremen_election_year) || Number(Q.year) || 0; Q.bremen_next_election_month_preview = Q.bremen_election_month; if (typeof window !== 'undefined' && typeof window.calculateBremenLandtagResults === 'function') { window.calculateBremenLandtagResults(Q); } !}
 
 = Bremen Bürgerschaft election results
 

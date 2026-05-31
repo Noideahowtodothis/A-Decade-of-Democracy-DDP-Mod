@@ -1,7 +1,7 @@
 title: Prussian Landtag Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = prussia_election_year and month >= prussia_election_month) or (year > prussia_election_year)
 on-departure: prussia_election_year = prussia_election_year + 4; prussian_government = prussia_government
 set-jump: prussian_landtag_results

@@ -1,7 +1,7 @@
 title: Württemberg Landtag Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = wurttemberg_election_year and month >= wurttemberg_election_month) or (year > wurttemberg_election_year)
 on-departure: wurttemberg_election_year = wurttemberg_election_year + 4 if wurttemberg_snap_election_called == 0; wurttemberg_election_year = year + 4 if wurttemberg_snap_election_called == 1; wurttemberg_election_month = month if wurttemberg_snap_election_called == 1; wurttemberg_snap_election_called = 0
 set-jump: wurttemberg_landtag_results
@@ -18,7 +18,7 @@ go-to: election_algorithm
 set-jump: wurttemberg_landtag_results
 
 @wurttemberg_landtag_results
-on-arrival: {! var isWurttembergSnapElection = Number(Q.wurttemberg_snap_election_called) === 1; Q.wurttemberg_next_election_year_preview = (isWurttembergSnapElection ? (Number(Q.year) || 0) : (Number(Q.wurttemberg_election_year) || Number(Q.year) || 0)) + 4; Q.wurttemberg_next_election_month_preview = isWurttembergSnapElection ? Q.month : Q.wurttemberg_election_month; if (typeof window !== 'undefined' && typeof window.calculateWurttembergLandtagResults === 'function') { window.calculateWurttembergLandtagResults(Q); } !}
+on-arrival: {! Q.wurttemberg_next_election_year_preview = Number(Q.wurttemberg_election_year) || Number(Q.year) || 0; Q.wurttemberg_next_election_month_preview = Q.wurttemberg_election_month; if (typeof window !== 'undefined' && typeof window.calculateWurttembergLandtagResults === 'function') { window.calculateWurttembergLandtagResults(Q); } !}
 
 = Württemberg Landtag election results
 

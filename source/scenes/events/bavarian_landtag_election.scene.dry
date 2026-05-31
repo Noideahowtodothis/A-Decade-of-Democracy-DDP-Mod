@@ -1,7 +1,7 @@
 title: Bavarian Landtag Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = bavaria_election_year and month >= bavaria_election_month) or (year > bavaria_election_year)
 on-departure: bavaria_election_year = year + 4; bavaria_election_month = month
 set-jump: bavarian_landtag_results
@@ -18,7 +18,7 @@ go-to: election_algorithm
 set-jump: bavarian_landtag_results
 
 @bavarian_landtag_results
-on-arrival: {! Q.bavaria_next_election_year_preview = (Number(Q.year) || 0) + 4; Q.bavaria_next_election_month_preview = Q.month; if (typeof window !== 'undefined' && typeof window.calculateBavarianLandtagResults === 'function') { window.calculateBavarianLandtagResults(Q); } !}
+on-arrival: {! Q.bavaria_next_election_year_preview = Number(Q.bavaria_election_year) || Number(Q.year) || 0; Q.bavaria_next_election_month_preview = Q.bavaria_election_month; if (typeof window !== 'undefined' && typeof window.calculateBavarianLandtagResults === 'function') { window.calculateBavarianLandtagResults(Q); } !}
 
 = Bavarian Landtag election results
 
