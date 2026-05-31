@@ -34,15 +34,15 @@ Current government leverage: **[+ lubeck_leverage +]**.
 
 {!<table>!}
 {!<tr><td>Party</td><td>Lübeck vote share</td><td>Seats (out of 80)</td></tr>!}
-{!<tr><td>SPD</td><td>[+ lubeck_spd_votes_disp +]%</td><td>[+ lubeck_spd_r +]</td></tr>!}
-{!<tr><td>KPD</td><td>[+ lubeck_kpd_votes_disp +]%</td><td>[+ lubeck_kpd_r +]</td></tr>!}
-{!<tr><td>[+ ddp_name +]</td><td>[+ lubeck_ddp_votes_disp +]%</td><td>[+ lubeck_ddp_r +]</td></tr>!}
-{!<tr><td>DVP</td><td>[+ lubeck_dvp_votes_disp +]%</td><td>[+ lubeck_dvp_r +]</td></tr>!}
-{!<tr><td>DNVP</td><td>[+ lubeck_dnvp_votes_disp +]%</td><td>[+ lubeck_dnvp_r +]</td></tr>!}
-{!<tr><td>NSDAP</td><td>[+ lubeck_nsdap_votes_disp +]%</td><td>[+ lubeck_nsdap_r +]</td></tr>!}
-{!<tr><td>HVB</td><td>[+ lubeck_hvb_votes_disp +]%</td><td>[+ lubeck_hvb_r +]</td></tr>!}
-{!<tr><td>Z</td><td>[+ lubeck_z_votes_disp +]%</td><td>[+ lubeck_z_r +]</td></tr>!}
-{!<tr><td>Other</td><td>[+ lubeck_other_votes_disp +]%</td><td>[+ lubeck_other_r +]</td></tr>!}
+{!<tr><td>SPD</td><td>!}[+ lubeck_spd_votes_disp +]{!%</td><td>!}[+ lubeck_spd_r +]{!</td></tr>!}
+{!<tr><td>KPD</td><td>!}[+ lubeck_kpd_votes_disp +]{!%</td><td>!}[+ lubeck_kpd_r +]{!</td></tr>!}
+{!<tr><td>!}[+ ddp_name +]{!</td><td>!}[+ lubeck_ddp_votes_disp +]{!%</td><td>!}[+ lubeck_ddp_r +]{!</td></tr>!}
+{!<tr><td>DVP</td><td>!}[+ lubeck_dvp_votes_disp +]{!%</td><td>!}[+ lubeck_dvp_r +]{!</td></tr>!}
+{!<tr><td>DNVP</td><td>!}[+ lubeck_dnvp_votes_disp +]{!%</td><td>!}[+ lubeck_dnvp_r +]{!</td></tr>!}
+{!<tr><td>NSDAP</td><td>!}[+ lubeck_nsdap_votes_disp +]{!%</td><td>!}[+ lubeck_nsdap_r +]{!</td></tr>!}
+{!<tr><td>HVB</td><td>!}[+ lubeck_hvb_votes_disp +]{!%</td><td>!}[+ lubeck_hvb_r +]{!</td></tr>!}
+{!<tr><td>Z</td><td>!}[+ lubeck_z_votes_disp +]{!%</td><td>!}[+ lubeck_z_r +]{!</td></tr>!}
+{!<tr><td>Other</td><td>!}[+ lubeck_other_votes_disp +]{!%</td><td>!}[+ lubeck_other_r +]{!</td></tr>!}
 {!</table>!}
 
 = Choose a Lübeck coalition
