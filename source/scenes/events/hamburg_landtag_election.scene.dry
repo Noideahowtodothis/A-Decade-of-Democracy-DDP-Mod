@@ -130,7 +130,6 @@ on-arrival: hamburg_leader = "Walther Dauch"
 go-to: hamburg_government_confirmed
 
 @hamburg_government_confirmed
-
 on-arrival: {!
 var ddpShare = Number(Q.hamburg_ddp_votes_raw);
 if (!isFinite(ddpShare)) { ddpShare = Number(Q.hamburg_ddp_votes) || 0; }
@@ -181,6 +180,7 @@ if (leverage < 0) { leverage = 0; }
 if (leverage > 8) { leverage = 8; }
 Q.hamburg_leverage = leverage;
 !}
+
 = Hamburg government formed
 
 Coalition: **[+ hamburg_current_government_name +]**

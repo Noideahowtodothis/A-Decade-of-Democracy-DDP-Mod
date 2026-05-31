@@ -130,7 +130,6 @@ on-arrival: bremen_leader = "Martin Donandt"
 go-to: bremen_government_confirmed
 
 @bremen_government_confirmed
-
 on-arrival: {!
 var ddpShare = Number(Q.bremen_ddp_votes_raw);
 if (!isFinite(ddpShare)) { ddpShare = Number(Q.bremen_ddp_votes) || 0; }
@@ -181,6 +180,7 @@ if (leverage < 0) { leverage = 0; }
 if (leverage > 8) { leverage = 8; }
 Q.bremen_leverage = leverage;
 !}
+
 = Bremen government formed
 
 Coalition: **[+ bremen_current_government_name +]**
