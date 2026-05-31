@@ -134,6 +134,7 @@ go-to: calculate_wurttemberg_landtag
 title: Choose the Württemberg leader
 
 = Choose the Württemberg leader
+
 - @wurttemberg_leader_keil: Wilhelm Keil
 - @wurttemberg_leader_schumacher: Kurt Schumacher
 - @wurttemberg_leader_bolz: Eugen Bolz
