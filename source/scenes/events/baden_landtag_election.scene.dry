@@ -1,0 +1,189 @@
+title: Baden Landtag Elections
+new-page: true
+tags: event
+priority: 1
+view-if: (year = baden_election_year and month >= baden_election_month) or (year > baden_election_year)
+on-departure: baden_election_year = baden_election_year + 4 if baden_snap_election_called == 0; baden_election_year = year + 4 if baden_snap_election_called == 1; baden_election_month = month if baden_snap_election_called == 1; baden_snap_election_called = 0
+set-jump: baden_landtag_results
+
+= Baden Landtag Elections, [+ month : month +] [+ year +]
+
+Baden holds Landtag elections with **88** seats allocated by D’Hondt.
+
+- @calculate_baden_landtag: Count the votes.
+
+@calculate_baden_landtag
+on-arrival: baden_government = 1 if baden_government == undefined; baden_majority_cabinet = 0 if baden_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: baden_landtag_results
+
+@baden_landtag_results
+on-arrival: {! Q.baden_next_election_year_preview = Number(Q.baden_election_year) || Number(Q.year) || 0; Q.baden_next_election_month_preview = Q.baden_election_month; if (typeof window !== 'undefined' && typeof window.calculateBadenLandtagResults === 'function') { window.calculateBadenLandtagResults(Q); } if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+
+= Baden Landtag election results
+
+Next Baden election after this Landtag is due in **[+ baden_next_election_month_preview : month +] [+ baden_next_election_year_preview +]**.
+
+Baden Landtag seats: **[+ baden_landtag_total_seats +] / 88**
+
+Current Baden government: **[+ baden_current_government_name +]** ([+ baden_current_government_parties +]) led by **[+ baden_leader +]**.
+
+Current government seats: **[+ baden_current_government_seats +] / 88**. Status: **[+ baden_current_government_status +]**. Majority cabinet: **[+ baden_majority_cabinet +]**.
+
+Current government leverage: **[+ baden_leverage +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Baden vote share</td><td>Seats (out of 88)</td></tr>!}
+{!<tr><td>SPD</td><td>!}[+ baden_spd_votes_disp +]{!%</td><td>!}[+ baden_spd_r +]{!</td></tr>!}
+{!<tr><td>Z</td><td>!}[+ baden_z_votes_disp +]{!%</td><td>!}[+ baden_z_r +]{!</td></tr>!}
+{!<tr><td>!}[+ ddp_name +]{!</td><td>!}[+ baden_ddp_votes_disp +]{!%</td><td>!}[+ baden_ddp_r +]{!</td></tr>!}
+{!<tr><td>DVP</td><td>!}[+ baden_dvp_votes_disp +]{!%</td><td>!}[+ baden_dvp_r +]{!</td></tr>!}
+{!<tr><td>DNVP</td><td>!}[+ baden_dnvp_votes_disp +]{!%</td><td>!}[+ baden_dnvp_r +]{!</td></tr>!}
+{!<tr><td>KPD</td><td>!}[+ baden_kpd_votes_disp +]{!%</td><td>!}[+ baden_kpd_r +]{!</td></tr>!}
+{!<tr><td>WP</td><td>!}[+ baden_wp_votes_disp +]{!%</td><td>!}[+ baden_wp_r +]{!</td></tr>!}
+{!<tr><td>NSDAP</td><td>!}[+ baden_nsdap_votes_disp +]{!%</td><td>!}[+ baden_nsdap_r +]{!</td></tr>!}
+{!<tr><td>Other</td><td>!}[+ baden_other_votes_disp +]{!%</td><td>!}[+ baden_other_r +]{!</td></tr>!}
+{!</table>!}
+
+= Choose a Baden coalition
+
+A coalition is selectable if it controls at least **45** of the **88** Landtag seats. If no listed coalition has a majority, the incumbent Baden government may continue as a minority cabinet.
+
+- @baden_select_ddp_spd
+- @baden_select_spd_ddp_z
+- @baden_select_z_ddp
+- @baden_select_z_ddp_dvp
+- @baden_select_z_ddp_dnvp_dvp
+- @baden_select_z_dvp_dnvp
+- @baden_select_spd_dvp_z
+- @baden_select_nsdap_dvp_dnvp
+- @baden_select_nsdap_dnvp
+- @new_baden_elections: Call new Baden Landtag elections.
+- @root: Continue without changing the Baden government.
+
+@baden_select_ddp_spd
+title: DDP-SPD
+subtitle: DDP + SPD — [+ baden_ddp_spd_coalition_seats +] / 88 — [+ baden_ddp_spd_coalition_status +]
+view-if: baden_ddp_spd_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 1; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@baden_select_spd_ddp_z
+title: SPD-DDP-Z
+subtitle: SPD + DDP + Z — [+ baden_spd_ddp_z_coalition_seats +] / 88 — [+ baden_spd_ddp_z_coalition_status +]
+view-if: baden_spd_ddp_z_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 2; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@baden_select_z_ddp
+title: Z-DDP
+subtitle: Z + DDP — [+ baden_z_ddp_coalition_seats +] / 88 — [+ baden_z_ddp_coalition_status +]
+view-if: baden_z_ddp_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 3; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@baden_select_z_ddp_dvp
+title: Z-DDP-DVP
+subtitle: Z + DDP + DVP — [+ baden_z_ddp_dvp_coalition_seats +] / 88 — [+ baden_z_ddp_dvp_coalition_status +]
+view-if: baden_z_ddp_dvp_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 4; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@baden_select_z_ddp_dnvp_dvp
+title: Z-DDP-DNVP-DVP
+subtitle: Z + DDP + DNVP + DVP — [+ baden_z_ddp_dnvp_dvp_coalition_seats +] / 88 — [+ baden_z_ddp_dnvp_dvp_coalition_status +]
+view-if: baden_z_ddp_dnvp_dvp_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 5; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@baden_select_z_dvp_dnvp
+title: Z-DVP-DNVP
+subtitle: Z + DVP + DNVP — [+ baden_z_dvp_dnvp_coalition_seats +] / 88 — [+ baden_z_dvp_dnvp_coalition_status +]
+view-if: baden_z_dvp_dnvp_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 6; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@baden_select_spd_dvp_z
+title: SPD-DVP-Z
+subtitle: SPD + DVP + Z — [+ baden_spd_dvp_z_coalition_seats +] / 88 — [+ baden_spd_dvp_z_coalition_status +]
+view-if: baden_spd_dvp_z_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 7; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@baden_select_nsdap_dvp_dnvp
+title: NSDAP-DVP-DNVP
+subtitle: NSDAP + DVP + DNVP — [+ baden_nsdap_dvp_dnvp_coalition_seats +] / 88 — [+ baden_nsdap_dvp_dnvp_coalition_status +]
+view-if: baden_nsdap_dvp_dnvp_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 8; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@baden_select_nsdap_dnvp
+title: NSDAP-DNVP
+subtitle: NSDAP + DNVP — [+ baden_nsdap_dnvp_coalition_seats +] / 88 — [+ baden_nsdap_dnvp_coalition_status +]
+view-if: baden_nsdap_dnvp_coalition_selectable = 1
+on-arrival: {! Q.baden_government = 9; if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+go-to: baden_leader_selection
+
+@new_baden_elections
+title: Call new Baden Landtag elections.
+on-arrival: baden_election_year = year; baden_election_month = month; baden_snap_election_called = 1
+go-to: calculate_baden_landtag
+
+@baden_leader_selection
+title: Choose the Baden leader
+
+= Choose the Baden leader
+
+Selected coalition: **[+ baden_current_government_name +]** ([+ baden_current_government_parties +]).
+
+Coalition seats: **[+ baden_current_government_seats +] / 88**. Status: **[+ baden_current_government_status +]**.
+
+- @baden_leader_robert_wagner: Robert Wagner
+- @baden_leader_josef_schmitt: Josef Schmitt
+- @baden_leader_gustav_trunk: Gustav Trunk
+- @baden_leader_adam_remmele: Adam Remmele
+- @baden_leader_hermann_hummel: Hermann Hummel
+- @baden_leader_willy_hellpach: Willy Hellpach
+- @baden_leader_wilhelm_mattes: Wilhelm Mattes
+
+@baden_leader_robert_wagner
+title: Robert Wagner
+view-if: baden_leader_robert_wagner_selectable = 1
+on-arrival: baden_leader = "Robert Wagner"
+go-to: root
+
+@baden_leader_josef_schmitt
+title: Josef Schmitt
+view-if: baden_leader_josef_schmitt_selectable = 1
+on-arrival: baden_leader = "Josef Schmitt"
+go-to: root
+
+@baden_leader_gustav_trunk
+title: Gustav Trunk
+view-if: baden_leader_gustav_trunk_selectable = 1
+on-arrival: baden_leader = "Gustav Trunk"
+go-to: root
+
+@baden_leader_adam_remmele
+title: Adam Remmele
+view-if: baden_leader_adam_remmele_selectable = 1
+on-arrival: baden_leader = "Adam Remmele"
+go-to: root
+
+@baden_leader_hermann_hummel
+title: Hermann Hummel
+view-if: baden_leader_hermann_hummel_selectable = 1
+on-arrival: baden_leader = "Hermann Hummel"
+go-to: root
+
+@baden_leader_willy_hellpach
+title: Willy Hellpach
+view-if: baden_leader_willy_hellpach_selectable = 1
+on-arrival: baden_leader = "Willy Hellpach"
+go-to: root
+
+@baden_leader_wilhelm_mattes
+title: Wilhelm Mattes
+view-if: baden_leader_wilhelm_mattes_selectable = 1
+on-arrival: baden_leader = "Wilhelm Mattes"
+go-to: root

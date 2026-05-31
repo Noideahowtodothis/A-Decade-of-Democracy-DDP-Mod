@@ -137,6 +137,7 @@ Q.baden_leader = "";
 Q.baden_leverage = 0;
 Q.baden_election_year = 1925;
 Q.baden_election_month = 10;
+Q.baden_snap_election_called = 0;
 Q.baden_landtag_seat_count = 88;
 Q.baden_majority_threshold = 45;
 // TODO(baden-election): Future version should randomize Baden seat count.
@@ -368,6 +369,7 @@ Q.baden_leader = "";
 Q.baden_leverage = 0;
 Q.baden_election_year = 1925;
 Q.baden_election_month = 10;
+Q.baden_snap_election_called = 0;
 Q.baden_landtag_seat_count = 88;
 Q.baden_majority_threshold = 45;
 // TODO(baden-election): Future version should randomize Baden seat count.
@@ -725,6 +727,7 @@ Q.baden_leader = "";
 Q.baden_leverage = 0;
 Q.baden_election_year = 1925;
 Q.baden_election_month = 10;
+Q.baden_snap_election_called = 0;
 Q.baden_landtag_seat_count = 88;
 Q.baden_majority_threshold = 45;
 // TODO(baden-election): Future version should randomize Baden seat count.
