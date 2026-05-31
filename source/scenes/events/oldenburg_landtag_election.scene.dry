@@ -1,0 +1,201 @@
+title: Oldenburg Landtag Elections
+new-page: true
+tags: event
+priority: 1
+view-if: (year = oldenburg_election_year and month >= oldenburg_election_month) or (year > oldenburg_election_year)
+on-departure: oldenburg_election_year = oldenburg_election_year + 4 if oldenburg_snap_election_called == 0; oldenburg_election_year = year + 4 if oldenburg_snap_election_called == 1; oldenburg_election_month = month if oldenburg_snap_election_called == 1; oldenburg_snap_election_called = 0
+set-jump: oldenburg_landtag_results
+
+= Oldenburg Landtag Elections, [+ month : month +] [+ year +]
+
+Oldenburg holds Landtag elections. This system reuses federal party support, applies Oldenburg weights and the DNVP/CNBL split rules, normalizes results, and allocates **48** seats with D'Hondt.
+
+- @calculate_oldenburg_landtag: Count the votes.
+
+@calculate_oldenburg_landtag
+on-arrival: oldenburg_government = 3 if oldenburg_government == undefined; oldenburg_leader = "Theodor Tantzen" if oldenburg_leader == undefined; oldenburg_majority_cabinet = 0 if oldenburg_majority_cabinet == undefined
+go-to: election_algorithm
+set-jump: oldenburg_landtag_results
+
+@oldenburg_landtag_results
+on-arrival: {! Q.oldenburg_next_election_year_preview = Number(Q.oldenburg_election_year) || Number(Q.year) || 0; Q.oldenburg_next_election_month_preview = Q.oldenburg_election_month; if (typeof window !== 'undefined' && typeof window.calculateOldenburgLandtagResults === 'function') { window.calculateOldenburgLandtagResults(Q); } !}
+
+= Oldenburg Landtag election results
+
+Next Oldenburg election after this Landtag is due in **[+ oldenburg_next_election_month_preview : month +] [+ oldenburg_next_election_year_preview +]**.
+
+Oldenburg Landtag seats: **[+ oldenburg_landtag_total_seats +] / 48**.
+
+Current Oldenburg government: **[+ oldenburg_current_government_name +]** ([+ oldenburg_current_government_parties +]) led by **[+ oldenburg_leader +]**.
+
+Current government seats: **[+ oldenburg_current_government_seats +] / 48**. Status: **[+ oldenburg_current_government_status +]**. Majority cabinet: **[+ oldenburg_majority_cabinet +]**.
+
+Current government leverage: **[+ oldenburg_leverage +]**.
+
+{!<table>!}
+{!<tr><td>Party</td><td>Oldenburg vote share</td><td>Seats (out of 48)</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#E3000F; outline: 2px; outline-style: solid;'> </div> !} SPD{!</td><td>!} [+ oldenburg_spd_votes_disp +]% {!</td><td>!} [+ oldenburg_spd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#000'> </div> !} Z{!</td><td>!} [+ oldenburg_z_votes_disp +]% {!</td><td>!} [+ oldenburg_z_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#DCCA4A'> </div> !} [+ ddp_name +]{!</td><td>!} [+ oldenburg_ddp_votes_disp +]% {!</td><td>!} [+ oldenburg_ddp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#D5AC27'> </div> !} DVP{!</td><td>!} [+ oldenburg_dvp_votes_disp +]% {!</td><td>!} [+ oldenburg_dvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#5E8C31'> </div> !} WP{!</td><td>!} [+ oldenburg_wp_votes_disp +]% {!</td><td>!} [+ oldenburg_wp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#3f7bc1'> </div> !} DNVP{!</td><td>!} [+ oldenburg_dnvp_votes_disp +]% {!</td><td>!} [+ oldenburg_dnvp_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#7A5C20'> </div> !} CNBL{!</td><td>!} [+ oldenburg_cnbl_votes_disp +]% {!</td><td>!} [+ oldenburg_cnbl_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#8B0000'> </div> !} KPD{!</td><td>!} [+ oldenburg_kpd_votes_disp +]% {!</td><td>!} [+ oldenburg_kpd_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#954B00'> </div> !} NSDAP{!</td><td>!} [+ oldenburg_nsdap_votes_disp +]% {!</td><td>!} [+ oldenburg_nsdap_r +] {!</td></tr>!}
+{!<tr><td><div class="box" style='background-color:#a0a0a0'> </div> !} Others{!</td><td>!} [+ oldenburg_other_votes_disp +]% {!</td><td>!} [+ oldenburg_other_r +] {!</td></tr>!}
+{!</table>!}
+
+= Choose an Oldenburg coalition
+
+A coalition is selectable if it controls at least **25** of the **48** Landtag seats. Before 1930, a technocratic cabinet may also be selected. If no listed coalition has a majority, the incumbent Oldenburg government may continue as a minority cabinet.
+
+- @oldenburg_select_technocratic
+- @oldenburg_select_spd_z_ddp
+- @oldenburg_select_z_ddp_dvp
+- @oldenburg_select_ddp_dvp_wp
+- @oldenburg_select_ddp_dnvp_z_dvp
+- @oldenburg_select_dnvp_z_dvp_cnbl
+- @oldenburg_select_nsdap_dnvp
+- @oldenburg_select_nsdap_majority
+- @new_oldenburg_elections: Call new Oldenburg Landtag elections.
+- @root: Continue without changing the Oldenburg government.
+
+@oldenburg_select_technocratic
+title: Technocratic cabinet
+subtitle: None — [+ oldenburg_technocratic_coalition_seats +] / 48 — [+ oldenburg_technocratic_coalition_status +]
+view-if: oldenburg_technocratic_coalition_selectable = 1
+on-arrival: {! Q.oldenburg_government = 1; if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+go-to: oldenburg_leader_selection
+
+@oldenburg_select_spd_z_ddp
+title: SPD-Z-DDP
+subtitle: SPD + Z + DDP — [+ oldenburg_spd_z_ddp_coalition_seats +] / 48 — [+ oldenburg_spd_z_ddp_coalition_status +]
+view-if: oldenburg_spd_z_ddp_coalition_selectable = 1
+on-arrival: {! Q.oldenburg_government = 2; if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+go-to: oldenburg_leader_selection
+
+@oldenburg_select_z_ddp_dvp
+title: Z-DDP-DVP
+subtitle: Z + DDP + DVP — [+ oldenburg_z_ddp_dvp_coalition_seats +] / 48 — [+ oldenburg_z_ddp_dvp_coalition_status +]
+view-if: oldenburg_z_ddp_dvp_coalition_selectable = 1
+on-arrival: {! Q.oldenburg_government = 3; if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+go-to: oldenburg_leader_selection
+
+@oldenburg_select_ddp_dvp_wp
+title: DDP-DVP-WP
+subtitle: DDP + DVP + WP — [+ oldenburg_ddp_dvp_wp_coalition_seats +] / 48 — [+ oldenburg_ddp_dvp_wp_coalition_status +]
+view-if: oldenburg_ddp_dvp_wp_coalition_selectable = 1
+on-arrival: {! Q.oldenburg_government = 4; if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+go-to: oldenburg_leader_selection
+
+@oldenburg_select_ddp_dnvp_z_dvp
+title: DDP-DNVP-Z-DVP
+subtitle: DDP + DNVP + Z + DVP — [+ oldenburg_ddp_dnvp_z_dvp_coalition_seats +] / 48 — [+ oldenburg_ddp_dnvp_z_dvp_coalition_status +]
+view-if: oldenburg_ddp_dnvp_z_dvp_coalition_selectable = 1
+on-arrival: {! Q.oldenburg_government = 5; if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+go-to: oldenburg_leader_selection
+
+@oldenburg_select_dnvp_z_dvp_cnbl
+title: DNVP-Z-DVP-CNBL
+subtitle: DNVP + Z + DVP + CNBL — [+ oldenburg_dnvp_z_dvp_cnbl_coalition_seats +] / 48 — [+ oldenburg_dnvp_z_dvp_cnbl_coalition_status +]
+view-if: oldenburg_dnvp_z_dvp_cnbl_coalition_selectable = 1
+on-arrival: {! Q.oldenburg_government = 6; if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+go-to: oldenburg_leader_selection
+
+@oldenburg_select_nsdap_dnvp
+title: NSDAP-DNVP
+subtitle: NSDAP + DNVP — [+ oldenburg_nsdap_dnvp_coalition_seats +] / 48 — [+ oldenburg_nsdap_dnvp_coalition_status +]
+view-if: oldenburg_nsdap_dnvp_coalition_selectable = 1
+on-arrival: {! Q.oldenburg_government = 7; if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+go-to: oldenburg_leader_selection
+
+@oldenburg_select_nsdap_majority
+title: NSDAP Majority
+subtitle: NSDAP — [+ oldenburg_nsdap_majority_coalition_seats +] / 48 — [+ oldenburg_nsdap_majority_coalition_status +]
+view-if: oldenburg_nsdap_majority_coalition_selectable = 1
+on-arrival: {! Q.oldenburg_government = 8; if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+go-to: oldenburg_leader_selection
+
+@new_oldenburg_elections
+title: Call new Oldenburg Landtag elections.
+on-arrival: oldenburg_election_year = year; oldenburg_election_month = month; oldenburg_snap_election_called = 1
+go-to: calculate_oldenburg_landtag
+
+@oldenburg_leader_selection
+title: Choose the Oldenburg leader
+
+= Choose the Oldenburg leader
+
+Selected coalition: **[+ oldenburg_current_government_name +]** ([+ oldenburg_current_government_parties +]).
+
+Coalition seats: **[+ oldenburg_current_government_seats +] / 48**. Status: **[+ oldenburg_current_government_status +]**.
+
+- @oldenburg_leader_carl_rover: Carl Röver
+- @oldenburg_leader_eugen_von_finckh: Eugen von Finckh
+- @oldenburg_leader_friedrich_cassebohm: Friedrich Cassebohm
+- @oldenburg_leader_franz_driver: Franz Driver
+- @oldenburg_leader_theodor_tantzen: Theodor Tantzen
+- @oldenburg_leader_paul_hug: Paul Hug
+
+@oldenburg_leader_carl_rover
+title: Carl Röver
+subtitle: Available because the NSDAP is in the Oldenburg cabinet.
+view-if: oldenburg_leader_carl_rover_available = 1
+on-arrival: oldenburg_leader = "Carl Röver"
+go-to: oldenburg_government_confirmed
+
+@oldenburg_leader_eugen_von_finckh
+title: Eugen von Finckh
+subtitle: Available for a technocratic Oldenburg cabinet before 1930.
+view-if: oldenburg_leader_eugen_von_finckh_available = 1
+on-arrival: oldenburg_leader = "Eugen von Finckh"
+go-to: oldenburg_government_confirmed
+
+@oldenburg_leader_friedrich_cassebohm
+title: Friedrich Cassebohm
+subtitle: Available because the DVP or DNVP is in the Oldenburg cabinet.
+view-if: oldenburg_leader_friedrich_cassebohm_available = 1
+on-arrival: oldenburg_leader = "Friedrich Cassebohm"
+go-to: oldenburg_government_confirmed
+
+@oldenburg_leader_franz_driver
+title: Franz Driver
+subtitle: Available because Z is in the Oldenburg cabinet.
+view-if: oldenburg_leader_franz_driver_available = 1
+on-arrival: oldenburg_leader = "Franz Driver"
+go-to: oldenburg_government_confirmed
+
+@oldenburg_leader_theodor_tantzen
+title: Theodor Tantzen
+subtitle: Available because the DDP is in the Oldenburg cabinet.
+view-if: oldenburg_leader_theodor_tantzen_available = 1
+on-arrival: oldenburg_leader = "Theodor Tantzen"
+go-to: oldenburg_government_confirmed
+
+@oldenburg_leader_paul_hug
+title: Paul Hug
+subtitle: Available because the SPD is in the Oldenburg cabinet.
+view-if: oldenburg_leader_paul_hug_available = 1
+on-arrival: oldenburg_leader = "Paul Hug"
+go-to: oldenburg_government_confirmed
+
+@oldenburg_government_confirmed
+title: Oldenburg government formed
+on-arrival: {! if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') { window.updateOldenburgCoalitionOptions(Q); } !}
+
+= Oldenburg government formed
+
+Coalition: **[+ oldenburg_current_government_name +]**
+
+Parties: **[+ oldenburg_current_government_parties +]**
+
+Seats: **[+ oldenburg_current_government_seats +] / 48**
+
+Status: **[+ oldenburg_current_government_status +]**
+
+Leader: **[+ oldenburg_leader +]**
+
+Next Oldenburg election: **[+ oldenburg_next_election_month_preview : month +] [+ oldenburg_next_election_year_preview +]**.
+
+- @root: Continue.
