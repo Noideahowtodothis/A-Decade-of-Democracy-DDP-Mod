@@ -117,8 +117,8 @@ go-to: hamburg_government_confirmed
 
 @hamburg_leader_petersen
 title: Carl Wilhelm Petersen
-subtitle: Available because the DDP is in the Hamburg cabinet and the SPD is not.
-view-if: hamburg_government = 5
+subtitle: Available because the DDP is in the Hamburg cabinet.
+view-if: hamburg_government = 3 or hamburg_government = 4 or hamburg_government = 5
 on-arrival: hamburg_leader = "Carl Wilhelm Petersen"
 go-to: hamburg_government_confirmed
 
