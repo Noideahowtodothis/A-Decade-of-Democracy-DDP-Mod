@@ -1,7 +1,7 @@
 title: Saxony Landtag Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = saxony_election_year and month >= saxony_election_month) or (year > saxony_election_year)
 on-departure: saxony_election_year = saxony_election_year + 4 if saxony_snap_election_called == 0; saxony_election_year = year + 4 if saxony_snap_election_called == 1; saxony_election_month = month if saxony_snap_election_called == 1; saxony_snap_election_called = 0
 set-jump: saxony_landtag_results
@@ -18,7 +18,7 @@ go-to: election_algorithm
 set-jump: saxony_landtag_results
 
 @saxony_landtag_results
-on-arrival: {! var isSaxonySnapElection = Number(Q.saxony_snap_election_called) === 1; Q.saxony_next_election_year_preview = (isSaxonySnapElection ? (Number(Q.year) || 0) : (Number(Q.saxony_election_year) || Number(Q.year) || 0)) + 4; Q.saxony_next_election_month_preview = isSaxonySnapElection ? Q.month : Q.saxony_election_month; if (typeof window !== 'undefined' && typeof window.calculateSaxonyLandtagResults === 'function') { window.calculateSaxonyLandtagResults(Q); } if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
+on-arrival: {! Q.saxony_next_election_year_preview = Number(Q.saxony_election_year) || Number(Q.year) || 0; Q.saxony_next_election_month_preview = Q.saxony_election_month; if (typeof window !== 'undefined' && typeof window.calculateSaxonyLandtagResults === 'function') { window.calculateSaxonyLandtagResults(Q); } if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
 
 = Saxony Landtag election results
 

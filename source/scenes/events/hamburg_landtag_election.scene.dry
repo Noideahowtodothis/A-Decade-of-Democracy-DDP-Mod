@@ -1,7 +1,7 @@
 title: Hamburg Bürgerschaft Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = hamburg_election_year and month >= hamburg_election_month) or (year > hamburg_election_year)
 on-departure: hamburg_election_year = hamburg_election_year + 4 if hamburg_snap_election_called == 0; hamburg_election_year = year + 4 if hamburg_snap_election_called == 1; hamburg_election_month = month if hamburg_snap_election_called == 1; hamburg_snap_election_called = 0
 set-jump: hamburg_landtag_results
@@ -18,7 +18,7 @@ go-to: election_algorithm
 set-jump: hamburg_landtag_results
 
 @hamburg_landtag_results
-on-arrival: {! var isHamburgSnapElection = Number(Q.hamburg_snap_election_called) === 1; Q.hamburg_next_election_year_preview = (isHamburgSnapElection ? (Number(Q.year) || 0) : (Number(Q.hamburg_election_year) || Number(Q.year) || 0)) + 4; Q.hamburg_next_election_month_preview = isHamburgSnapElection ? Q.month : Q.hamburg_election_month; if (typeof window !== 'undefined' && typeof window.calculateHamburgLandtagResults === 'function') { window.calculateHamburgLandtagResults(Q); } !}
+on-arrival: {! Q.hamburg_next_election_year_preview = Number(Q.hamburg_election_year) || Number(Q.year) || 0; Q.hamburg_next_election_month_preview = Q.hamburg_election_month; if (typeof window !== 'undefined' && typeof window.calculateHamburgLandtagResults === 'function') { window.calculateHamburgLandtagResults(Q); } !}
 
 = Hamburg Bürgerschaft election results
 

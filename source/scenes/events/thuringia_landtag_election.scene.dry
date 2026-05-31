@@ -1,7 +1,7 @@
 title: Thuringia Landtag Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = thuringia_election_year and month >= thuringia_election_month) or (year > thuringia_election_year)
 on-departure: thuringia_election_year = thuringia_election_year + 4 if thuringia_snap_election_called == 0; thuringia_election_year = year + 4 if thuringia_snap_election_called == 1; thuringia_election_month = month if thuringia_snap_election_called == 1; thuringia_snap_election_called = 0
 set-jump: thuringia_landtag_results
@@ -18,7 +18,7 @@ go-to: election_algorithm
 set-jump: thuringia_landtag_results
 
 @thuringia_landtag_results
-on-arrival: {! var isThuringiaSnapElection = Number(Q.thuringia_snap_election_called) === 1; Q.thuringia_next_election_year_preview = (isThuringiaSnapElection ? (Number(Q.year) || 0) : (Number(Q.thuringia_election_year) || Number(Q.year) || 0)) + 4; Q.thuringia_next_election_month_preview = isThuringiaSnapElection ? Q.month : Q.thuringia_election_month; if (typeof window !== 'undefined' && typeof window.calculateThuringiaLandtagResults === 'function') { window.calculateThuringiaLandtagResults(Q); } !}
+on-arrival: {! Q.thuringia_next_election_year_preview = Number(Q.thuringia_election_year) || Number(Q.year) || 0; Q.thuringia_next_election_month_preview = Q.thuringia_election_month; if (typeof window !== 'undefined' && typeof window.calculateThuringiaLandtagResults === 'function') { window.calculateThuringiaLandtagResults(Q); } !}
 
 = Thuringia Landtag election results
 

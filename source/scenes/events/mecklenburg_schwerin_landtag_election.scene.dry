@@ -1,7 +1,7 @@
 title: Mecklenburg-Schwerin Landtag Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = mecklenburg_schwerin_election_year and month >= mecklenburg_schwerin_election_month) or (year > mecklenburg_schwerin_election_year)
 on-departure: mecklenburg_schwerin_election_year = mecklenburg_schwerin_election_year + 4 if mecklenburg_schwerin_snap_election_called == 0; mecklenburg_schwerin_election_year = year + 4 if mecklenburg_schwerin_snap_election_called == 1; mecklenburg_schwerin_election_month = month if mecklenburg_schwerin_snap_election_called == 1; mecklenburg_schwerin_snap_election_called = 0
 set-jump: mecklenburg_schwerin_landtag_results
@@ -18,7 +18,7 @@ go-to: election_algorithm
 set-jump: mecklenburg_schwerin_landtag_results
 
 @mecklenburg_schwerin_landtag_results
-on-arrival: {! var isMecklenburgSchwerinSnapElection = Number(Q.mecklenburg_schwerin_snap_election_called) === 1; Q.mecklenburg_schwerin_next_election_year_preview = (isMecklenburgSchwerinSnapElection ? (Number(Q.year) || 0) : (Number(Q.mecklenburg_schwerin_election_year) || Number(Q.year) || 0)) + 4; Q.mecklenburg_schwerin_next_election_month_preview = isMecklenburgSchwerinSnapElection ? Q.month : Q.mecklenburg_schwerin_election_month; if (typeof window !== 'undefined' && typeof window.calculateMecklenburgSchwerinLandtagResults === 'function') { window.calculateMecklenburgSchwerinLandtagResults(Q); } !}
+on-arrival: {! Q.mecklenburg_schwerin_next_election_year_preview = Number(Q.mecklenburg_schwerin_election_year) || Number(Q.year) || 0; Q.mecklenburg_schwerin_next_election_month_preview = Q.mecklenburg_schwerin_election_month; if (typeof window !== 'undefined' && typeof window.calculateMecklenburgSchwerinLandtagResults === 'function') { window.calculateMecklenburgSchwerinLandtagResults(Q); } !}
 
 = Mecklenburg-Schwerin Landtag election results
 

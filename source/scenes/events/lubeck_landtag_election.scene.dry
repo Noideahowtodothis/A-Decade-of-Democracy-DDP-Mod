@@ -1,7 +1,7 @@
 title: Lübeck Bürgerschaft/Landtag Elections
 new-page: true
 tags: event
-priority: -2
+priority: 1
 view-if: (year = lubeck_election_year and month >= lubeck_election_month) or (year > lubeck_election_year)
 on-departure: lubeck_election_year = lubeck_election_year + 4 if lubeck_snap_election_called == 0; lubeck_election_year = year + 4 if lubeck_snap_election_called == 1; lubeck_election_month = month if lubeck_snap_election_called == 1; lubeck_snap_election_called = 0
 set-jump: lubeck_landtag_results
@@ -18,7 +18,7 @@ go-to: election_algorithm
 set-jump: lubeck_landtag_results
 
 @lubeck_landtag_results
-on-arrival: {! var isSnap = Number(Q.lubeck_snap_election_called) === 1; Q.lubeck_next_election_year_preview = (isSnap ? (Number(Q.year) || 0) : (Number(Q.lubeck_election_year) || Number(Q.year) || 0)) + 4; Q.lubeck_next_election_month_preview = isSnap ? Q.month : Q.lubeck_election_month; if (typeof window !== 'undefined' && typeof window.calculateLubeckLandtagResults === 'function') { window.calculateLubeckLandtagResults(Q); } !}
+on-arrival: {! Q.lubeck_next_election_year_preview = Number(Q.lubeck_election_year) || Number(Q.year) || 0; Q.lubeck_next_election_month_preview = Q.lubeck_election_month; if (typeof window !== 'undefined' && typeof window.calculateLubeckLandtagResults === 'function') { window.calculateLubeckLandtagResults(Q); } !}
 
 = Lübeck election results
 
