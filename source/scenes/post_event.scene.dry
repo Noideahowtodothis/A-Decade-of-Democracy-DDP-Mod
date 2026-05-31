@@ -75,6 +75,15 @@ if (Q.baden_leverage == undefined) {
     // Represents the DDP's ability to influence or block policies within this Land government.
     Q.baden_leverage = 0;
 }
+if (Q.baden_election_year == undefined) {
+    Q.baden_election_year = 1925;
+}
+if (Q.baden_election_month == undefined) {
+    Q.baden_election_month = 10;
+}
+if (Q.baden_snap_election_called == undefined) {
+    Q.baden_snap_election_called = 0;
+}
 if (Q.bremen_election_year == undefined) {
     Q.bremen_election_year = 1927;
 }
