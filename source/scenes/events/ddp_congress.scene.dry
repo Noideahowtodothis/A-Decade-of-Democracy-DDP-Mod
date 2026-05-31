@@ -54,6 +54,25 @@ if (typeof globalThis !== 'undefined') {
             qualities[delegateFaction + '_delegates'] = delegateValue;
             qualities[delegateFaction + '_delegates_display'] = (Math.round(delegateValue*10)/10).toFixed(1);
         }
+        // Preserve the fractional delegate weights above for existing congress mechanics, while
+        // apportioning the displayed congress shares as whole delegates that always total 100.
+        var apportionedDelegates = 0;
+        var delegateRemainders = [];
+        for (var d = 0; d < factions.length; d++) {
+            var apportionedFaction = factions[d];
+            var exactDelegateShare = qualities[apportionedFaction + '_delegates'];
+            var wholeDelegateShare = Math.floor(exactDelegateShare);
+            qualities[apportionedFaction + '_delegate_share'] = wholeDelegateShare;
+            apportionedDelegates += wholeDelegateShare;
+            delegateRemainders.push({faction: apportionedFaction, remainder: exactDelegateShare - wholeDelegateShare, order: d});
+        }
+        delegateRemainders.sort(function(a, b) {
+            return b.remainder - a.remainder || a.order - b.order;
+        });
+        for (var r = 0; r < 100 - apportionedDelegates; r++) {
+            qualities[delegateRemainders[r].faction + '_delegate_share'] += 1;
+        }
+        qualities.ddp_congress_delegate_share_total = 100;
         var issues = globalThis.ddpCongressIssues;
         for (var issueKey in issues) {
             var issue = issues[issueKey];
@@ -123,6 +142,20 @@ Left Liberal: [+ ddp_left_liberal_delegates_display +] delegates
 Left Bourgeois: [+ ddp_left_bourgeois_delegates_display +] delegates
 
 Regionalist: [+ ddp_regionalist_delegates_display +] delegates
+
+= Delegate shares (100 total)
+
+Left-Progressive delegates: [+ ddp_left_progressive_delegate_share +]
+
+Laborist delegates: [+ ddp_laborist_delegate_share +]
+
+Left-Liberal delegates: [+ ddp_left_liberal_delegate_share +]
+
+Left-Bourgeois delegates: [+ ddp_left_bourgeois_delegate_share +]
+
+Regionalist delegates: [+ ddp_regionalist_delegate_share +]
+
+Total delegates: [+ ddp_congress_delegate_share_total +]
 
 Temporary debug: a policy is available when supporting delegates are greater than opposing delegates. Neutral delegates do not count.
 
