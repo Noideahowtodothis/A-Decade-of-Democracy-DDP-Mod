@@ -1,0 +1,64 @@
+title: Radio
+new-page: true
+is-card: true
+card-image: img/sangerbund.jpg
+
+= Radio
+
+Select a radio channel for the in-game music. This is a lightweight UI/audio skeleton that stores your choice in `radio_channel` and uses existing placeholder tracks only.
+
+Current channel: [+ radio_channel : radio_channel +]
+
+- @frankfurt
+- @berlin
+- @weimar
+- @off
+- @return: Return.
+
+@frankfurt
+title: Radio Frankfurt
+subtitle: 1848/liberal-democratic tradition placeholder.
+# TODO(radio-audio): Replace this existing placeholder with a vetted public-domain/appropriately licensed path such as music/radio/frankfurt_1848_theme.*.
+audio: clear shuffle music/1928_1930/FruhlingsliedMendelssohn.mp3
+on-arrival: radio_channel = 1
+
+Radio Frankfurt is selected. Future music should evoke the 1848 and liberal-democratic tradition without adding copyrighted assets.
+
+- @radio: Back to Radio.
+- @return: Return.
+
+@berlin
+title: Radio Berlin
+subtitle: Jazz / Weimar modernity placeholder.
+# TODO(radio-audio): Replace this existing placeholder with a vetted public-domain/appropriately licensed path such as music/radio/berlin_weimar_jazz_theme.*.
+audio: clear shuffle music/1928_1930/MarekWeber.mp3
+on-arrival: radio_channel = 2
+
+Radio Berlin is selected. Future music should evoke jazz and Weimar modernity without adding copyrighted assets.
+
+- @radio: Back to Radio.
+- @return: Return.
+
+@weimar
+title: Radio Weimar
+subtitle: Republican institutional music placeholder.
+# TODO(radio-audio): Replace this existing placeholder with a vetted public-domain/appropriately licensed path such as music/radio/weimar_republican_institutional_theme.*.
+audio: clear shuffle music/1928_1933/ZurSonne_zurFreiheit.mp3
+on-arrival: radio_channel = 3
+
+Radio Weimar is selected. Future music should evoke republican institutions without adding copyrighted assets.
+
+- @radio: Back to Radio.
+- @return: Return.
+
+@off
+title: Off
+subtitle: Stops/mutes radio music.
+# TODO(radio-audio): Keep this clear-only stop available when future radio assets are added.
+audio: clear
+on-arrival: radio_channel = 0
+
+Radio music is off.
+
+- @radio: Back to Radio.
+- @return: Return.

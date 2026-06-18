@@ -75,6 +75,7 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.feminism = 50;
     Q.elite_support = 50;
     Q.elite_support_2 = '50';
+    Q.radio_channel = 0;
 
     Q.president = "Hindenburg";
     Q.chancellor = "Marx";
