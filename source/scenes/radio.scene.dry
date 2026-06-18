@@ -7,11 +7,13 @@ card-image: img/sangerbund.jpg
 
 Radio Frankfurt
 Radio Berlin
+Radio Weimar
 
 Current channel: [+ radio_channel : radio_channel +]
 
 - @frankfurt: Radio Frankfurt
 - @berlin: Radio Berlin
+- @weimar: Radio Weimar
 - @off: Off
 - @return: Return.
 
@@ -31,7 +33,6 @@ Q.radio_frankfurt_playlist = [
 // TODO(radio-descriptions): Add future station descriptions.
 // TODO(radio-party-stations): Add future party stations.
 // TODO(radio-playlists): Add future station-specific playlists.
-// TODO(radio-future-stations): Add Radio Weimar.
 !}
 
 Radio Frankfurt
@@ -55,6 +56,31 @@ Q.radio_berlin_playlist = [
 !}
 
 Radio Berlin
+
+- @radio: Back to Radio.
+- @return: Return.
+
+
+@weimar
+title: Radio Weimar
+on-arrival: {!
+Q.radio_channel = 3;
+Q.radio_weimar_playlist = [
+    { title: 'Deutschlandlied (3rd stanza)', source: 'https://www.youtube.com/watch?v=ULIPcqoDorU' },
+    { title: 'Freistaat Preußen Marsch', source: 'https://www.youtube.com/watch?v=VXxjF957feo' },
+    { title: 'Mein Waldeck', source: 'https://www.youtube.com/watch?v=7Za9LH7kB4I' },
+    { title: 'Hessenlied', source: 'https://www.youtube.com/watch?v=rNBk7IsseCc' },
+    { title: 'Heil dir o Oldenburg', source: 'https://www.youtube.com/watch?v=V75_JkUsBb0' }
+];
+// TODO(radio-playback): Connect Radio Weimar playlist data to embedded playback when station audio assets are available.
+// TODO(radio-weimar-heuss): Add Hymne an Deutschland as a possible Heuss-related unlock.
+// TODO(radio-republican-federal-songs): Add additional republican/federal songs.
+// TODO(radio-reichsbanner-station): Add a future Reichsbanner station.
+// TODO(radio-party-stations): Add future party radio stations.
+// TODO(radio-art-descriptions): Add station art and descriptions.
+!}
+
+Radio Weimar
 
 - @radio: Back to Radio.
 - @return: Return.

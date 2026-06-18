@@ -1,7 +1,7 @@
 name: Radio Channel
 initial: 0
 min: 0
-max: 2
+max: 3
 default-display: radio_channel
 
-Stores the selected in-game radio music channel. 0 = Off, 1 = Radio Frankfurt, 2 = Radio Berlin.
+Stores the selected in-game radio music channel. 0 = Off, 1 = Radio Frankfurt, 2 = Radio Berlin, 3 = Radio Weimar.
