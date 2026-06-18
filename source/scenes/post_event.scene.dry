@@ -138,9 +138,34 @@ if (Q.hamburg_snap_election_called == undefined) {
 // Hamburg uses a fixed 160-seat Bürgerschaft/Landtag.
 Q.hamburg_landtag_seat_count = 160;
 
+if (Q.thuringia_election_year == undefined) {
+    Q.thuringia_election_year = 1927;
+}
+if (Q.thuringia_election_month == undefined) {
+    Q.thuringia_election_month = 1;
+}
+if (Q.thuringia_snap_election_called == undefined) {
+    Q.thuringia_snap_election_called = 0;
+}
+if (Q.thuringia_government == undefined) {
+    Q.thuringia_government = 5;
+}
+if (Q.thuringia_majority_cabinet == undefined) {
+    Q.thuringia_majority_cabinet = 1;
+}
+if (Q.thuringia_leader == undefined) {
+    Q.thuringia_leader = "Arnold Paulssen";
+}
 if (Q.thuringia_leverage == undefined) {
     // Represents the DDP's ability to influence or block policies within this Land government.
     Q.thuringia_leverage = 0;
+}
+Q.thuringia_landtag_seat_count = 56;
+if (Q.thuringia_landtag_total_seats == undefined) {
+    Q.thuringia_landtag_total_seats = 56;
+}
+if (Q.thuringia_landtag_seat_allocation_valid == undefined) {
+    Q.thuringia_landtag_seat_allocation_valid = 1;
 }
 
 if (Q.saxony_election_year == undefined) {
@@ -148,6 +173,9 @@ if (Q.saxony_election_year == undefined) {
 }
 if (Q.saxony_election_month == undefined) {
     Q.saxony_election_month = 10;
+}
+if (Q.saxony_snap_election_called == undefined) {
+    Q.saxony_snap_election_called = 0;
 }
 if (Q.saxony_government == undefined) {
     Q.saxony_government = 0;
@@ -219,9 +247,35 @@ if (Q.lubeck_snap_election_called == undefined) {
 }
 Q.lubeck_landtag_seat_count = 80;
 
+if (Q.oldenburg_election_year == undefined) {
+    Q.oldenburg_election_year = 1928;
+}
+if (Q.oldenburg_election_month == undefined) {
+    Q.oldenburg_election_month = 5;
+}
+if (Q.oldenburg_snap_election_called == undefined) {
+    Q.oldenburg_snap_election_called = 0;
+}
+if (Q.oldenburg_government == undefined) {
+    Q.oldenburg_government = 0;
+}
+if (Q.oldenburg_majority_cabinet == undefined) {
+    Q.oldenburg_majority_cabinet = 0;
+}
+if (Q.oldenburg_leader == undefined) {
+    Q.oldenburg_leader = "";
+}
 if (Q.oldenburg_leverage == undefined) {
     // Represents the DDP's ability to influence or block policies within this Land government.
     Q.oldenburg_leverage = 0;
+}
+Q.oldenburg_landtag_seat_count = 48;
+Q.oldenburg_majority_threshold = 25;
+if (Q.oldenburg_landtag_total_seats == undefined) {
+    Q.oldenburg_landtag_total_seats = 48;
+}
+if (Q.oldenburg_landtag_seat_allocation_valid == undefined) {
+    Q.oldenburg_landtag_seat_allocation_valid = 1;
 }
 if (Q.wurttemberg_csvd_party_name == undefined) {
     Q.wurttemberg_csvd_party_name = "Christlich-Sozialer Volksdienst";

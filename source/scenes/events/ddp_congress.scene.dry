@@ -245,7 +245,6 @@ Adopted Support German Racial Nationalism.
 
 @nationalism_continue
 title: Continue
-view-if: ddp_congress_nationalism_selectable = 0
 go-to: economic
 
 No alternative position was adopted.
@@ -315,7 +314,6 @@ Adopted Focus on Agrarian Interests.
 
 @economic_continue
 title: Continue
-view-if: ddp_congress_economic_selectable = 0
 go-to: republic
 
 No alternative position was adopted.
@@ -359,7 +357,6 @@ Adopted Support the Republic Quietly.
 
 @republic_continue
 title: Continue
-view-if: ddp_congress_republic_selectable = 0
 go-to: federalism
 
 No alternative position was adopted.
@@ -416,7 +413,6 @@ Adopted Support a Unitary State.
 
 @federalism_continue
 title: Continue
-view-if: ddp_congress_federalism_selectable = 0
 go-to: leader
 
 No alternative position was adopted.
@@ -512,7 +508,6 @@ Adopted Hermann Dietrich.
 
 @leader_continue
 title: Continue
-view-if: ddp_congress_leader_selectable = 0
 go-to: conclusion
 
 No alternative position was adopted.
