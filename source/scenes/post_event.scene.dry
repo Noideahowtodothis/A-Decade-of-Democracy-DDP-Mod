@@ -341,6 +341,12 @@ if (Q.mecklenburg_schwerin_current_government_status == undefined) {
     Q.mecklenburg_schwerin_current_government_status = 'Minority';
 }
 
+// Runtime migration/default for the reusable radio selector.
+if (Q.radio_channel === undefined || Q.radio_channel === null || isNaN(Q.radio_channel)) {
+    Q.radio_channel = 0;
+}
+Q.radio_channel = Math.max(0, Math.min(3, Math.round(Q.radio_channel)));
+
 for (var relationParty of ['z', 'bvp', 'wp', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap']) {
     if (Q[relationParty + '_relation'] == undefined) {
         Q[relationParty + '_relation'] = 50;
