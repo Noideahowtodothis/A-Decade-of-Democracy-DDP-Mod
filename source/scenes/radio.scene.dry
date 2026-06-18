@@ -6,10 +6,12 @@ card-image: img/sangerbund.jpg
 = Radio
 
 Radio Frankfurt
+Radio Berlin
 
 Current channel: [+ radio_channel : radio_channel +]
 
 - @frankfurt: Radio Frankfurt
+- @berlin: Radio Berlin
 - @off: Off
 - @return: Return.
 
@@ -29,11 +31,22 @@ Q.radio_frankfurt_playlist = [
 // TODO(radio-descriptions): Add future station descriptions.
 // TODO(radio-party-stations): Add future party stations.
 // TODO(radio-playlists): Add future station-specific playlists.
-// TODO(radio-future-stations): Add Radio Berlin.
 // TODO(radio-future-stations): Add Radio Weimar.
 !}
 
 Radio Frankfurt
+
+- @radio: Back to Radio.
+- @return: Return.
+
+
+@berlin
+title: Radio Berlin
+on-arrival: {!
+Q.radio_channel = 2;
+!}
+
+Radio Berlin
 
 - @radio: Back to Radio.
 - @return: Return.
