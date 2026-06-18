@@ -44,6 +44,14 @@ Radio Frankfurt
 title: Radio Berlin
 on-arrival: {!
 Q.radio_channel = 2;
+Q.radio_berlin_playlist = [
+    { title: 'Falling in Love Again', source: 'https://www.youtube.com/watch?v=UheOzMxGDv4' },
+    { title: 'Cabaret (A Little Berlin)', source: 'https://www.youtube.com/watch?v=w6H4JNQ9Cd0' },
+    { title: 'Wochenend und Sonnenschein', source: 'https://www.youtube.com/watch?v=0QKh065fsU0' },
+    { title: 'Mein kleiner grüner Kaktus', source: 'https://www.youtube.com/watch?v=MlGcm9eaaVc' },
+    { title: 'Cabaret recording', source: 'https://www.youtube.com/watch?v=Sct7OirM-sQ' }
+];
+// TODO(radio-playback): Connect Radio Berlin playlist data to embedded playback when station audio assets are available.
 !}
 
 Radio Berlin
