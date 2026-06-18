@@ -21,7 +21,6 @@ max-cards: 3
 - @state_politics
 - #advisor
 - @shuffle_leadership_pinned
-- @radio
 
 @main_easy
 set-bg: img/map_2.jpg
@@ -46,7 +45,6 @@ max-cards: 4
 - @state_politics
 - #advisor
 - @shuffle_leadership_pinned
-- @radio
 
 
 @party
