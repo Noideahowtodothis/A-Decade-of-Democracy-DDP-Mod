@@ -189,6 +189,7 @@ Q.saxony_leader = "";
 Q.saxony_leverage = 0;
 Q.saxony_election_year = 1926;
 Q.saxony_election_month = 10;
+Q.saxony_snap_election_called = 0;
 Q.saxony_landtag_seat_count = 96;
 Q.saxony_majority_threshold = 49;
 Q.saxony_landtag_total_seats = 96;
@@ -201,11 +202,38 @@ Q.oldenburg_leader = "";
 Q.oldenburg_leverage = 0;
 Q.oldenburg_election_year = 1928;
 Q.oldenburg_election_month = 5;
+Q.oldenburg_snap_election_called = 0;
 // TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
 Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
+Q.wurttemberg_government = 4;
+Q.wurttemberg_majority_cabinet = 1;
+Q.wurttemberg_leader = "Eugen Bolz";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.wurttemberg_leverage = 0;
+Q.wurttemberg_election_year = 1928;
+Q.wurttemberg_election_month = 5;
+Q.wurttemberg_snap_election_called = 0;
+Q.wurttemberg_landtag_seat_count = 80;
+Q.wurttemberg_majority_threshold = 41;
+Q.wurttemberg_landtag_total_seats = 80;
+Q.wurttemberg_landtag_seat_allocation_valid = 1;
+Q.lubeck_government = 3;
+Q.lubeck_majority_cabinet = 1;
+Q.lubeck_leader = "Rudolf Keibel";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.lubeck_leverage = 0;
+Q.lubeck_election_year = 1927;
+Q.lubeck_election_month = 11;
+Q.lubeck_snap_election_called = 0;
+Q.lubeck_landtag_seat_count = 80;
+Q.lubeck_majority_threshold = 41;
+Q.lubeck_landtag_total_seats = 80;
+Q.lubeck_landtag_seat_allocation_valid = 1;
 Q.mecklenburg_schwerin_government = 0;
 Q.mecklenburg_schwerin_majority_cabinet = 0;
 Q.mecklenburg_schwerin_leader = "";
@@ -421,6 +449,7 @@ Q.saxony_leader = "";
 Q.saxony_leverage = 0;
 Q.saxony_election_year = 1926;
 Q.saxony_election_month = 10;
+Q.saxony_snap_election_called = 0;
 Q.saxony_landtag_seat_count = 96;
 Q.saxony_majority_threshold = 49;
 Q.saxony_landtag_total_seats = 96;
@@ -433,11 +462,38 @@ Q.oldenburg_leader = "";
 Q.oldenburg_leverage = 0;
 Q.oldenburg_election_year = 1928;
 Q.oldenburg_election_month = 5;
+Q.oldenburg_snap_election_called = 0;
 // TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
 Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
+Q.wurttemberg_government = 4;
+Q.wurttemberg_majority_cabinet = 1;
+Q.wurttemberg_leader = "Eugen Bolz";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.wurttemberg_leverage = 0;
+Q.wurttemberg_election_year = 1928;
+Q.wurttemberg_election_month = 5;
+Q.wurttemberg_snap_election_called = 0;
+Q.wurttemberg_landtag_seat_count = 80;
+Q.wurttemberg_majority_threshold = 41;
+Q.wurttemberg_landtag_total_seats = 80;
+Q.wurttemberg_landtag_seat_allocation_valid = 1;
+Q.lubeck_government = 3;
+Q.lubeck_majority_cabinet = 1;
+Q.lubeck_leader = "Rudolf Keibel";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.lubeck_leverage = 0;
+Q.lubeck_election_year = 1927;
+Q.lubeck_election_month = 11;
+Q.lubeck_snap_election_called = 0;
+Q.lubeck_landtag_seat_count = 80;
+Q.lubeck_majority_threshold = 41;
+Q.lubeck_landtag_total_seats = 80;
+Q.lubeck_landtag_seat_allocation_valid = 1;
 Q.mecklenburg_schwerin_government = 0;
 Q.mecklenburg_schwerin_majority_cabinet = 0;
 Q.mecklenburg_schwerin_leader = "";
@@ -779,6 +835,7 @@ Q.saxony_leader = "";
 Q.saxony_leverage = 0;
 Q.saxony_election_year = 1926;
 Q.saxony_election_month = 10;
+Q.saxony_snap_election_called = 0;
 Q.saxony_landtag_seat_count = 96;
 Q.saxony_majority_threshold = 49;
 Q.saxony_landtag_total_seats = 96;
@@ -791,11 +848,38 @@ Q.oldenburg_leader = "";
 Q.oldenburg_leverage = 0;
 Q.oldenburg_election_year = 1928;
 Q.oldenburg_election_month = 5;
+Q.oldenburg_snap_election_called = 0;
 // TODO(oldenburg-election): Historical May 1925 Oldenburg election is skipped because the game starts then.
 Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
+Q.wurttemberg_government = 4;
+Q.wurttemberg_majority_cabinet = 1;
+Q.wurttemberg_leader = "Eugen Bolz";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.wurttemberg_leverage = 0;
+Q.wurttemberg_election_year = 1928;
+Q.wurttemberg_election_month = 5;
+Q.wurttemberg_snap_election_called = 0;
+Q.wurttemberg_landtag_seat_count = 80;
+Q.wurttemberg_majority_threshold = 41;
+Q.wurttemberg_landtag_total_seats = 80;
+Q.wurttemberg_landtag_seat_allocation_valid = 1;
+Q.lubeck_government = 3;
+Q.lubeck_majority_cabinet = 1;
+Q.lubeck_leader = "Rudolf Keibel";
+
+// Represents the DDP's ability to influence or block policies within this Land government.
+Q.lubeck_leverage = 0;
+Q.lubeck_election_year = 1927;
+Q.lubeck_election_month = 11;
+Q.lubeck_snap_election_called = 0;
+Q.lubeck_landtag_seat_count = 80;
+Q.lubeck_majority_threshold = 41;
+Q.lubeck_landtag_total_seats = 80;
+Q.lubeck_landtag_seat_allocation_valid = 1;
 Q.mecklenburg_schwerin_government = 0;
 Q.mecklenburg_schwerin_majority_cabinet = 0;
 Q.mecklenburg_schwerin_leader = "";
