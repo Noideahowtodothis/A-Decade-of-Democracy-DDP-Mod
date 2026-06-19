@@ -298,6 +298,14 @@
       $('#qualities').append(dendryUI.contentToHTML.convert(displayContent));
   };
 
+  window.setRadioChannel = function(channel) {
+      if (!window.dendryUI || !window.dendryUI.dendryEngine) {
+          return;
+      }
+      window.dendryUI.dendryEngine.state.qualities.radio_channel = channel;
+      window.updateRadioTopbar();
+  };
+
   window.updateRadioTopbar = function() {
       var radioTopbar = document.getElementById('radio_topbar');
       if (!radioTopbar || !window.dendryUI || !window.dendryUI.dendryEngine) {
@@ -309,8 +317,24 @@
           2: 'Radio Berlin',
           3: 'Radio Weimar'
       };
+      var radioControls = [
+          { label: 'Frankfurt', channel: 1 },
+          { label: 'Berlin', channel: 2 },
+          { label: 'Weimar', channel: 3 },
+          { label: 'Off', channel: 0 }
+      ];
       var currentChannel = window.dendryUI.dendryEngine.state.qualities.radio_channel || 0;
-      radioTopbar.textContent = 'Radio: ' + (radioChannels[currentChannel] || 'Off');
+      radioTopbar.innerHTML = '';
+      radioTopbar.appendChild(document.createTextNode('Radio: ' + (radioChannels[currentChannel] || 'Off') + ' '));
+      radioControls.forEach(function(control) {
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = control.label;
+          button.onclick = function() {
+              window.setRadioChannel(control.channel);
+          };
+          radioTopbar.appendChild(button);
+      });
   };
 
   window.changeTab = function(newTab, tabId) {
