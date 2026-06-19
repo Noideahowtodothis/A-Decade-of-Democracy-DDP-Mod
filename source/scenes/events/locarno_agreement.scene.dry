@@ -16,8 +16,8 @@ The Locarno Conference has ended in partial, but important, success. Stresemann 
 
 @new_elections
 title: Good riddance, let's call new elections.
-# TODO: Implement the full Locarno Agreement effects for calling new elections in a later pass.
-on-arrival: resources += 0
+call: set_next_election_time
+on-arrival: rural_dnvp -= 3; new_middle_dnvp -= 1; workers_dnvp -= 1; old_middle_dvp += 1; new_middle_dvp += 3; old_middle_wp += 3; ddp_regionalist_dissent += 10; ddp_left_bourgeois_dissent += 5; dnvp_relation -= 15; dvp_relation -= 10; z_relation -= 5; spd_relation += 1; nationalism -= 2
 go-to: root
 
 @spd_support
