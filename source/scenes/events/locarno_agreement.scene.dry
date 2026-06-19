@@ -50,8 +50,54 @@ go-to: root
 
 @dnvp_toleration
 title: Let's ask the DNVP for toleration
-# TODO: Implement the full Locarno Agreement effects for asking the DNVP for toleration in a later pass.
-on-arrival: resources += 0
+on-arrival: {!
+Q.coalition_members = ['ddp', 'dvp', 'z'];
+Q.coalition_selected_party = '';
+Q.coalition_negotiation_points = 0;
+Q.coalition_required_points = 0;
+Q.coalition_total_seats = (Number(Q.ddp_r) || 0) + (Number(Q.dvp_r) || 0) + (Number(Q.z_r) || 0);
+Q.coalition_member_list_text = 'DDP + DVP + Z';
+Q.coalition_negotiation_active = 0;
+Q.coalition_spd_member = 0;
+Q.coalition_kpd_member = 0;
+Q.coalition_z_member = 1;
+Q.coalition_bvp_member = 0;
+Q.coalition_ddp_member = 1;
+Q.coalition_dvp_member = 1;
+Q.coalition_wp_member = 0;
+Q.coalition_dnvp_member = 0;
+Q.coalition_nsdap_member = 0;
+Q.in_custom_negotiated_coalition = 1;
+Q.coalition_toleration_party = 'dnvp';
+Q.chancellor = "Luther";
+Q.chancellor_party = "DVP";
+Q.spd_in_government = 0;
+Q.spd_toleration = 0;
+Q.ddp_in_government = 1;
+Q.z_in_government = 1;
+Q.dvp_in_government = 1;
+Q.dnvp_in_government = 0;
+Q.in_minority_government = 1;
+Q.minority_government = 1;
+Q.in_right_coalition = 0;
+Q.in_weimar_coalition = 0;
+Q.in_grand_coalition = 0;
+Q.in_popular_front = 0;
+Q.in_left_front = 0;
+Q.foreign_minister_party = "DVP";
+Q.interior_minister_party = "Z";
+Q.justice_minister_party = "I";
+Q.labor_minister_party = "Z";
+Q.reichswehr_minister_party = "I";
+Q.economic_minister_party = Q.ddp_name;
+Q.finance_minister_party = "DVP";
+Q.agriculture_minister_party = "Z";
+Q.rural_dnvp -= 3;
+Q.dnvp_relation -= 5;
+Q.dvp_relation += 15;
+Q.nationalism += 1;
+Q.pacifism += 1;
+!}
 go-to: root
 
 @give_up
