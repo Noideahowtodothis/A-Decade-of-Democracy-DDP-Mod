@@ -1,0 +1,18 @@
+title: A New President
+subtitle: Hindenburg is our President
+tags: event
+view-if: year = 1925 and month = 5
+max-visits: 1
+
+= A New President
+
+President Hindenburg took office today. Germans of every political stripe are waiting to see how he leads our country, some with fear, some with excitement. Most of our party members fear that Hindenburg will seek to abolish the Republic using his presidential powers. However, many others in our party see the war hero as someone who can ensure stability and reconcile the right with the Republic. No matter what, with the inauguration of our first elected President, German democracy is entering a new stage.
+
+- @wisely: May Hindenburg wisely lead Germany
+- @persevere: May our Republic persevere
+
+@wisely
+go-to: root
+
+@persevere
+go-to: root
