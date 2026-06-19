@@ -298,6 +298,21 @@
       $('#qualities').append(dendryUI.contentToHTML.convert(displayContent));
   };
 
+  window.updateRadioTopbar = function() {
+      var radioTopbar = document.getElementById('radio_topbar');
+      if (!radioTopbar || !window.dendryUI || !window.dendryUI.dendryEngine) {
+          return;
+      }
+      var radioChannels = {
+          0: 'Off',
+          1: 'Radio Frankfurt',
+          2: 'Radio Berlin',
+          3: 'Radio Weimar'
+      };
+      var currentChannel = window.dendryUI.dendryEngine.state.qualities.radio_channel || 0;
+      radioTopbar.textContent = 'Radio: ' + (radioChannels[currentChannel] || 'Off');
+  };
+
   window.changeTab = function(newTab, tabId) {
       if (tabId == 'poll_tab' && dendryUI.dendryEngine.state.qualities.historical_mode) {
           window.alert('Polls are not available in historical mode.');
@@ -315,6 +330,7 @@
 
   window.onDisplayContent = function() {
       window.updateSidebar();
+      window.updateRadioTopbar();
   };
 
   /*
