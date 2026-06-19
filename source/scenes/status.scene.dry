@@ -73,18 +73,6 @@ Inflation: [+ inflation_2 +]%
 
 Economic growth: [+ economic_growth_2 +]%
 
-= Radio
-
-[+ radio_channel : radio_channel +]
-
-# TODO(radio-volume): Add a small volume button once sidebar audio controls exist.
-# TODO(radio-widget): Replace these links with a radio-styled widget in a future UI pass.
-
-- @status.radio_frankfurt: Frankfurt
-- @status.radio_berlin: Berlin
-- @status.radio_weimar: Weimar
-- @status.radio_off: Off
-
 # = Public Opinion
 
 @politics
