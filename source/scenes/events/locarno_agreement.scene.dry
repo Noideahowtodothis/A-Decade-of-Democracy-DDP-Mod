@@ -23,48 +23,15 @@ go-to: root
 @spd_support
 title: Good riddance, let's ask the SPD for support
 on-arrival: {!
-Q.coalition_negotiation_active = 1;
-Q.coalition_members = ["dvp", "z"];
-Q.coalition_selected_party = "";
-Q.coalition_selected_party_label = "";
-Q.coalition_negotiation_active = 0;
-Q.in_custom_negotiated_coalition = 1;
+// TODO: Later route this through the proper cabinet/minister selection system.
+Q.chancellor = "Luther";
 Q.spd_in_government = 0;
 Q.spd_toleration = 1;
 Q.in_minority_government = 1;
 Q.minority_government = 1;
-Q.in_right_coalition = 0;
-Q.in_weimar_coalition = 0;
-Q.in_grand_coalition = 0;
-Q.in_popular_front = 0;
-Q.in_left_front = 0;
-Q.ddp_in_government = 0;
 Q.z_in_government = 1;
-Q.bvp_in_government = 0;
 Q.dvp_in_government = 1;
-Q.wp_in_government = 0;
 Q.dnvp_in_government = 0;
-Q.kpd_in_government = 0;
-Q.nsdap_in_government = 0;
-Q.chancellor = "Luther";
-Q.chancellor_party = "DVP";
-Q.foreign_minister_party = "DVP";
-Q.foreign_minister = "Stresemann";
-Q.interior_minister_party = "Z";
-Q.interior_minister = "Wirth";
-Q.justice_minister_party = "I";
-Q.justice_minister = "Koch-Weser";
-Q.labor_minister_party = "Z";
-Q.labor_minister = "Brauns";
-Q.reichswehr_minister_party = "I";
-Q.reichswehr_minister = "Groener";
-Q.economic_minister_party = "DVP";
-Q.economic_minister = "Curtius";
-Q.finance_minister_party = "Z";
-Q.finance_minister = "Köhler";
-Q.agriculture_minister_party = "Z";
-Q.agriculture_minister = "Hermes";
-Q.coalition_dissent = 0;
 Q.rural_dnvp -= 1;
 Q.old_middle_dnvp += 2;
 Q.old_middle_dvp -= 2;
