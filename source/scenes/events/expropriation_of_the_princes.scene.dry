@@ -1,0 +1,37 @@
+title: The Expropriation of the Princes
+new-page: true
+subtitle: A debate that threatens to tear our party apart
+view-if: year = 1925 and month = 11
+max-visits: 1
+tags: event
+on-arrival: expropriation_proposal = 0 if expropriation_proposal = undefined; expropriation_implementation = 0 if expropriation_implementation = undefined; spd_relation = 60 if spd_relation = undefined
+
+= The Expropriation of the Princes
+
+After the 1918 revolutions, many of the monarchs who were ousted retained de-iure large amounts of property across their former domains, sometimes even more than half of a state. However these properties had been de-facto seized during the revolutions and were in no position to demand the return of their lands. But, with the stabilizing political situation, many of these former rulers and their heirs are demanding compensation for, if not the return, of their lands. These properties have become a source of significant tension between the left and the right. For the KPD and the SPD these are now the property of the people and an important source of government funding and should be legally confiscated for the benefit of the states. However, for the right, the confiscation of these properties is not only seen as a violation of property rights but often, a violation of God's laws and of the natural order. 
+
+A particular source of controversy came from Saxe-Gotha where the conservative-dominated courts had ordered the return of all confiscated properties to the house of Saxe-Coburg and Gotha, headed by the reactionary, anti-republican Charles Edward. The KPD, outraged by the court's decision has proposed a bill to expropriate without compensation and to use the properties for the benefit of the states and their people. They intend to use the Weimar Constitution's referendum clause to rally support behind their proposal.
+
+The DDP is greatly divided over the issue. While most members are opposed to the radical KPD proposal, many of our members are anti-monarchists and opposed to the return of properties. Additionally many are suspicious that the return would strengthen nationalist and anti-republican forces in Germany. However, many others in our party support the inviolability of private property and are opposed to confiscation. This divide threatens to split our already small party in two. Thankfully, the SPD seems willing to support a compromise, which could stabilize our divided party.
+
+- @harsh: Let's push for compromise that addresses the SPD's concerns
+- @moderate: Let's push for a moderate compromise
+- @none: Let's let the Communists deal with it on their own
+
+@harsh
+title: Let's push for compromise that addresses the SPD's concerns
+on-arrival: {!Q.rural_ddp += 1; Q.old_middle_ddp -= 2; Q.workers_ddp += 2; Q.ddp_regionalist_dissent += 5; Q.ddp_left_bourgeois_dissent += 10; Q.dvp_relation -= 5; Q.spd_relation += 10; Q.dnvp_relation -= 15; Q.pro_republic += 3; Q.expropriation_proposal = 2; if (Q.dvp_relation > 75 && String(Q.coalition_toleration_party || '').indexOf('dnvp') < 0) { Q.expropriation_implementation = 2; }!}
+
+go-to: root
+
+@moderate
+title: Let's push for a moderate compromise
+on-arrival: {!Q.old_middle_ddp -= 1; Q.workers_ddp -= 1; Q.dvp_relation -= 1; Q.spd_relation += 3; Q.dnvp_relation -= 5; Q.pro_republic += 1; Q.expropriation_proposal = 1; if (Q.dvp_relation > 60 && (Q.dnvp_relation > 75 || String(Q.coalition_toleration_party || '').indexOf('dnvp') < 0)) { Q.expropriation_implementation = 1; }!}
+
+go-to: root
+
+@none
+title: Let's let the Communists deal with it on their own
+on-arrival: rural_ddp -= 1; workers_ddp -= 2; old_middle_ddp += 1; dvp_relation += 5; spd_relation -= 5; pro_republic -= 2; expropriation_proposal = 0
+
+go-to: root
