@@ -1,0 +1,39 @@
+title: Locarno Agreement
+new-page: true
+subtitle: Stresemann's Big Win
+view-if: year = 1925 and month = 10
+max-visits: 1
+tags: event
+
+= Locarno Agreement
+
+The Locarno Conference has ended in partial, but important, success. Stresemann and Luther managed to persuade the Allies to accept many of the nationalist demands that Schiele had proposed, although they were unable to get a strong commitment regarding implementation dates. However, Schiele and the German Nationalists are outraged that the treaty implies, in their view, a renunciation of western border changes. They are demanding that Luther issue a public letter stating that the treaty would allow peaceful border adjustments on the grounds of popular sovereignty. Luther's proposed private letter was sufficient for Schiele but not for the DNVP Reichstag delegation who have declared they will pull out of the cabinet which would cost us our majority. If we want the Luther cabinet to survive and pass these treaties we must either win the toleration of the DNVP or the SPD.
+
+- @new_elections: Good riddance, let's call new elections.
+- @spd_support: Good riddance, let's ask the SPD for support
+- @dnvp_toleration: Let's ask the DNVP for toleration
+- @give_up: Then let's give up on the treaty
+
+@new_elections
+title: Good riddance, let's call new elections.
+# TODO: Implement the full Locarno Agreement effects for calling new elections in a later pass.
+on-arrival: resources += 0
+go-to: root
+
+@spd_support
+title: Good riddance, let's ask the SPD for support
+# TODO: Implement the full Locarno Agreement effects for asking the SPD for support in a later pass.
+on-arrival: resources += 0
+go-to: root
+
+@dnvp_toleration
+title: Let's ask the DNVP for toleration
+# TODO: Implement the full Locarno Agreement effects for asking the DNVP for toleration in a later pass.
+on-arrival: resources += 0
+go-to: root
+
+@give_up
+title: Then let's give up on the treaty
+choose-if: 0
+unavailable-subtitle: Are we crazy?
+# TODO: Implement the full Locarno Agreement effects for giving up on the treaty in a later pass.
