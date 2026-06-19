@@ -22,8 +22,30 @@ go-to: root
 
 @spd_support
 title: Good riddance, let's ask the SPD for support
-# TODO: Implement the full Locarno Agreement effects for asking the SPD for support in a later pass.
-on-arrival: resources += 0
+on-arrival: {!
+// TODO: Later route this through the proper cabinet/minister selection system.
+Q.chancellor = "Luther";
+Q.spd_in_government = 0;
+Q.spd_toleration = 1;
+Q.in_minority_government = 1;
+Q.minority_government = 1;
+Q.z_in_government = 1;
+Q.dvp_in_government = 1;
+Q.dnvp_in_government = 0;
+Q.rural_dnvp -= 1;
+Q.old_middle_dnvp += 2;
+Q.old_middle_dvp -= 2;
+Q.old_middle_wp += 5;
+Q.new_middle_wp += 3;
+Q.old_middle_ddp -= 2;
+Q.workers_spd += 1;
+Q.ddp_regionalist_dissent += 10;
+Q.ddp_left_bourgeois_dissent += 5;
+Q.dnvp_relation -= 20;
+Q.dvp_relation -= 10;
+Q.spd_relation += 5;
+Q.nationalism -= 4;
+!}
 go-to: root
 
 @dnvp_toleration
