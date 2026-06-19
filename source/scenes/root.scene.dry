@@ -61,9 +61,15 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.wp_relation = 50;
     Q.kpd_relation = 25;
     Q.ddp_relation = 60;
+    Q.spd_relation = 60;
     Q.dvp_relation = 35;
     Q.dnvp_relation = 10;
     Q.nsdap_relation = 0;
+
+    // Future Expropriation of the Princes event chain tracker: 0 = none, 1 = moderate, 2 = harsh.
+    Q.expropriation_proposal = 0;
+    // Future Expropriation of the Princes event chain tracker: 0 = none, 1 = moderate, 2 = harsh.
+    Q.expropriation_implementation = 0;
 
     Q.presidential_anger = 0;
     Q.federalism = 50;
@@ -720,10 +726,16 @@ Q.bvp_relation = 50;
 Q.wp_relation = 50;
 Q.kpd_relation = 25;
 Q.ddp_relation = 60;
+Q.spd_relation = 60;
 Q.dvp_relation = 35;
 // DNVP and NSDAP are invariably hostile
 Q.dnvp_relation = 10;
 Q.nsdap_relation = 0;
+
+// Future Expropriation of the Princes event chain tracker: 0 = none, 1 = moderate, 2 = harsh.
+Q.expropriation_proposal = 0;
+// Future Expropriation of the Princes event chain tracker: 0 = none, 1 = moderate, 2 = harsh.
+Q.expropriation_implementation = 0;
 
 Q.party_leader_ideology_parties = ['spd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'kpd'];
 for (var trackerParty of Q.party_leader_ideology_parties) {
