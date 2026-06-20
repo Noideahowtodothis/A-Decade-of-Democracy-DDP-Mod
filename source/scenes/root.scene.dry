@@ -541,8 +541,8 @@ Q.mecklenburg_schwerin_current_government_status = 'Minority';
     Q.black_thursday_seen = 0;
 
     Q.next_election_year = 1928;
-    Q.next_election_month = 5;
-    Q.next_election_time = 37;
+    Q.next_election_month = 12;
+    Q.next_election_time = 44;
     Q.n_elections = 0;
 
     Q.workers = 48;
@@ -1564,8 +1564,8 @@ Q.no_majority_elections = 0;
 // elections are not on a timer, but rather there is an indicator for whether you're in an electoral cycle.
 Q.in_election = 1;
 Q.next_election_year = 1928;
-Q.next_election_month = 5;
-Q.next_election_time = 37;
+Q.next_election_month = 12;
+Q.next_election_time = 44;
 // government affairs timers
 Q.agricultural_policy_timer = 0;
 Q.domestic_enemies_timer = 0;

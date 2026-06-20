@@ -1,0 +1,198 @@
+title: The First DDP Government?
+new-page: true
+subtitle: A New Cabinet
+view-if: year = 1925 and month = 12 and ((next_election_year = 1928 and next_election_month = 12) or next_election_year = 1929)
+max-visits: 1
+tags: event
+
+= The First DDP Government?
+
+// TODO: Revisit the symmetry between the SPD-compromise and DVP-compromise routes. The current structure gives the player clear parallel options, but future balancing should make the paths feel less symmetrical and more historically/politically distinct.
+With pressure mounting over the Expropriation of the Princes, and our poor economic situation, President Hindenburg has decided that a government dependent on toleration is a luxury Germany cannot afford. He has called for a Grand Coalition stretching from the SPD to the DVP. President Hindenburg has even offered our parliamentarian Erich Koch-Weser the chancellorship of this proposed cabinet. However, the SPD have refused to enter the government without a clear set of policies for the new government to follow.
+
+- @spd_compromise: We must persuade the SPD to compromise
+- @dvp_compromise: We must persuade the DVP to compromise
+- @president: We must work with the President
+
+@spd_compromise
+title: We must persuade the SPD to compromise
+choose-if: spd_relation > 75 and dvp_relation > 50
+unavailable-subtitle: Only possible if SPD relations are over 75 and DVP relations are over 50.
+on-arrival: {! 
+Q.workers_spd -= 2;
+Q.workers_ddp += 1;
+Q.old_middle_dvp -= 1;
+Q.dvp_relation += 5;
+Q.coalition_members = ['spd', 'ddp', 'dvp', 'z'];
+Q.coalition_member_list_text = 'SPD + DDP + DVP + Z';
+Q.coalition_total_seats = (Number(Q.spd_r) || 0) + (Number(Q.ddp_r) || 0) + (Number(Q.dvp_r) || 0) + (Number(Q.z_r) || 0);
+Q.coalition_negotiation_active = 0;
+Q.coalition_required_points = 0;
+Q.coalition_negotiation_points = 0;
+Q.coalition_spd_member = 1;
+Q.coalition_kpd_member = 0;
+Q.coalition_z_member = 1;
+Q.coalition_bvp_member = 0;
+Q.coalition_ddp_member = 1;
+Q.coalition_dvp_member = 1;
+Q.coalition_wp_member = 0;
+Q.coalition_dnvp_member = 0;
+Q.coalition_nsdap_member = 0;
+Q.in_custom_negotiated_coalition = 1;
+Q.in_grand_coalition = 1;
+Q.in_weimar_coalition = 0;
+Q.in_popular_front = 0;
+Q.in_left_front = 0;
+Q.in_minority_government = 0;
+Q.minority_government = 0;
+Q.spd_toleration = 0;
+Q.ddp_in_government = 1;
+Q.spd_in_government = 1;
+Q.z_in_government = 1;
+Q.bvp_in_government = 0;
+Q.dvp_in_government = 1;
+Q.wp_in_government = 0;
+Q.dnvp_in_government = 0;
+Q.kpd_in_government = 0;
+Q.nsdap_in_government = 0;
+Q.total_ministries = 8;
+Q.ddp_ministry_picks = Math.max(1, Math.round(Q.total_ministries * (Number(Q.ddp_r) || 0) / Math.max(1, Q.coalition_total_seats)));
+Q.ddp_ministry_picks_remaining = Q.ddp_ministry_picks;
+Q.leverage = Q.ddp_ministry_picks;
+Q.chancellor = 'Koch-Weser';
+Q.chancellor_party = Q.ddp_name || 'DDP';
+Q.foreign_minister_party = '';
+Q.interior_minister_party = '';
+Q.justice_minister_party = '';
+Q.labor_minister_party = '';
+Q.reichswehr_minister_party = '';
+Q.economic_minister_party = '';
+Q.finance_minister_party = '';
+Q.agriculture_minister_party = '';
+!}
+
+The SPD proves reluctant to agree, but under the combined pressure of ourselves, the President, and our allies, they have agreed to a moderate coalition agreement, essentially preserving the status quo. This will be the first government headed by our party, a massive honor for the DDP, and hopefully a sign of better things to come.
+
+- @start_ministries: Continue.
+
+@dvp_compromise
+title: We must persuade the DVP to compromise
+choose-if: spd_relation > 50 and dvp_relation > 75
+unavailable-subtitle: Only possible if SPD relations are over 50 and DVP relations are over 75.
+on-arrival: {! 
+Q.presidential_anger += 5;
+Q.workers_spd += 1;
+Q.workers_ddp += 3;
+Q.old_middle_dvp -= 3;
+Q.old_middle_ddp -= 1;
+Q.dvp_relation -= 5;
+Q.spd_relation += 5;
+Q.coalition_members = ['spd', 'ddp', 'dvp', 'z'];
+Q.coalition_member_list_text = 'SPD + DDP + DVP + Z';
+Q.coalition_total_seats = (Number(Q.spd_r) || 0) + (Number(Q.ddp_r) || 0) + (Number(Q.dvp_r) || 0) + (Number(Q.z_r) || 0);
+Q.coalition_negotiation_active = 0;
+Q.coalition_required_points = 0;
+Q.coalition_negotiation_points = 0;
+Q.coalition_spd_member = 1;
+Q.coalition_kpd_member = 0;
+Q.coalition_z_member = 1;
+Q.coalition_bvp_member = 0;
+Q.coalition_ddp_member = 1;
+Q.coalition_dvp_member = 1;
+Q.coalition_wp_member = 0;
+Q.coalition_dnvp_member = 0;
+Q.coalition_nsdap_member = 0;
+Q.in_custom_negotiated_coalition = 1;
+Q.in_grand_coalition = 1;
+Q.in_weimar_coalition = 0;
+Q.in_popular_front = 0;
+Q.in_left_front = 0;
+Q.in_minority_government = 0;
+Q.minority_government = 0;
+Q.spd_toleration = 0;
+Q.ddp_in_government = 1;
+Q.spd_in_government = 1;
+Q.z_in_government = 1;
+Q.bvp_in_government = 0;
+Q.dvp_in_government = 1;
+Q.wp_in_government = 0;
+Q.dnvp_in_government = 0;
+Q.kpd_in_government = 0;
+Q.nsdap_in_government = 0;
+Q.total_ministries = 8;
+Q.ddp_ministry_picks = Math.max(1, Math.round(Q.total_ministries * (Number(Q.ddp_r) || 0) / Math.max(1, Q.coalition_total_seats)));
+Q.ddp_ministry_picks_remaining = Q.ddp_ministry_picks;
+Q.leverage = Q.ddp_ministry_picks;
+Q.chancellor = 'Koch-Weser';
+Q.chancellor_party = Q.ddp_name || 'DDP';
+Q.foreign_minister_party = '';
+Q.interior_minister_party = '';
+Q.justice_minister_party = '';
+Q.labor_minister_party = '';
+Q.reichswehr_minister_party = '';
+Q.economic_minister_party = '';
+Q.finance_minister_party = '';
+Q.agriculture_minister_party = '';
+!}
+
+The DVP proves reluctant to compromise, but under the combined pressure of ourselves, the President, and our allies, they have agreed to a progressive coalition agreement, one with substantial increases to labor protections. This will be the first government headed by our party, a massive honor for the DDP, and hopefully a sign of better things to come. It will also likely be the most progressive government since the Wirth Cabinets.
+
+- @start_ministries: Continue.
+
+@president
+title: We must work with the President
+on-arrival: {! 
+Q.coalition_members = ['ddp', 'dvp', 'z', 'bvp'];
+Q.coalition_member_list_text = 'DDP + DVP + Z + BVP';
+Q.coalition_total_seats = (Number(Q.ddp_r) || 0) + (Number(Q.dvp_r) || 0) + (Number(Q.z_r) || 0) + (Number(Q.bvp_r) || 0);
+Q.coalition_negotiation_active = 0;
+Q.coalition_required_points = 0;
+Q.coalition_negotiation_points = 0;
+Q.coalition_spd_member = 0;
+Q.coalition_kpd_member = 0;
+Q.coalition_z_member = 1;
+Q.coalition_bvp_member = 1;
+Q.coalition_ddp_member = 1;
+Q.coalition_dvp_member = 1;
+Q.coalition_wp_member = 0;
+Q.coalition_dnvp_member = 0;
+Q.coalition_nsdap_member = 0;
+Q.in_custom_negotiated_coalition = 1;
+Q.in_grand_coalition = 0;
+Q.in_weimar_coalition = 0;
+Q.in_popular_front = 0;
+Q.in_left_front = 0;
+Q.in_minority_government = 1;
+Q.minority_government = 1;
+Q.spd_toleration = 0;
+Q.ddp_in_government = 1;
+Q.spd_in_government = 0;
+Q.z_in_government = 1;
+Q.bvp_in_government = 1;
+Q.dvp_in_government = 1;
+Q.wp_in_government = 0;
+Q.dnvp_in_government = 0;
+Q.kpd_in_government = 0;
+Q.nsdap_in_government = 0;
+Q.total_ministries = 8;
+Q.ddp_ministry_picks = Math.max(1, Math.round(Q.total_ministries * (Number(Q.ddp_r) || 0) / Math.max(1, Q.coalition_total_seats)));
+Q.ddp_ministry_picks_remaining = Q.ddp_ministry_picks;
+Q.leverage = Q.ddp_ministry_picks;
+Q.chancellor = 'Koch-Weser';
+Q.chancellor_party = Q.ddp_name || 'DDP';
+Q.foreign_minister_party = '';
+Q.interior_minister_party = '';
+Q.justice_minister_party = '';
+Q.labor_minister_party = '';
+Q.reichswehr_minister_party = '';
+Q.economic_minister_party = '';
+Q.finance_minister_party = '';
+Q.agriculture_minister_party = '';
+!}
+
+Despite the pressure of the President, and of ourselves, the SPD has refused to form a government. Instead Erich Koch-Weser and President Hindenburg have persuaded the DVP, Z, and BVP to form a government of the centre, without a commitment from either the SPD or the DNVP to tolerate our government. It's likely that this will be a short lived government.
+
+- @start_ministries: Continue.
+
+@start_ministries
+go-to: election_1928.ministries
