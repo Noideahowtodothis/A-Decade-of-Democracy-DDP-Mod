@@ -1022,6 +1022,8 @@ No compatible DDP-led coalition can reach 251 seats with the currently available
 - @coalition_negotiation_start_screen: Return to party selection.
 - @coalition_fallback_new_elections
 
+# TODO: Future coalition feature — allow the player to grant additional concessions to coalition partners in exchange for securing extra seats/support. This should raise the number of concessions required and represent a more expensive coalition bargain, not free support.
+
 @coalition_confirm_party
 title: Accept concessions and add party to coalition.
 subtitle: Requires [+ coalition_required_points +] concession points.
