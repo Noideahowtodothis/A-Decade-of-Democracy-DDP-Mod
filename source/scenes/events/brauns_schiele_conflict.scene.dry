@@ -8,7 +8,7 @@ on-arrival: brauns_schiele_conflict_seen = 1
 
 = Brauns-Schiele Conflict
 
-Before the Wirth cabinet had fallen it had planned to introduce a bill to reorganize our unemployment insurance. Unfortunately, the cabinet had fallen and been replaced with the Luther cabinet before that could be done. The Luther cabinet's decision to introduce a similar proposal has divided our cabinet. The DNVP are opposed to the removal of the means tests and a proposed 8 week job refusal period, on the grounds that it will cause a "weakening of the will to work" and in particular are so opposed to a maximum contribution rate of 3% that it was lowered to 2% to appease them. The Zentrum and their minister Brauns meanwhile, are arguing that the refusal period has always been part of unemployment insurance, although they are willing to reduce it to 6 weeks to appease the DNVP and their interior minister Martin Schiele.
+Before the Wirth cabinet had fallen it had planned to introduce a bill to reorganize our unemployment insurance. Unfortunately, the cabinet had fallen and been replaced with the Luther cabinet before that could be done. The Luther cabinet's decision to introduce a similar proposal has divided our cabinet. The DNVP and their interior minister Martin Schiele are opposed to the removal of the means tests and a proposed 8 week job refusal period, on the grounds that it will cause a "weakening of the will to work" and in particular are so opposed to a maximum contribution rate of 3% that it was lowered to 2% to appease them. The Zentrum and their minister Brauns meanwhile, are arguing that the refusal period has always been part of unemployment insurance.
 
 While we are a minor part of the coalition and cannot be the deciding factor, we still must act cautiously with regards to the rest of the Luther cabinet. This cabinet like any other potential ones is comprised of different parties with different interests. We must carefully balance those interests to avoid a collapse of the cabinet, or else we will need to form a new cabinet, not only losing time for our government to act, but when forming a government we will need to make more concessions to bridge the gaps with the other parties.
 
@@ -18,8 +18,16 @@ While we are a minor part of the coalition and cannot be the deciding factor, we
 
 @fight_it_out
 
+Despite the tension, the Z and the DNVP compromise on reducing the refusal period to 6 weeks.
+
 @side_with_zentrum
-on-arrival: z_relation += 5; dnvp_relation -= 5; coalition_dissent += 5; old_middle_ddp -= 1; workers_ddp += 1; ddp_regionalist_dissent += 5
+on-arrival: z_relation += 5; dnvp_relation -= 5; coalition_dissent += 5; old_middle_ddp -= 1; workers_ddp += 1; ddp_regionalist_dissent += 5; unemployed -= 0.1
+
+// TODO: Rewrite this after-text later. Keep the coalition logic explanation but present it through narrative or political commentary rather than explicit coalition arithmetic.
+Thanks to our support, Z is able to persuade the DNVP to compromise on reducing the refusal period to 7 weeks.
 
 @side_with_dnvp
-on-arrival: dnvp_relation += 5; z_relation -= 5; coalition_dissent += 5; workers_ddp -= 1; old_middle_ddp += 1; ddp_laborist_dissent += 5
+on-arrival: dnvp_relation += 5; z_relation -= 5; coalition_dissent += 5; workers_ddp -= 1; old_middle_ddp += 1; ddp_laborist_dissent += 10; ddp_left_progressive_dissent += 10; ddp_left_liberal_dissent += 5; unemployed += 0.1
+
+// TODO: Rewrite this after-text later. Keep the coalition logic explanation but present it through narrative or political commentary rather than explicit coalition arithmetic.
+Thanks to our support, the DNVP is able to persuade the Z to compromise on reducing the refusal period to 1 month.
