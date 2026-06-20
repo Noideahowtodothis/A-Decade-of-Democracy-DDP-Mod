@@ -21,16 +21,21 @@ max-visits: 3
 - @easy_discard
 
 @left_progressive
+on-arrival: ddp_left_progressive += 3
 go-to: root
 
 @laborist
+on-arrival: ddp_laborist += 3
 go-to: root
 
 @left_liberal
+on-arrival: ddp_left_liberal += 3
 go-to: root
 
 @left_bourgeois
+on-arrival: ddp_left_bourgeois += 3
 go-to: root
 
 @regionalist
+on-arrival: ddp_regionalist += 3
 go-to: root
