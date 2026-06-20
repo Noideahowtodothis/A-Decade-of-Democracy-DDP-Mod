@@ -18,7 +18,11 @@ The Locarno Conference has ended in partial, but important, success. Stresemann 
 title: Good riddance, let's call new elections.
 call: set_next_election_time
 on-arrival: rural_dnvp -= 3; new_middle_dnvp -= 1; workers_dnvp -= 1; old_middle_dvp += 1; new_middle_dvp += 3; old_middle_wp += 3; ddp_regionalist_dissent += 10; ddp_left_bourgeois_dissent += 5; dnvp_relation -= 15; dvp_relation -= 10; z_relation -= 5; spd_relation += 1; nationalism -= 2
-go-to: root
+
+// TODO: Revisit this after-text later. Current version successfully communicates that forcing elections is unusual, but the tone may be slightly too judgmental. Rewrite in future to preserve the sense that this is an unexpected political decision without sounding like the narrator is scolding the player.
+Our decision to pull out of the cabinet shocks our partners - and our enemies. Even many members of the DDP are confused why we're forcing new elections. Let's hope that the next cabinet can rest on happier ground.
+
+- @root: Continue.
 
 @spd_support
 title: Good riddance, let's ask the SPD for support
@@ -46,7 +50,10 @@ Q.dvp_relation -= 10;
 Q.spd_relation += 5;
 Q.nationalism -= 4;
 !}
-go-to: root
+
+The DVP is reluctant to form a partnership with the SPD, but the risk of losing the support of both the DNVP and the DDP is too great to bear. The SPD will tolerate our government, but refuse to take part in the cabinet or be bound to support us on motions.
+
+- @root: Continue.
 
 @dnvp_toleration
 title: Let's ask the DNVP for toleration
@@ -98,7 +105,10 @@ Q.dvp_relation += 15;
 Q.nationalism += 1;
 Q.pacifism += 1;
 !}
-go-to: root
+
+The DNVP leadership manages to corral their delegation into providing external support to our government, however they've made it clear their willingness to tolerate is not limitless.
+
+- @root: Continue.
 
 @give_up
 title: Then let's give up on the treaty
