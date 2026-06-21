@@ -4,7 +4,24 @@ new-page: true
 is-card: true
 tags: party_affairs
 view-if: ideology_timer = 0
-on-arrival: month_actions += 1; ideology_timer = 18
+on-arrival: {!
+Q.month_actions += 1;
+Q.ideology_timer = 18;
+globalThis.applyDdpIdeologyTracker = function(newIdeologyFaction) {
+    var ideologyFactionOptions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
+    var previousIdeologyFaction = Q.ddp_party_affairs_ideology_tracker;
+    if (previousIdeologyFaction && previousIdeologyFaction !== newIdeologyFaction && ideologyFactionOptions.indexOf(previousIdeologyFaction) >= 0) {
+        for (var i = 0; i < ideologyFactionOptions.length; i++) {
+            var ideologyFaction = ideologyFactionOptions[i];
+            if (ideologyFaction === newIdeologyFaction) {
+                continue;
+            }
+            Q[ideologyFaction + '_dissent'] += ideologyFaction === previousIdeologyFaction ? 5 : 2;
+        }
+    }
+    Q.ddp_party_affairs_ideology_tracker = newIdeologyFaction;
+};
+!}
 card-image: img/arbeiterbew.jpg
 max-visits: 3
 #subtitle: Setting the party's ideological direction.
@@ -21,16 +38,59 @@ max-visits: 3
 - @easy_discard
 
 @left_progressive
+on-arrival: {!
+globalThis.applyDdpIdeologyTracker('ddp_left_progressive');
+Q.ddp_left_progressive += 8;
+Q.pacifism += 1;
+Q.dnvp_relation -= 3;
+Q.z_relation -= 3;
+Q.dvp_relation -= 3;
+Q.spd_relation += 5;
+Q.ddp_regionalist_dissent += 5;
+!}
 go-to: root
 
 @laborist
+on-arrival: {!
+globalThis.applyDdpIdeologyTracker('ddp_laborist');
+Q.ddp_laborist += 8;
+Q.dnvp_relation -= 3;
+Q.dvp_relation -= 3;
+Q.spd_relation += 5;
+Q.ddp_left_bourgeois_dissent += 5;
+!}
 go-to: root
 
 @left_liberal
+on-arrival: {!
+globalThis.applyDdpIdeologyTracker('ddp_left_liberal');
+Q.ddp_left_liberal += 8;
+Q.pro_republic += 1;
+Q.dnvp_relation -= 3;
+Q.ddp_left_progressive_dissent -= 5;
+Q.ddp_regionalist_dissent += 5;
+!}
 go-to: root
 
 @left_bourgeois
+on-arrival: {!
+globalThis.applyDdpIdeologyTracker('ddp_left_bourgeois');
+Q.ddp_left_bourgeois += 8;
+Q.dvp_relation += 3;
+!}
 go-to: root
 
 @regionalist
+on-arrival: {!
+globalThis.applyDdpIdeologyTracker('ddp_regionalist');
+Q.ddp_regionalist += 8;
+Q.dvp_relation += 3;
+Q.dnvp_relation += 3;
+Q.z_relation -= 3;
+Q.spd_relation -= 3;
+Q.nationalism += 1;
+Q.ddp_left_progressive_dissent += 5;
+Q.ddp_laborist_dissent += 5;
+Q.ddp_left_bourgeois_dissent += 5;
+!}
 go-to: root
