@@ -24,7 +24,7 @@ on-arrival: {!Q.rural_ddp += 1; Q.old_middle_ddp -= 2; Q.workers_ddp += 2; Q.ddp
 
 Our proposal to allow compensation on the value of the property at the time of expropriation (thereby exposing the princes to inflation losses) has met with the support of the SPD, although the KPD refuses any compromise with the princes. However, our proposal has been met with opposition from the DVP, DNVP, and even sectors of Zentrum. In their view, our compromise is hardly different from the proposals of the socialists.
 
-go-to: root
+- @root: Continue.
 
 @moderate
 title: Let's push for a moderate compromise
@@ -32,7 +32,7 @@ on-arrival: {!Q.old_middle_ddp -= 1; Q.workers_ddp -= 1; Q.dvp_relation -= 1; Q.
 
 Our proposal to offer inflation-adjusted compensation has met with approval from the Z and elements of the DVP, along with cautious support from the SPD. However the KPD has made it clear that they view our proposal as insufficient and plan to press ahead with their own referendum.
 
-go-to: root
+- @root: Continue.
 
 @none
 title: Let's let the Communists deal with it on their own
@@ -40,4 +40,4 @@ on-arrival: rural_ddp -= 1; workers_ddp -= 2; old_middle_ddp += 1; dvp_relation 
 
 Many within our party are pushing to support expropriation and view our silence as equivalent to condemnation. The SPD has announced that, in the absence of progress in the Reichstag they will move forward with the referendum. At least the DVP appreciates our silence.
 
-go-to: root
+- @root: Continue.
