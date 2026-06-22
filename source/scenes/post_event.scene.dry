@@ -20,6 +20,9 @@ if (Q.bvp_relation == undefined) {
 if (Q.wp_relation == undefined) {
     Q.wp_relation = 50;
 }
+if (Q.spd_relation == undefined) {
+    Q.spd_relation = 60;
+}
 if (Q.prussia_election_year == undefined) {
     Q.prussia_election_year = Q.next_election_year || 1928;
 }
