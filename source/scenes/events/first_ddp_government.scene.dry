@@ -178,8 +178,7 @@ Q.total_ministries = 8;
 Q.ddp_ministry_picks = Math.max(1, Math.round(Q.total_ministries * (Number(Q.ddp_r) || 0) / Math.max(1, Q.coalition_total_seats)));
 Q.ddp_ministry_picks_remaining = Q.ddp_ministry_picks;
 Q.leverage = Q.ddp_ministry_picks;
-Q.chancellor = 'Koch-Weser';
-Q.chancellor_party = Q.ddp_name || 'DDP';
+// TODO: Decide fallback center-cabinet chancellor for the failed Grand Coalition route.
 Q.foreign_minister_party = '';
 Q.interior_minister_party = '';
 Q.justice_minister_party = '';
