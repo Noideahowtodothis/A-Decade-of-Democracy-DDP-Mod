@@ -25,7 +25,7 @@ Despite the tension, the Z and the DNVP compromise on reducing the refusal perio
 @side_with_zentrum
 on-arrival: z_relation += 5; dnvp_relation -= 5; coalition_dissent += 5; old_middle_ddp -= 1; workers_ddp += 1; ddp_regionalist_dissent += 5; unemployed -= 0.1
 
-// TODO: Rewrite this after-text later. Keep the coalition logic explanation but present it through narrative or political commentary rather than explicit coalition arithmetic.
+# TODO: Rewrite this after-text later. Keep the coalition logic explanation but present it through narrative or political commentary rather than explicit coalition arithmetic.
 Thanks to our support, Z is able to persuade the DNVP to compromise on reducing the refusal period to 7 weeks.
 
 - @root: Continue.
@@ -33,7 +33,7 @@ Thanks to our support, Z is able to persuade the DNVP to compromise on reducing 
 @side_with_dnvp
 on-arrival: dnvp_relation += 5; z_relation -= 5; coalition_dissent += 5; workers_ddp -= 1; old_middle_ddp += 1; ddp_laborist_dissent += 10; ddp_left_progressive_dissent += 10; ddp_left_liberal_dissent += 5; unemployed += 0.1
 
-// TODO: Rewrite this after-text later. Keep the coalition logic explanation but present it through narrative or political commentary rather than explicit coalition arithmetic.
+# TODO: Rewrite this after-text later. Keep the coalition logic explanation but present it through narrative or political commentary rather than explicit coalition arithmetic.
 Thanks to our support, the DNVP is able to persuade the Z to compromise on reducing the refusal period to 1 month.
 
 - @root: Continue.
