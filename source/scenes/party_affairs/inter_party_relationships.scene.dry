@@ -18,6 +18,7 @@ The SPD cannot govern by itself yet. Because we do not have an electoral majorit
 - @center: Strengthen our bonds with the Catholic Center Party.
 - @kpd: Work towards repairing relationships with the Communist Party.
 - @spd_alone: The SPD can stand alone for now.
+- @spd
 - @easy_discard
 
 
@@ -114,6 +115,14 @@ on-arrival: dvp_relation += 5*(1 - dissent)
 The liberal parties (both the [+ ddp_name +] and DVP) are electorally moribund, so perhaps our efforts are best spent elsewhere.
 
 However, given the influence of the DVP among the other right-leaning parties[? if president == "Hindenburg": and with President Hindenburg ?], it can still be helpful to influence them.
+
+@spd
+title: ​
+subtitle: -1 resources
+choose-if: resources >= 1
+unavailable-subtitle: Not enough resources.
+on-arrival: resources -= 1; spd_relation += 5*(1 - dissent)
+go-to: return
 
 @spd_alone
 
