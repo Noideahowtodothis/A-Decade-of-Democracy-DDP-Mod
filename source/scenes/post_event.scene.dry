@@ -364,6 +364,13 @@ if (!Q.ddp_factions) {
 if (!Q.ddp_faction_dissent_variables) {
     Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
 }
+Q.ddp_faction_strength_defaults = {
+    ddp_left_bourgeois: 35,
+    ddp_left_liberal: 30,
+    ddp_regionalist: 15,
+    ddp_laborist: 10,
+    ddp_left_progressive: 10
+};
 // Keep the canonical DDP variable registry complete when loading saves created before these trackers existed.
 Q.ddp_ideology_variables = ['ddp_nationalism_position', 'ddp_economics_position', 'ddp_republic_position', 'ddp_federalism_position', 'ddp_leader', 'ddp_ideology'];
 if (!Q.ddp_congress_dates) {
@@ -1664,10 +1671,16 @@ window.calculatePrussianLandtagResults = function(qualities) {
 }
 
 
-// Clamp DDP faction values between 0 and 100.
+// Initialize missing/zeroed legacy DDP faction values, then clamp them between 0 and 100.
+var ddpFactionStrengthTotal = 0;
+for (var ddpStrengthFaction of Q.ddp_factions || Q.factions) {
+    if (Q[ddpStrengthFaction] !== undefined && !isNaN(Q[ddpStrengthFaction])) {
+        ddpFactionStrengthTotal += Math.max(0, Q[ddpStrengthFaction]);
+    }
+}
 for (var faction of Q.ddp_factions || Q.factions) {
-    if (Q[faction] === undefined || isNaN(Q[faction])) {
-        Q[faction] = 0;
+    if (Q[faction] === undefined || Q[faction] === null || isNaN(Q[faction]) || ddpFactionStrengthTotal <= 0) {
+        Q[faction] = Q.ddp_faction_strength_defaults[faction];
     }
     Q[faction] = Math.round(Q[faction]);
     if (Q[faction] < 0) {

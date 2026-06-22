@@ -21,8 +21,15 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
 
     Q.factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
     Q.ddp_factions = Q.factions;
+    Q.ddp_faction_strength_defaults = {
+        ddp_left_bourgeois: 35,
+        ddp_left_liberal: 30,
+        ddp_regionalist: 15,
+        ddp_laborist: 10,
+        ddp_left_progressive: 10
+    };
     for (var startupDdpFaction of Q.ddp_factions) {
-        Q[startupDdpFaction] = 0;
+        Q[startupDdpFaction] = Q.ddp_faction_strength_defaults[startupDdpFaction];
         Q[startupDdpFaction + '_dissent'] = 0;
     }
     Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
@@ -620,11 +627,18 @@ Q.dissent_percent = 5;
 // DDP factions
 Q.factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
 Q.ddp_factions = Q.factions;
-Q.ddp_left_progressive = 0;
-Q.ddp_laborist = 0;
-Q.ddp_left_liberal = 0;
-Q.ddp_left_bourgeois = 0;
-Q.ddp_regionalist = 0;
+Q.ddp_faction_strength_defaults = {
+    ddp_left_bourgeois: 35,
+    ddp_left_liberal: 30,
+    ddp_regionalist: 15,
+    ddp_laborist: 10,
+    ddp_left_progressive: 10
+};
+Q.ddp_left_progressive = Q.ddp_faction_strength_defaults.ddp_left_progressive;
+Q.ddp_laborist = Q.ddp_faction_strength_defaults.ddp_laborist;
+Q.ddp_left_liberal = Q.ddp_faction_strength_defaults.ddp_left_liberal;
+Q.ddp_left_bourgeois = Q.ddp_faction_strength_defaults.ddp_left_bourgeois;
+Q.ddp_regionalist = Q.ddp_faction_strength_defaults.ddp_regionalist;
 Q.ddp_faction_dissent_variables = ['ddp_left_progressive_dissent', 'ddp_laborist_dissent', 'ddp_left_liberal_dissent', 'ddp_left_bourgeois_dissent', 'ddp_regionalist_dissent'];
 Q.ddp_left_progressive_dissent = 0;
 Q.ddp_laborist_dissent = 0;
