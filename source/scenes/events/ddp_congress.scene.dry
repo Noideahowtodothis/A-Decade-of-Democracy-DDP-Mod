@@ -24,15 +24,23 @@ if (typeof globalThis !== 'undefined') {
     globalThis.ddpCongressIssues = {nationalism:{label:'Nationalism', variable:'ddp_nationalism_position', positions:[{code:'oppose_extreme_nationalism', value:1, label:'Oppose Extreme Nationalism', support:['ddp_left_progressive'], neutral:['ddp_left_liberal'], oppose:['ddp_laborist','ddp_left_bourgeois','ddp_regionalist']},{code:'liberal_civic_nationalism', value:2, label:'Support Liberal Civic Nationalism', support:['ddp_left_liberal'], neutral:['ddp_left_progressive','ddp_laborist','ddp_left_bourgeois'], oppose:['ddp_regionalist']},{code:'political_benefit_nationalism', value:3, label:'Use Nationalism for Political Benefit', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:['ddp_laborist','ddp_left_liberal'], oppose:['ddp_left_progressive']},{code:'german_racial_nationalism', value:4, label:'Support German Racial Nationalism', support:['ddp_regionalist'], neutral:['ddp_left_bourgeois'], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]},economic:{label:'Economics', variable:'ddp_economics_position', positions:[{code:'interventionist_economics', value:1, label:'Support Interventionist Economics', support:['ddp_left_progressive','ddp_laborist'], neutral:['ddp_left_liberal'], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'social_liberal_economy', value:2, label:'Support a Social Liberal Economy', support:['ddp_left_progressive','ddp_laborist','ddp_left_liberal'], neutral:[], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'liberal_economics', value:3, label:'Support Liberal Economics', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:['ddp_left_liberal'], oppose:['ddp_left_progressive','ddp_laborist']},{code:'agrarian_interests', value:4, label:'Focus on Agrarian Interests', support:['ddp_regionalist'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois']}]},republic:{label:'The Republic', variable:'ddp_republic_position', positions:[{code:'cornerstone_republic', value:1, label:'Make Ourselves the Cornerstone of the Republic', support:['ddp_left_liberal','ddp_left_progressive','ddp_laborist'], neutral:[], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'quiet_republic', value:2, label:'Support the Republic Quietly', support:['ddp_left_bourgeois','ddp_regionalist'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]},federalism:{label:'Federalism', variable:'ddp_federalism_position', positions:[{code:'expand_federal_powers', value:1, label:'Expand Federal Powers', support:['ddp_regionalist'], neutral:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], oppose:[]},{code:'expand_central_power', value:2, label:'Expand Central Power', support:['ddp_left_progressive','ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], neutral:[], oppose:['ddp_regionalist']},{code:'unitary_state', value:3, label:'Support a Unitary State', support:['ddp_left_progressive'], neutral:['ddp_laborist','ddp_left_liberal','ddp_left_bourgeois'], oppose:['ddp_regionalist']}]},leader:{label:'Leader', variable:'ddp_leader', positions:[{code:'anton_erkelenz', value:1, label:'Anton Erkelenz', ideology:'left-social liberal', support:['ddp_left_progressive','ddp_laborist'], neutral:[], oppose:['ddp_left_liberal','ddp_left_bourgeois','ddp_regionalist']},{code:'theodor_heuss', value:2, label:'Theodor Heuss', ideology:'progressive republican liberal', support:['ddp_left_progressive','ddp_left_liberal'], neutral:['ddp_laborist'], oppose:['ddp_left_bourgeois','ddp_regionalist']},{code:'theodor_maier', value:3, label:'Theodor Maier', ideology:'left-liberal', support:['ddp_left_liberal','ddp_left_bourgeois'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_regionalist']},{code:'otto_fischbeck', value:4, label:'Otto Fischbeck', ideology:'federal/regional liberal', support:['ddp_regionalist'], neutral:['ddp_left_bourgeois'], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']},{code:'erich_koch_weser', value:5, label:'Erich Koch-Weser', ideology:'bourgeois republican liberal', support:['ddp_left_bourgeois','ddp_left_liberal'], neutral:['ddp_left_progressive','ddp_laborist','ddp_regionalist'], oppose:[]},{code:'hermann_dietrich', value:6, label:'Hermann Dietrich', ideology:'agrarian-bourgeois liberal', support:['ddp_regionalist','ddp_left_bourgeois'], neutral:[], oppose:['ddp_left_progressive','ddp_laborist','ddp_left_liberal']}]}};
     globalThis.prepareDdpCongress = function(qualities) {
         var factions = ['ddp_left_progressive', 'ddp_laborist', 'ddp_left_liberal', 'ddp_left_bourgeois', 'ddp_regionalist'];
+        var factionStrengthDefaults = {
+            ddp_left_bourgeois: 35,
+            ddp_left_liberal: 30,
+            ddp_regionalist: 15,
+            ddp_laborist: 10,
+            ddp_left_progressive: 10
+        };
         qualities.ddp_factions = factions;
+        qualities.ddp_faction_strength_defaults = factionStrengthDefaults;
         if (!qualities.ddp_faction_dissent_variables) {
             qualities.ddp_faction_dissent_variables = [];
         }
         var strengthTotal = 0;
         for (var i = 0; i < factions.length; i++) {
             var faction = factions[i];
-            if (qualities[faction] === undefined || isNaN(qualities[faction])) {
-                qualities[faction] = 0;
+            if (qualities[faction] === undefined || qualities[faction] === null || isNaN(qualities[faction])) {
+                qualities[faction] = factionStrengthDefaults[faction];
             }
             if (qualities[faction] < 0) {
                 qualities[faction] = 0;
@@ -46,8 +54,16 @@ if (typeof globalThis !== 'undefined') {
                 qualities.ddp_faction_dissent_variables.push(faction + '_dissent');
             }
         }
+        if (strengthTotal <= 0) {
+            strengthTotal = 0;
+            for (var defaultIndex = 0; defaultIndex < factions.length; defaultIndex++) {
+                var defaultFaction = factions[defaultIndex];
+                qualities[defaultFaction] = factionStrengthDefaults[defaultFaction];
+                strengthTotal += qualities[defaultFaction];
+            }
+        }
         qualities.ddp_congress_total_strength = strengthTotal;
-        qualities.ddp_congress_delegate_basis = strengthTotal > 0 ? 'Faction strength normalized to 100 delegates.' : 'All faction strengths are zero; temporary equal 20-delegate fallback used.';
+        qualities.ddp_congress_delegate_basis = 'Faction strength normalized to 100 delegates.';
         for (var j = 0; j < factions.length; j++) {
             var delegateFaction = factions[j];
             var delegateValue = strengthTotal > 0 ? 100*qualities[delegateFaction]/strengthTotal : 20;
