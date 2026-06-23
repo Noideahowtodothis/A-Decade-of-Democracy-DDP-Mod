@@ -18,10 +18,10 @@ function renderSeatDots(container, groups) {
     var height = 180;
     var centerX = width / 2;
     var centerY = height - 10;
-    var dotRadius = 3;
-    var innerRadius = 28;
-    var outerRadius = Math.min(width * 0.47, height - 18);
-    var seatGap = dotRadius * 2 + 0.8;
+    var dotRadius = 2.25;
+    var innerRadius = 18;
+    var outerRadius = Math.min(width * 0.30, height - 60);
+    var seatGap = dotRadius * 2;
     var seats = [];
     var positions = [];
 
