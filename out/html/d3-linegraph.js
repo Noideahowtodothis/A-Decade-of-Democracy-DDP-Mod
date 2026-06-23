@@ -19,9 +19,11 @@ function renderSeatDots(container, groups) {
     var centerX = width / 2;
     var centerY = height - 10;
     var dotRadius = 3;
-    var rowGap = 11;
-    var seatGap = dotRadius * 2 + 3;
+    var innerRadius = 28;
+    var outerRadius = Math.min(width * 0.47, height - 18);
+    var seatGap = dotRadius * 2 + 0.8;
     var seats = [];
+    var positions = [];
 
     container.innerHTML = '';
 
@@ -41,33 +43,107 @@ function renderSeatDots(container, groups) {
         return svg;
     }
 
-    var rows = Math.max(1, Math.ceil(Math.sqrt(seats.length / 2)));
-    var seatIndex = 0;
+    var rows = Math.max(1, Math.ceil(Math.sqrt(seats.length / 2.7)));
+    var capacities = [];
+    var totalCapacity = 0;
 
-    for (var row = 0; row < rows && seatIndex < seats.length; row++) {
-        var rowRadius = 35 + row * rowGap;
-        var rowCapacity = Math.max(1, Math.floor(Math.PI * rowRadius / seatGap));
-        var remaining = seats.length - seatIndex;
-        var seatsInRow = Math.min(rowCapacity, remaining);
+    while (true) {
+        capacities = [];
+        totalCapacity = 0;
+        for (var capacityRow = 0; capacityRow < rows; capacityRow++) {
+            var capacityRadius = rows === 1
+                ? (innerRadius + outerRadius) / 2
+                : innerRadius + ((outerRadius - innerRadius) * capacityRow / (rows - 1));
+            var capacity = Math.max(1, Math.floor(Math.PI * capacityRadius / seatGap));
+            capacities.push(capacity);
+            totalCapacity += capacity;
+        }
+
+        if (totalCapacity >= seats.length || rows >= seats.length) {
+            break;
+        }
+        rows++;
+    }
+
+    var rowCounts = [];
+    var fractions = [];
+    var assignedSeats = 0;
+
+    for (var countRow = 0; countRow < rows; countRow++) {
+        var share = seats.length * capacities[countRow] / totalCapacity;
+        var count = Math.min(capacities[countRow], Math.max(1, Math.floor(share)));
+        rowCounts.push(count);
+        fractions.push({ row: countRow, fraction: share - Math.floor(share) });
+        assignedSeats += count;
+    }
+
+    fractions.sort(function(a, b) {
+        return b.fraction - a.fraction;
+    });
+
+    var fractionIndex = 0;
+    while (assignedSeats < seats.length) {
+        var extraRow = fractions[fractionIndex % fractions.length].row;
+        if (rowCounts[extraRow] < capacities[extraRow]) {
+            rowCounts[extraRow]++;
+            assignedSeats++;
+        }
+        fractionIndex++;
+    }
+
+    for (var trimRow = rows - 1; assignedSeats > seats.length && trimRow >= 0; trimRow--) {
+        if (rowCounts[trimRow] > 1) {
+            rowCounts[trimRow]--;
+            assignedSeats--;
+            trimRow++;
+        }
+    }
+
+    for (var row = 0; row < rows; row++) {
+        var rowRadius = rows === 1
+            ? (innerRadius + outerRadius) / 2
+            : innerRadius + ((outerRadius - innerRadius) * row / (rows - 1));
+        var seatsInRow = rowCounts[row];
+        var rowOffset = row % 2 === 0 ? -0.18 : 0.18;
 
         for (var rowSeat = 0; rowSeat < seatsInRow; rowSeat++) {
-            var group = seats[seatIndex];
-            var angle = Math.PI - ((rowSeat + 0.5) * Math.PI / seatsInRow);
+            var angleStep = Math.PI / seatsInRow;
+            var angle = Math.PI - ((rowSeat + 0.5 + rowOffset) * angleStep);
             var x = centerX + Math.cos(angle) * rowRadius;
             var y = centerY - Math.sin(angle) * rowRadius;
-            var circle = document.createElementNS(svgNS, 'circle');
-            var title = document.createElementNS(svgNS, 'title');
-
-            circle.setAttribute('cx', x.toFixed(2));
-            circle.setAttribute('cy', y.toFixed(2));
-            circle.setAttribute('r', dotRadius);
-            circle.setAttribute('fill', group.color);
-            circle.setAttribute('aria-label', group.label + ' seat');
-            title.textContent = group.label + ' seat';
-            circle.appendChild(title);
-            svg.appendChild(circle);
-            seatIndex++;
+            positions.push({
+                x: x,
+                y: y,
+                row: row,
+                rowSeat: rowSeat
+            });
         }
+    }
+
+    positions.sort(function(a, b) {
+        if (Math.abs(a.x - b.x) > dotRadius) {
+            return a.x - b.x;
+        }
+        if (a.row !== b.row) {
+            return b.row - a.row;
+        }
+        return a.rowSeat - b.rowSeat;
+    });
+
+    for (var seatIndex = 0; seatIndex < seats.length; seatIndex++) {
+        var group = seats[seatIndex];
+        var position = positions[seatIndex];
+        var circle = document.createElementNS(svgNS, 'circle');
+        var title = document.createElementNS(svgNS, 'title');
+
+        circle.setAttribute('cx', position.x.toFixed(2));
+        circle.setAttribute('cy', position.y.toFixed(2));
+        circle.setAttribute('r', dotRadius);
+        circle.setAttribute('fill', group.color);
+        circle.setAttribute('aria-label', group.label + ' seat');
+        title.textContent = group.label + ' seat';
+        circle.appendChild(title);
+        svg.appendChild(circle);
     }
 
     return svg;
