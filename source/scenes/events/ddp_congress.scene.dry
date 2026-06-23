@@ -180,6 +180,23 @@ Regionalist: [+ ddp_regionalist_delegates_display +] delegates
 
 = Delegate shares (100 total)
 
+{!<div id="ddp_congress_delegate_chart"></div>!}
+
+{!
+if (typeof renderSeatDots === 'function') {
+    var ddpCongressDelegateChart = document.getElementById('ddp_congress_delegate_chart');
+    if (ddpCongressDelegateChart) {
+        renderSeatDots(ddpCongressDelegateChart, [
+            { label: 'Left Bourgeois', seats: Q.ddp_left_bourgeois_delegate_share, color: '#8C6D31' },
+            { label: 'Left Liberals', seats: Q.ddp_left_liberal_delegate_share, color: '#DCCA4A' },
+            { label: 'Regionalists', seats: Q.ddp_regionalist_delegate_share, color: '#69A2BE' },
+            { label: 'Laborists', seats: Q.ddp_laborist_delegate_share, color: '#E3000F' },
+            { label: 'Left Progressives', seats: Q.ddp_left_progressive_delegate_share, color: '#7B68EE' }
+        ]);
+    }
+}
+!}
+
 Left-Progressive delegates: [+ ddp_left_progressive_delegate_share +]
 
 Laborist delegates: [+ ddp_laborist_delegate_share +]
