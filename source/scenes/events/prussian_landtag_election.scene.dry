@@ -19,6 +19,23 @@ set-jump: prussian_landtag_results
 
 @prussian_landtag_results
 on-arrival: {! if (typeof window !== 'undefined' && typeof window.calculatePrussianLandtagResults === 'function') { window.calculatePrussianLandtagResults(Q); } !}
+on-display: {!
+var prussiaLandtagChart = document.getElementById('prussia_landtag_chart');
+if (prussiaLandtagChart && typeof renderSeatDots === 'function') {
+    renderSeatDots(prussiaLandtagChart, [
+        { label: 'SPD', seats: Number(Q.prussia_spd_r) || 0, color: '#E3000F' },
+        { label: 'KPD', seats: Number(Q.prussia_kpd_r) || 0, color: '#8B0000' },
+        { label: Q.ddp_name || 'DDP', seats: Number(Q.prussia_ddp_r) || 0, color: '#DCCA4A' },
+        { label: 'Z', seats: Number(Q.prussia_z_r) || 0, color: '#000000' },
+        { label: 'BVP', seats: Number(Q.prussia_bvp_r) || 0, color: '#69A2BE' },
+        { label: 'DVP', seats: Number(Q.prussia_dvp_r) || 0, color: '#D5AC27' },
+        { label: 'WP', seats: Number(Q.prussia_wp_r) || 0, color: '#7A5C20' },
+        { label: 'Others', seats: Number(Q.prussia_other_r) || 0, color: '#a0a0a0' },
+        { label: 'DNVP', seats: Number(Q.prussia_dnvp_r) || 0, color: '#3f7bc1' },
+        { label: 'NSDAP', seats: Number(Q.prussia_nsdap_r) || 0, color: '#954B00' }
+    ]);
+}
+!}
 
 = Prussian Landtag election results
 
@@ -29,6 +46,8 @@ Current Prussian government: **[+ prussia_current_government_name +]** ([+ pruss
 Current government seats: **[+ prussia_current_government_seats +] / 450**. Status: **[+ prussia_current_government_status +]**. Majority cabinet: **[+ prussia_majority_cabinet +]**.
 
 Current government leverage: **[+ prussia_leverage +]**.
+
+{!<div id="prussia_landtag_chart"></div>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Prussian vote share</td><td>Seats (out of 450)</td></tr>!}
