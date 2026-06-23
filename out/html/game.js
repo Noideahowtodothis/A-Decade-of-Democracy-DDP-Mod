@@ -352,9 +352,25 @@
       window.updateSidebar();
   };
 
+  window.renderDdpCongressDelegateChart = function() {
+      var chart = document.getElementById('ddp_congress_delegate_chart');
+      if (!chart || typeof renderSeatDots !== 'function' || !window.dendryUI || !window.dendryUI.dendryEngine) {
+          return;
+      }
+      var q = window.dendryUI.dendryEngine.state.qualities;
+      renderSeatDots(chart, [
+          { label: 'Left Bourgeois', seats: Number(q.ddp_left_bourgeois_delegate_share) || 0, color: '#8C6D31' },
+          { label: 'Left Liberals', seats: Number(q.ddp_left_liberal_delegate_share) || 0, color: '#DCCA4A' },
+          { label: 'Regionalists', seats: Number(q.ddp_regionalist_delegate_share) || 0, color: '#69A2BE' },
+          { label: 'Laborists', seats: Number(q.ddp_laborist_delegate_share) || 0, color: '#E3000F' },
+          { label: 'Left Progressives', seats: Number(q.ddp_left_progressive_delegate_share) || 0, color: '#7B68EE' }
+      ]);
+  };
+
   window.onDisplayContent = function() {
       window.updateSidebar();
       window.updateRadioTopbar();
+      window.renderDdpCongressDelegateChart();
   };
 
   /*

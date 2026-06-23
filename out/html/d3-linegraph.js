@@ -12,6 +12,67 @@ function addMonths(date, months) {
     return date;
 }
 
+function renderSeatDots(container, groups) {
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var width = 320;
+    var height = 180;
+    var centerX = width / 2;
+    var centerY = height - 10;
+    var dotRadius = 3;
+    var rowGap = 11;
+    var seatGap = dotRadius * 2 + 3;
+    var seats = [];
+
+    container.innerHTML = '';
+
+    groups.forEach(function(group) {
+        for (var i = 0; i < group.seats; i++) {
+            seats.push(group);
+        }
+    });
+
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Seat chart with ' + seats.length + ' seats');
+    container.appendChild(svg);
+
+    if (!seats.length) {
+        return svg;
+    }
+
+    var rows = Math.max(1, Math.ceil(Math.sqrt(seats.length / 2)));
+    var seatIndex = 0;
+
+    for (var row = 0; row < rows && seatIndex < seats.length; row++) {
+        var rowRadius = 35 + row * rowGap;
+        var rowCapacity = Math.max(1, Math.floor(Math.PI * rowRadius / seatGap));
+        var remaining = seats.length - seatIndex;
+        var seatsInRow = Math.min(rowCapacity, remaining);
+
+        for (var rowSeat = 0; rowSeat < seatsInRow; rowSeat++) {
+            var group = seats[seatIndex];
+            var angle = Math.PI - ((rowSeat + 0.5) * Math.PI / seatsInRow);
+            var x = centerX + Math.cos(angle) * rowRadius;
+            var y = centerY - Math.sin(angle) * rowRadius;
+            var circle = document.createElementNS(svgNS, 'circle');
+            var title = document.createElementNS(svgNS, 'title');
+
+            circle.setAttribute('cx', x.toFixed(2));
+            circle.setAttribute('cy', y.toFixed(2));
+            circle.setAttribute('r', dotRadius);
+            circle.setAttribute('fill', group.color);
+            circle.setAttribute('aria-label', group.label + ' seat');
+            title.textContent = group.label + ' seat';
+            circle.appendChild(title);
+            svg.appendChild(circle);
+            seatIndex++;
+        }
+    }
+
+    return svg;
+}
+
 
 d3.linegraph = function(noTicks, noDots, parties, partyColors, partyNames, dataMax, dataMin, additionalMonths) {
     /* params */

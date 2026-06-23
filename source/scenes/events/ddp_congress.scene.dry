@@ -180,6 +180,8 @@ Regionalist: [+ ddp_regionalist_delegates_display +] delegates
 
 = Delegate shares (100 total)
 
+{!<div id="ddp_congress_delegate_chart"></div>!}
+
 Left-Progressive delegates: [+ ddp_left_progressive_delegate_share +]
 
 Laborist delegates: [+ ddp_laborist_delegate_share +]
