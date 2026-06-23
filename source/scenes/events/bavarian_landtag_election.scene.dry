@@ -19,6 +19,22 @@ set-jump: bavarian_landtag_results
 
 @bavarian_landtag_results
 on-arrival: {! Q.bavaria_next_election_year_preview = Number(Q.bavaria_election_year) || Number(Q.year) || 0; Q.bavaria_next_election_month_preview = Q.bavaria_election_month; if (typeof window !== 'undefined' && typeof window.calculateBavarianLandtagResults === 'function') { window.calculateBavarianLandtagResults(Q); } !}
+on-display: {!
+var bavariaLandtagChart = document.getElementById('bavaria_landtag_chart');
+if (bavariaLandtagChart && typeof renderSeatDots === 'function') {
+    renderSeatDots(bavariaLandtagChart, [
+        { label: 'SPD', seats: Number(Q.bavaria_spd_r) || 0, color: '#E3000F' },
+        { label: 'KPD', seats: Number(Q.bavaria_kpd_r) || 0, color: '#8B0000' },
+        { label: 'BVP/Z', seats: Number(Q.bavaria_bvp_z_r) || 0, color: '#000000' },
+        { label: Q.ddp_name || 'DDP', seats: Number(Q.bavaria_ddp_r) || 0, color: '#DCCA4A' },
+        { label: 'DVP', seats: Number(Q.bavaria_dvp_r) || 0, color: '#D5AC27' },
+        { label: 'DNVP', seats: Number(Q.bavaria_dnvp_r) || 0, color: '#3f7bc1' },
+        { label: 'NSDAP', seats: Number(Q.bavaria_nsdap_r) || 0, color: '#954B00' },
+        { label: 'Bavarian Peasant Party', seats: Number(Q.bavaria_peasant_r) || 0, color: '#5E8C31' },
+        { label: 'Others', seats: Number(Q.bavaria_other_r) || 0, color: '#a0a0a0' }
+    ]);
+}
+!}
 
 = Bavarian Landtag election results
 
@@ -31,6 +47,8 @@ Current Bavarian government: **[+ bavaria_current_government_name +]** ([+ bavar
 Current government seats: **[+ bavaria_current_government_seats +] / 128**. Status: **[+ bavaria_current_government_status +]**. Majority cabinet: **[+ bavaria_majority_cabinet +]**.
 
 Current government leverage: **[+ bavaria_leverage +]**.
+
+{!<div id="bavaria_landtag_chart"></div>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Bavarian vote share</td><td>Seats (out of 128)</td></tr>!}
