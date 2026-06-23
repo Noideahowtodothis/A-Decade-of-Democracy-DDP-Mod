@@ -19,6 +19,22 @@ set-jump: saxony_landtag_results
 
 @saxony_landtag_results
 on-arrival: {! Q.saxony_next_election_year_preview = Number(Q.saxony_election_year) || Number(Q.year) || 0; Q.saxony_next_election_month_preview = Q.saxony_election_month; if (typeof window !== 'undefined' && typeof window.calculateSaxonyLandtagResults === 'function') { window.calculateSaxonyLandtagResults(Q); } if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') { window.updateSaxonyCoalitionOptions(Q); } !}
+on-display: {!
+var saxonyLandtagChart = document.getElementById('saxony_landtag_chart');
+if (saxonyLandtagChart && typeof renderSeatDots === 'function') {
+    renderSeatDots(saxonyLandtagChart, [
+        { label: 'SPD', seats: Number(Q.saxony_spd_r) || 0, color: '#E3000F' },
+        { label: 'KPD', seats: Number(Q.saxony_kpd_r) || 0, color: '#8B0000' },
+        { label: Q.ddp_name || 'DDP', seats: Number(Q.saxony_ddp_r) || 0, color: '#DCCA4A' },
+        { label: 'DVP', seats: Number(Q.saxony_dvp_r) || 0, color: '#D5AC27' },
+        { label: 'WP', seats: Number(Q.saxony_wp_r) || 0, color: '#7A5C20' },
+        { label: 'DNVP', seats: Number(Q.saxony_dnvp_r) || 0, color: '#3f7bc1' },
+        { label: 'NSDAP', seats: Number(Q.saxony_nsdap_r) || 0, color: '#954B00' },
+        { label: 'ASPD', seats: Number(Q.saxony_aspd_r) || 0, color: '#C05050' },
+        { label: 'Other', seats: Number(Q.saxony_other_r) || 0, color: '#a0a0a0' }
+    ]);
+}
+!}
 
 = Saxony Landtag election results
 
@@ -31,6 +47,8 @@ Current Saxony government: **[+ saxony_current_government_name +]** ([+ saxony_c
 Current government seats: **[+ saxony_current_government_seats +] / 96**. Status: **[+ saxony_current_government_status +]**. Majority cabinet: **[+ saxony_majority_cabinet +]**.
 
 Current government leverage: **[+ saxony_leverage +]**.
+
+{!<div id="saxony_landtag_chart"></div>!}
 
 = Choose a Saxony coalition
 
