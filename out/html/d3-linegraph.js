@@ -21,8 +21,9 @@ function renderSeatDots(container, groups) {
     var dotRadius = 3;
     var innerRadius = 28;
     var outerRadius = Math.min(width * 0.47, height - 18);
-    var seatGap = dotRadius * 2 + 1.2;
+    var seatGap = dotRadius * 2 + 0.8;
     var seats = [];
+    var positions = [];
 
     container.innerHTML = '';
 
@@ -98,32 +99,51 @@ function renderSeatDots(container, groups) {
         }
     }
 
-    var seatIndex = 0;
-
-    for (var row = 0; row < rows && seatIndex < seats.length; row++) {
+    for (var row = 0; row < rows; row++) {
         var rowRadius = rows === 1
             ? (innerRadius + outerRadius) / 2
             : innerRadius + ((outerRadius - innerRadius) * row / (rows - 1));
         var seatsInRow = rowCounts[row];
+        var rowOffset = row % 2 === 0 ? -0.18 : 0.18;
 
         for (var rowSeat = 0; rowSeat < seatsInRow; rowSeat++) {
-            var group = seats[seatIndex];
-            var angle = Math.PI - ((rowSeat + 0.5) * Math.PI / seatsInRow);
+            var angleStep = Math.PI / seatsInRow;
+            var angle = Math.PI - ((rowSeat + 0.5 + rowOffset) * angleStep);
             var x = centerX + Math.cos(angle) * rowRadius;
             var y = centerY - Math.sin(angle) * rowRadius;
-            var circle = document.createElementNS(svgNS, 'circle');
-            var title = document.createElementNS(svgNS, 'title');
-
-            circle.setAttribute('cx', x.toFixed(2));
-            circle.setAttribute('cy', y.toFixed(2));
-            circle.setAttribute('r', dotRadius);
-            circle.setAttribute('fill', group.color);
-            circle.setAttribute('aria-label', group.label + ' seat');
-            title.textContent = group.label + ' seat';
-            circle.appendChild(title);
-            svg.appendChild(circle);
-            seatIndex++;
+            positions.push({
+                x: x,
+                y: y,
+                row: row,
+                rowSeat: rowSeat
+            });
         }
+    }
+
+    positions.sort(function(a, b) {
+        if (Math.abs(a.x - b.x) > dotRadius) {
+            return a.x - b.x;
+        }
+        if (a.row !== b.row) {
+            return b.row - a.row;
+        }
+        return a.rowSeat - b.rowSeat;
+    });
+
+    for (var seatIndex = 0; seatIndex < seats.length; seatIndex++) {
+        var group = seats[seatIndex];
+        var position = positions[seatIndex];
+        var circle = document.createElementNS(svgNS, 'circle');
+        var title = document.createElementNS(svgNS, 'title');
+
+        circle.setAttribute('cx', position.x.toFixed(2));
+        circle.setAttribute('cy', position.y.toFixed(2));
+        circle.setAttribute('r', dotRadius);
+        circle.setAttribute('fill', group.color);
+        circle.setAttribute('aria-label', group.label + ' seat');
+        title.textContent = group.label + ' seat';
+        circle.appendChild(title);
+        svg.appendChild(circle);
     }
 
     return svg;
