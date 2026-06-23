@@ -19,6 +19,22 @@ set-jump: baden_landtag_results
 
 @baden_landtag_results
 on-arrival: {! Q.baden_next_election_year_preview = Number(Q.baden_election_year) || Number(Q.year) || 0; Q.baden_next_election_month_preview = Q.baden_election_month; if (typeof window !== 'undefined' && typeof window.calculateBadenLandtagResults === 'function') { window.calculateBadenLandtagResults(Q); } if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
+on-display: {!
+var badenLandtagChart = document.getElementById('baden_landtag_chart');
+if (badenLandtagChart && typeof renderSeatDots === 'function') {
+    renderSeatDots(badenLandtagChart, [
+        { label: 'SPD', seats: Number(Q.baden_spd_r) || 0, color: '#E3000F' },
+        { label: 'Z', seats: Number(Q.baden_z_r) || 0, color: '#000000' },
+        { label: Q.ddp_name || 'DDP', seats: Number(Q.baden_ddp_r) || 0, color: '#DCCA4A' },
+        { label: 'DVP', seats: Number(Q.baden_dvp_r) || 0, color: '#D5AC27' },
+        { label: 'DNVP', seats: Number(Q.baden_dnvp_r) || 0, color: '#3f7bc1' },
+        { label: 'KPD', seats: Number(Q.baden_kpd_r) || 0, color: '#8B0000' },
+        { label: 'WP', seats: Number(Q.baden_wp_r) || 0, color: '#7A5C20' },
+        { label: 'NSDAP', seats: Number(Q.baden_nsdap_r) || 0, color: '#954B00' },
+        { label: 'Other', seats: Number(Q.baden_other_r) || 0, color: '#a0a0a0' }
+    ]);
+}
+!}
 
 = Baden Landtag election results
 
@@ -31,6 +47,8 @@ Current Baden government: **[+ baden_current_government_name +]** ([+ baden_curr
 Current government seats: **[+ baden_current_government_seats +] / 88**. Status: **[+ baden_current_government_status +]**. Majority cabinet: **[+ baden_majority_cabinet +]**.
 
 Current government leverage: **[+ baden_leverage +]**.
+
+{!<div id="baden_landtag_chart"></div>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Baden vote share</td><td>Seats (out of 88)</td></tr>!}
