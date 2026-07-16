@@ -21,18 +21,24 @@ set-jump: bavarian_landtag_results
 on-arrival: {! Q.bavaria_next_election_year_preview = Number(Q.bavaria_election_year) || Number(Q.year) || 0; Q.bavaria_next_election_month_preview = Q.bavaria_election_month; if (typeof window !== 'undefined' && typeof window.calculateBavarianLandtagResults === 'function') { window.calculateBavarianLandtagResults(Q); } !}
 on-display: {!
 var bavariaLandtagChart = document.getElementById('bavaria_landtag_chart');
-if (bavariaLandtagChart && typeof renderSeatDots === 'function') {
-    renderSeatDots(bavariaLandtagChart, [
-        { label: 'SPD', seats: Number(Q.bavaria_spd_r) || 0, color: '#E3000F' },
-        { label: 'KPD', seats: Number(Q.bavaria_kpd_r) || 0, color: '#8B0000' },
-        { label: 'BVP/Z', seats: Number(Q.bavaria_bvp_z_r) || 0, color: '#000000' },
-        { label: Q.ddp_name || 'DDP', seats: Number(Q.bavaria_ddp_r) || 0, color: '#DCCA4A' },
-        { label: 'DVP', seats: Number(Q.bavaria_dvp_r) || 0, color: '#D5AC27' },
-        { label: 'DNVP', seats: Number(Q.bavaria_dnvp_r) || 0, color: '#3f7bc1' },
-        { label: 'NSDAP', seats: Number(Q.bavaria_nsdap_r) || 0, color: '#954B00' },
-        { label: 'Bavarian Peasant Party', seats: Number(Q.bavaria_peasant_r) || 0, color: '#5E8C31' },
-        { label: 'Others', seats: Number(Q.bavaria_other_r) || 0, color: '#a0a0a0' }
-    ]);
+if (bavariaLandtagChart && typeof d3 !== 'undefined' && typeof d3.parliament === 'function') {
+    bavariaLandtagChart.innerHTML = '';
+    var data = [
+        { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.bavaria_spd_r) || 0, color: '#E3000F' },
+        { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.bavaria_kpd_r) || 0, color: '#8B0000' },
+        { id: 'bvp_z', legend: 'BVP/Z', name: 'BVP/Z', seats: Number(Q.bavaria_bvp_z_r) || 0, color: '#000000' },
+        { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.bavaria_ddp_r) || 0, color: '#DCCA4A' },
+        { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.bavaria_dvp_r) || 0, color: '#D5AC27' },
+        { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.bavaria_dnvp_r) || 0, color: '#3f7bc1' },
+        { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.bavaria_nsdap_r) || 0, color: '#954B00' },
+        { id: 'peasant', legend: 'Bavarian Peasant Party', name: 'Bavarian Peasant Party', seats: Number(Q.bavaria_peasant_r) || 0, color: '#5E8C31' },
+        { id: 'other', legend: 'Others', name: 'Others', seats: Number(Q.bavaria_other_r) || 0, color: '#a0a0a0' }
+    ];
+    var parliament = d3.parliament();
+    parliament.width(320).innerRadiusCoef(0.4);
+    parliament.enter.fromCenter(true).smallToBig(true);
+    parliament.exit.toCenter(false).bigToSmall(true);
+    d3.select(bavariaLandtagChart).datum(data).call(parliament);
 }
 !}
 
@@ -48,7 +54,7 @@ Current government seats: **[+ bavaria_current_government_seats +] / 128**. Stat
 
 Current government leverage: **[+ bavaria_leverage +]**.
 
-{!<div id="bavaria_landtag_chart"></div>!}
+{!<svg id="bavaria_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Bavarian vote share</td><td>Seats (out of 128)</td></tr>!}
