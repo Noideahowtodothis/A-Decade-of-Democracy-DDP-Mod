@@ -12,6 +12,26 @@ function addMonths(date, months) {
     return date;
 }
 
+function renderParliamentChart(containerId, data) {
+    var chart = document.getElementById(containerId);
+
+    if (!chart) {
+        return;
+    }
+
+    if (typeof d3 === 'undefined' || typeof d3.parliament !== 'function') {
+        return;
+    }
+
+    chart.innerHTML = '';
+
+    var parliament = d3.parliament();
+    parliament.width(320).innerRadiusCoef(0.4);
+    parliament.enter.fromCenter(true).smallToBig(true);
+    parliament.exit.toCenter(false).bigToSmall(true);
+    d3.select(chart).datum(data).call(parliament);
+}
+
 function renderSeatDots(container, groups) {
     var svgNS = 'http://www.w3.org/2000/svg';
     var width = 320;
