@@ -20,27 +20,19 @@ set-jump: prussian_landtag_results
 @prussian_landtag_results
 on-arrival: {! if (typeof window !== 'undefined' && typeof window.calculatePrussianLandtagResults === 'function') { window.calculatePrussianLandtagResults(Q); } !}
 on-display: {!
-var prussiaLandtagChart = document.getElementById('prussia_landtag_chart');
-if (prussiaLandtagChart && typeof d3 !== 'undefined' && typeof d3.parliament === 'function') {
-    prussiaLandtagChart.innerHTML = '';
-    var data = [
-        { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.prussia_spd_r) || 0, color: '#E3000F' },
-        { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.prussia_kpd_r) || 0, color: '#8B0000' },
-        { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.prussia_ddp_r) || 0, color: '#DCCA4A' },
-        { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.prussia_z_r) || 0, color: '#000000' },
-        { id: 'bvp', legend: 'BVP', name: 'BVP', seats: Number(Q.prussia_bvp_r) || 0, color: '#69A2BE' },
-        { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.prussia_dvp_r) || 0, color: '#D5AC27' },
-        { id: 'wp', legend: 'WP', name: 'WP', seats: Number(Q.prussia_wp_r) || 0, color: '#7A5C20' },
-        { id: 'other', legend: 'Others', name: 'Others', seats: Number(Q.prussia_other_r) || 0, color: '#a0a0a0' },
-        { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.prussia_dnvp_r) || 0, color: '#3f7bc1' },
-        { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.prussia_nsdap_r) || 0, color: '#954B00' }
-    ];
-    var parliament = d3.parliament();
-    parliament.width(320).innerRadiusCoef(0.4);
-    parliament.enter.fromCenter(true).smallToBig(true);
-    parliament.exit.toCenter(false).bigToSmall(true);
-    d3.select(prussiaLandtagChart).datum(data).call(parliament);
-}
+var data = [
+    { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.prussia_spd_r) || 0, color: '#E3000F' },
+    { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.prussia_kpd_r) || 0, color: '#8B0000' },
+    { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.prussia_ddp_r) || 0, color: '#DCCA4A' },
+    { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.prussia_z_r) || 0, color: '#000000' },
+    { id: 'bvp', legend: 'BVP', name: 'BVP', seats: Number(Q.prussia_bvp_r) || 0, color: '#69A2BE' },
+    { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.prussia_dvp_r) || 0, color: '#D5AC27' },
+    { id: 'wp', legend: 'WP', name: 'WP', seats: Number(Q.prussia_wp_r) || 0, color: '#7A5C20' },
+    { id: 'other', legend: 'Others', name: 'Others', seats: Number(Q.prussia_other_r) || 0, color: '#a0a0a0' },
+    { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.prussia_dnvp_r) || 0, color: '#3f7bc1' },
+    { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.prussia_nsdap_r) || 0, color: '#954B00' }
+];
+renderParliamentChart("prussia_landtag_chart", data);
 !}
 
 = Prussian Landtag election results
