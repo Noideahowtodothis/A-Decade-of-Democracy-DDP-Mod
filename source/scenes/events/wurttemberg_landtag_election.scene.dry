@@ -21,19 +21,25 @@ set-jump: wurttemberg_landtag_results
 on-arrival: {! Q.wurttemberg_next_election_year_preview = Number(Q.wurttemberg_election_year) || Number(Q.year) || 0; Q.wurttemberg_next_election_month_preview = Q.wurttemberg_election_month; if (typeof window !== 'undefined' && typeof window.calculateWurttembergLandtagResults === 'function') { window.calculateWurttembergLandtagResults(Q); } !}
 on-display: {!
 var wurttembergLandtagChart = document.getElementById('wurttemberg_landtag_chart');
-if (wurttembergLandtagChart && typeof renderSeatDots === 'function') {
-    renderSeatDots(wurttembergLandtagChart, [
-        { label: 'SPD', seats: Number(Q.wurttemberg_spd_r) || 0, color: '#E3000F' },
-        { label: Q.ddp_name || 'DDP', seats: Number(Q.wurttemberg_ddp_r) || 0, color: '#DCCA4A' },
-        { label: 'DVP', seats: Number(Q.wurttemberg_dvp_r) || 0, color: '#D5AC27' },
-        { label: 'Z', seats: Number(Q.wurttemberg_z_r) || 0, color: '#000000' },
-        { label: 'KPD', seats: Number(Q.wurttemberg_kpd_r) || 0, color: '#8B0000' },
-        { label: 'DNVP', seats: Number(Q.wurttemberg_dnvp_r) || 0, color: '#3f7bc1' },
-        { label: 'CSVD', seats: Number(Q.wurttemberg_csvd_r) || 0, color: '#4F8F46' },
-        { label: 'WBWB', seats: Number(Q.wurttemberg_wbwb_r) || 0, color: '#5E8C31' },
-        { label: 'NSDAP', seats: Number(Q.wurttemberg_nsdap_r) || 0, color: '#954B00' },
-        { label: 'Other', seats: Number(Q.wurttemberg_other_r) || 0, color: '#a0a0a0' }
-    ]);
+if (wurttembergLandtagChart && typeof d3 !== 'undefined' && typeof d3.parliament === 'function') {
+    wurttembergLandtagChart.innerHTML = '';
+    var data = [
+        { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.wurttemberg_spd_r) || 0, color: '#E3000F' },
+        { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.wurttemberg_ddp_r) || 0, color: '#DCCA4A' },
+        { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.wurttemberg_dvp_r) || 0, color: '#D5AC27' },
+        { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.wurttemberg_z_r) || 0, color: '#000000' },
+        { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.wurttemberg_kpd_r) || 0, color: '#8B0000' },
+        { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.wurttemberg_dnvp_r) || 0, color: '#3f7bc1' },
+        { id: 'csvd', legend: 'CSVD', name: 'CSVD', seats: Number(Q.wurttemberg_csvd_r) || 0, color: '#4F8F46' },
+        { id: 'wbwb', legend: 'WBWB', name: 'WBWB', seats: Number(Q.wurttemberg_wbwb_r) || 0, color: '#5E8C31' },
+        { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.wurttemberg_nsdap_r) || 0, color: '#954B00' },
+        { id: 'other', legend: 'Other', name: 'Other', seats: Number(Q.wurttemberg_other_r) || 0, color: '#a0a0a0' }
+    ];
+    var parliament = d3.parliament();
+    parliament.width(320).innerRadiusCoef(0.4);
+    parliament.enter.fromCenter(true).smallToBig(true);
+    parliament.exit.toCenter(false).bigToSmall(true);
+    d3.select(wurttembergLandtagChart).datum(data).call(parliament);
 }
 !}
 
@@ -49,7 +55,7 @@ Current government seats: **[+ wurttemberg_current_government_seats +] / 80**. S
 
 Current government leverage: **[+ wurttemberg_leverage +]**.
 
-{!<div id="wurttemberg_landtag_chart"></div>!}
+{!<svg id="wurttemberg_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Württemberg vote share</td><td>Seats (out of 80)</td></tr>!}
