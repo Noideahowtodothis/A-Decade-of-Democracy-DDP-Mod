@@ -20,26 +20,18 @@ set-jump: baden_landtag_results
 @baden_landtag_results
 on-arrival: {! Q.baden_next_election_year_preview = Number(Q.baden_election_year) || Number(Q.year) || 0; Q.baden_next_election_month_preview = Q.baden_election_month; if (typeof window !== 'undefined' && typeof window.calculateBadenLandtagResults === 'function') { window.calculateBadenLandtagResults(Q); } if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') { window.updateBadenCoalitionOptions(Q); } !}
 on-display: {!
-var badenLandtagChart = document.getElementById('baden_landtag_chart');
-if (badenLandtagChart && typeof d3 !== 'undefined' && typeof d3.parliament === 'function') {
-    badenLandtagChart.innerHTML = '';
-    var data = [
-        { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.baden_spd_r) || 0, color: '#E3000F' },
-        { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.baden_z_r) || 0, color: '#000000' },
-        { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.baden_ddp_r) || 0, color: '#DCCA4A' },
-        { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.baden_dvp_r) || 0, color: '#D5AC27' },
-        { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.baden_dnvp_r) || 0, color: '#3f7bc1' },
-        { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.baden_kpd_r) || 0, color: '#8B0000' },
-        { id: 'wp', legend: 'WP', name: 'WP', seats: Number(Q.baden_wp_r) || 0, color: '#7A5C20' },
-        { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.baden_nsdap_r) || 0, color: '#954B00' },
-        { id: 'other', legend: 'Other', name: 'Other', seats: Number(Q.baden_other_r) || 0, color: '#a0a0a0' }
-    ];
-    var parliament = d3.parliament();
-    parliament.width(320).innerRadiusCoef(0.4);
-    parliament.enter.fromCenter(true).smallToBig(true);
-    parliament.exit.toCenter(false).bigToSmall(true);
-    d3.select(badenLandtagChart).datum(data).call(parliament);
-}
+var data = [
+    { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.baden_spd_r) || 0, color: '#E3000F' },
+    { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.baden_z_r) || 0, color: '#000000' },
+    { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.baden_ddp_r) || 0, color: '#DCCA4A' },
+    { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.baden_dvp_r) || 0, color: '#D5AC27' },
+    { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.baden_dnvp_r) || 0, color: '#3f7bc1' },
+    { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.baden_kpd_r) || 0, color: '#8B0000' },
+    { id: 'wp', legend: 'WP', name: 'WP', seats: Number(Q.baden_wp_r) || 0, color: '#7A5C20' },
+    { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.baden_nsdap_r) || 0, color: '#954B00' },
+    { id: 'other', legend: 'Other', name: 'Other', seats: Number(Q.baden_other_r) || 0, color: '#a0a0a0' }
+];
+renderParliamentChart("baden_landtag_chart", data);
 !}
 
 = Baden Landtag election results
