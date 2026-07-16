@@ -159,8 +159,7 @@ TODO: Congress introduction text.
 on-arrival: {! globalThis.prepareDdpCongress(Q); !}
 on-display: {!
 var ddpCongressDelegateChart = document.getElementById('ddp_congress_delegate_chart');
-if (ddpCongressDelegateChart && typeof d3 !== 'undefined' && typeof d3.parliament === 'function') {
-    ddpCongressDelegateChart.innerHTML = '';
+if (ddpCongressDelegateChart && typeof renderParliamentChart === 'function') {
     var data = [
         { id: 'ddp_left_progressive', legend: 'Left Progressive', name: 'Left Progressive', seats: Number(Q.ddp_left_progressive_delegate_share) || 0, color: '#E3000F' },
         { id: 'ddp_laborist', legend: 'Laborist', name: 'Laborist', seats: Number(Q.ddp_laborist_delegate_share) || 0, color: '#D5AC27' },
@@ -168,11 +167,7 @@ if (ddpCongressDelegateChart && typeof d3 !== 'undefined' && typeof d3.parliamen
         { id: 'ddp_left_bourgeois', legend: 'Left Bourgeois', name: 'Left Bourgeois', seats: Number(Q.ddp_left_bourgeois_delegate_share) || 0, color: '#3f7bc1' },
         { id: 'ddp_regionalist', legend: 'Regionalist', name: 'Regionalist', seats: Number(Q.ddp_regionalist_delegate_share) || 0, color: '#5E8C31' }
     ];
-    var parliament = d3.parliament();
-    parliament.width(320).innerRadiusCoef(0.4);
-    parliament.enter.fromCenter(true).smallToBig(true);
-    parliament.exit.toCenter(false).bigToSmall(true);
-    d3.select(ddpCongressDelegateChart).datum(data).call(parliament);
+    renderParliamentChart("ddp_congress_delegate_chart", data);
 }
 !}
 
