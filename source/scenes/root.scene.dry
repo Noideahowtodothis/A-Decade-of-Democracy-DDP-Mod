@@ -219,7 +219,7 @@ Q.saxony_landtag_seat_count = 96;
 Q.saxony_majority_threshold = 49;
 Q.saxony_landtag_total_seats = 96;
 Q.saxony_landtag_seat_allocation_valid = 1;
-Q.oldenburg_government = 0;
+Q.oldenburg_government = 3;
 Q.oldenburg_majority_cabinet = 0;
 Q.oldenburg_leader = "";
 
@@ -479,7 +479,7 @@ Q.saxony_landtag_seat_count = 96;
 Q.saxony_majority_threshold = 49;
 Q.saxony_landtag_total_seats = 96;
 Q.saxony_landtag_seat_allocation_valid = 1;
-Q.oldenburg_government = 0;
+Q.oldenburg_government = 3;
 Q.oldenburg_majority_cabinet = 0;
 Q.oldenburg_leader = "";
 
@@ -878,7 +878,7 @@ Q.saxony_landtag_seat_count = 96;
 Q.saxony_majority_threshold = 49;
 Q.saxony_landtag_total_seats = 96;
 Q.saxony_landtag_seat_allocation_valid = 1;
-Q.oldenburg_government = 0;
+Q.oldenburg_government = 3;
 Q.oldenburg_majority_cabinet = 0;
 Q.oldenburg_leader = "";
 
@@ -1325,13 +1325,26 @@ for (var initialVoteShareParty of initialVoteShareParties) {
 if (typeof window !== 'undefined' && typeof window.calculateBadenLandtagResults === 'function') {
     window.calculateBadenLandtagResults(Q);
 }
+if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') {
+    window.updateBadenCoalitionOptions(Q);
+}
+
+if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') {
+    window.updateSaxonyCoalitionOptions(Q);
+}
 
 if (typeof window !== 'undefined' && typeof window.calculateThuringiaLandtagResults === 'function') {
     window.calculateThuringiaLandtagResults(Q);
 }
+if (typeof window !== 'undefined' && typeof window.updateThuringiaCoalitionOptions === 'function') {
+    window.updateThuringiaCoalitionOptions(Q);
+}
 
 if (typeof window !== 'undefined' && typeof window.calculateMecklenburgSchwerinLandtagResults === 'function') {
     window.calculateMecklenburgSchwerinLandtagResults(Q);
+}
+if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') {
+    window.updateMecklenburgSchwerinCoalitionOptions(Q);
 }
 
 var startupPrussiaWeights = {z: 1.26, dnvp: 1.17, kpd: 1.03, spd: 0.95, ddp: 0.91, nsdap: 0.87, dvp: 1.00, bvp: 1.00, wp: 1.00, other: 1.00};
