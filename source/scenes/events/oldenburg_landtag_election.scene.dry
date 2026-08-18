@@ -19,6 +19,21 @@ set-jump: oldenburg_landtag_results
 
 @oldenburg_landtag_results
 on-arrival: {! Q.oldenburg_next_election_year_preview = Number(Q.oldenburg_election_year) || Number(Q.year) || 0; Q.oldenburg_next_election_month_preview = Q.oldenburg_election_month; if (typeof window !== 'undefined' && typeof window.calculateOldenburgLandtagResults === 'function') { window.calculateOldenburgLandtagResults(Q); } !}
+on-display: {!
+var data = [
+    { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.oldenburg_spd_r) || 0, color: '#E3000F' },
+    { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.oldenburg_z_r) || 0, color: '#000' },
+    { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.oldenburg_ddp_r) || 0, color: '#DCCA4A' },
+    { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.oldenburg_dvp_r) || 0, color: '#D5AC27' },
+    { id: 'wp', legend: 'WP', name: 'WP', seats: Number(Q.oldenburg_wp_r) || 0, color: '#5E8C31' },
+    { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.oldenburg_dnvp_r) || 0, color: '#3f7bc1' },
+    { id: 'cnbl', legend: 'CNBL', name: 'CNBL', seats: Number(Q.oldenburg_cnbl_r) || 0, color: '#7A5C20' },
+    { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.oldenburg_kpd_r) || 0, color: '#8B0000' },
+    { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.oldenburg_nsdap_r) || 0, color: '#954B00' },
+    { id: 'other', legend: 'Others', name: 'Others', seats: Number(Q.oldenburg_other_r) || 0, color: '#a0a0a0' }
+];
+renderParliamentChart("oldenburg_landtag_chart", data);
+!}
 
 = Oldenburg Landtag election results
 
@@ -31,6 +46,8 @@ Current Oldenburg government: **[+ oldenburg_current_government_name +]** ([+ ol
 Current government seats: **[+ oldenburg_current_government_seats +] / 48**. Status: **[+ oldenburg_current_government_status +]**. Majority cabinet: **[+ oldenburg_majority_cabinet +]**.
 
 Current government leverage: **[+ oldenburg_leverage +]**.
+
+{!<svg id="oldenburg_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Oldenburg vote share</td><td>Seats (out of 48)</td></tr>!}
