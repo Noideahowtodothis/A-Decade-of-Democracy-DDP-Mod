@@ -1019,6 +1019,12 @@ window.updatePrussianCoalitionOptions = function(qualities) {
     q.prussia_current_government_seats = selected.seats;
     q.prussia_majority_cabinet = selected.seats >= threshold ? 1 : 0;
     q.prussia_current_government_status = q.prussia_majority_cabinet ? 'Majority' : 'Minority';
+    q.prussia_spd_in_government = selected.parties.indexOf('SPD') !== -1 ? 1 : 0;
+    q.prussia_z_in_government = selected.parties.indexOf('Z') !== -1 ? 1 : 0;
+    q.prussia_ddp_in_government = selected.parties.indexOf('DDP') !== -1 ? 1 : 0;
+    q.prussia_dvp_in_government = selected.parties.indexOf('DVP') !== -1 ? 1 : 0;
+    q.prussia_dnvp_in_government = selected.parties.indexOf('DNVP') !== -1 ? 1 : 0;
+    q.prussia_nsdap_in_government = selected.parties.indexOf('NSDAP') !== -1 ? 1 : 0;
     q.spd_prussia = Number(q.prussia_government) === 1 || Number(q.prussia_government) === 2 ? 1 : 0;
 };
 window.calculatePrussianLandtagResults(Q);
