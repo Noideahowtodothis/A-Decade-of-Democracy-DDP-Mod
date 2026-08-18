@@ -19,6 +19,19 @@ set-jump: mecklenburg_schwerin_landtag_results
 
 @mecklenburg_schwerin_landtag_results
 on-arrival: {! Q.mecklenburg_schwerin_next_election_year_preview = Number(Q.mecklenburg_schwerin_election_year) || Number(Q.year) || 0; Q.mecklenburg_schwerin_next_election_month_preview = Q.mecklenburg_schwerin_election_month; if (typeof window !== 'undefined' && typeof window.calculateMecklenburgSchwerinLandtagResults === 'function') { window.calculateMecklenburgSchwerinLandtagResults(Q); } !}
+on-display: {!
+var data = [
+    { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.mecklenburg_schwerin_spd_r) || 0, color: '#E3000F' },
+    { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.mecklenburg_schwerin_ddp_r) || 0, color: '#DCCA4A' },
+    { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.mecklenburg_schwerin_dvp_r) || 0, color: '#D5AC27' },
+    { id: 'wp', legend: 'WP', name: 'WP', seats: Number(Q.mecklenburg_schwerin_wp_r) || 0, color: '#5E8C31' },
+    { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.mecklenburg_schwerin_dnvp_r) || 0, color: '#3f7bc1' },
+    { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.mecklenburg_schwerin_kpd_r) || 0, color: '#8B0000' },
+    { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.mecklenburg_schwerin_nsdap_r) || 0, color: '#954B00' },
+    { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.mecklenburg_schwerin_z_r) || 0, color: '#000' }
+];
+renderParliamentChart("mecklenburg_schwerin_landtag_chart", data);
+!}
 
 = Mecklenburg-Schwerin Landtag election results
 
@@ -31,6 +44,8 @@ Current Mecklenburg-Schwerin government: **[+ mecklenburg_schwerin_current_gover
 Current government seats: **[+ mecklenburg_schwerin_current_government_seats +] / 51**. Status: **[+ mecklenburg_schwerin_current_government_status +]**. Majority cabinet: **[+ mecklenburg_schwerin_majority_cabinet +]**.
 
 Current government leverage: **[+ mecklenburg_schwerin_leverage +]**.
+
+{!<svg id="mecklenburg_schwerin_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Mecklenburg-Schwerin vote share</td><td>Seats (out of 51)</td></tr>!}
