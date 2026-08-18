@@ -19,6 +19,19 @@ set-jump: hamburg_landtag_results
 
 @hamburg_landtag_results
 on-arrival: {! Q.hamburg_next_election_year_preview = Number(Q.hamburg_election_year) || Number(Q.year) || 0; Q.hamburg_next_election_month_preview = Q.hamburg_election_month; if (typeof window !== 'undefined' && typeof window.calculateHamburgLandtagResults === 'function') { window.calculateHamburgLandtagResults(Q); } !}
+on-display: {!
+var data = [
+    { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.hamburg_spd_r) || 0, color: '#E3000F' },
+    { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.hamburg_kpd_r) || 0, color: '#8B0000' },
+    { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.hamburg_ddp_r) || 0, color: '#DCCA4A' },
+    { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.hamburg_dvp_r) || 0, color: '#D5AC27' },
+    { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.hamburg_dnvp_r) || 0, color: '#3f7bc1' },
+    { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.hamburg_z_r) || 0, color: '#000' },
+    { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.hamburg_nsdap_r) || 0, color: '#954B00' },
+    { id: 'wp', legend: 'WP', name: 'WP', seats: Number(Q.hamburg_wp_r) || 0, color: '#7A5C20' }
+];
+renderParliamentChart("hamburg_landtag_chart", data);
+!}
 
 = Hamburg Bürgerschaft election results
 
@@ -31,6 +44,8 @@ Current Hamburg government: **[+ hamburg_current_government_name +]** ([+ hambur
 Current government seats: **[+ hamburg_current_government_seats +] / 160**. Status: **[+ hamburg_current_government_status +]**. Majority cabinet: **[+ hamburg_majority_cabinet +]**.
 
 Current government leverage: **[+ hamburg_leverage +]**.
+
+{!<svg id="hamburg_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Hamburg vote share</td><td>Seats (out of 160)</td></tr>!}
