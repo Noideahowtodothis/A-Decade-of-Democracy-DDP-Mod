@@ -3,6 +3,25 @@ new-page: true
 on-arrival: {!
 Q.last_advisor_action = 0;
 Q.last_cabinet_action = 0;
+// Save migration for Landtag coalition tension state introduced after older saves were created.
+var landtagCoalitionTensionVariables = [
+    'prussia_coalition_tension',
+    'bavaria_coalition_tension',
+    'baden_coalition_tension',
+    'wurttemberg_coalition_tension',
+    'saxony_coalition_tension',
+    'thuringia_coalition_tension',
+    'hamburg_coalition_tension',
+    'bremen_coalition_tension',
+    'lubeck_coalition_tension',
+    'oldenburg_coalition_tension',
+    'mecklenburg_schwerin_coalition_tension'
+];
+for (var landtagCoalitionTensionVariable of landtagCoalitionTensionVariables) {
+    if (Q[landtagCoalitionTensionVariable] === undefined) {
+        Q[landtagCoalitionTensionVariable] = 0;
+    }
+}
 // Save migration/defaults for parties added after older saves were created.
 var canonicalParties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
 if (!Q.parties) {

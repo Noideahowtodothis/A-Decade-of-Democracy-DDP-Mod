@@ -115,6 +115,17 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.minority_government = 0;
     Q.coalition_dissent = 0;
     Q.kpd_coalition_dissent = 0;
+    Q.prussia_coalition_tension = 0;
+    Q.bavaria_coalition_tension = 0;
+    Q.baden_coalition_tension = 0;
+    Q.wurttemberg_coalition_tension = 0;
+    Q.saxony_coalition_tension = 0;
+    Q.thuringia_coalition_tension = 0;
+    Q.hamburg_coalition_tension = 0;
+    Q.bremen_coalition_tension = 0;
+    Q.lubeck_coalition_tension = 0;
+    Q.oldenburg_coalition_tension = 0;
+    Q.mecklenburg_schwerin_coalition_tension = 0;
 
     Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployed', 'catholics'];
     Q.parties = ['spd', 'kpd', 'z', 'bvp', 'ddp', 'dvp', 'wp', 'dnvp', 'nsdap', 'other'];
@@ -1427,6 +1438,19 @@ Q.in_minority_government = 0;
 Q.coalition_dissent = 0;
 // dissent from the KPD, in a popular front or left front government
 Q.kpd_coalition_dissent = 0;
+
+// Landtag coalition tension is separate state reserved for future state-level coalition mechanics.
+Q.prussia_coalition_tension = 0;
+Q.bavaria_coalition_tension = 0;
+Q.baden_coalition_tension = 0;
+Q.wurttemberg_coalition_tension = 0;
+Q.saxony_coalition_tension = 0;
+Q.thuringia_coalition_tension = 0;
+Q.hamburg_coalition_tension = 0;
+Q.bremen_coalition_tension = 0;
+Q.lubeck_coalition_tension = 0;
+Q.oldenburg_coalition_tension = 0;
+Q.mecklenburg_schwerin_coalition_tension = 0;
 
 // does the SPD tolerate the government even if it is not a participant?
 Q.spd_toleration = 0;
