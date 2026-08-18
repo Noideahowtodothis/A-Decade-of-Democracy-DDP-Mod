@@ -1330,6 +1330,10 @@ if (typeof window !== 'undefined' && typeof window.calculateThuringiaLandtagResu
     window.calculateThuringiaLandtagResults(Q);
 }
 
+if (typeof window !== 'undefined' && typeof window.calculateMecklenburgSchwerinLandtagResults === 'function') {
+    window.calculateMecklenburgSchwerinLandtagResults(Q);
+}
+
 var startupPrussiaWeights = {z: 1.26, dnvp: 1.17, kpd: 1.03, spd: 0.95, ddp: 0.91, nsdap: 0.87, dvp: 1.00, bvp: 1.00, wp: 1.00, other: 1.00};
 // TODO(prussia-election): add specific Prussian BVP/WP/Other weights if/when state weights are defined.
 var startupPrussiaWeightedVotes = {};
