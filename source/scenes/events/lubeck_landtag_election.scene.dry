@@ -19,6 +19,20 @@ set-jump: lubeck_landtag_results
 
 @lubeck_landtag_results
 on-arrival: {! Q.lubeck_next_election_year_preview = Number(Q.lubeck_election_year) || Number(Q.year) || 0; Q.lubeck_next_election_month_preview = Q.lubeck_election_month; if (typeof window !== 'undefined' && typeof window.calculateLubeckLandtagResults === 'function') { window.calculateLubeckLandtagResults(Q); } !}
+on-display: {!
+var data = [
+    { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.lubeck_spd_r) || 0, color: '#E3000F' },
+    { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.lubeck_kpd_r) || 0, color: '#8B0000' },
+    { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.lubeck_ddp_r) || 0, color: '#DCCA4A' },
+    { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.lubeck_dvp_r) || 0, color: '#D5AC27' },
+    { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.lubeck_dnvp_r) || 0, color: '#3f7bc1' },
+    { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.lubeck_nsdap_r) || 0, color: '#954B00' },
+    { id: 'hvb', legend: Q.lubeck_hvb_name || 'HVB', name: Q.lubeck_hvb_name || 'HVB', seats: Number(Q.lubeck_hvb_r) || 0, color: '#7A5C20' },
+    { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.lubeck_z_r) || 0, color: '#000' },
+    { id: 'other', legend: 'Other', name: 'Other', seats: Number(Q.lubeck_other_r) || 0, color: '#a0a0a0' }
+];
+renderParliamentChart("lubeck_landtag_chart", data);
+!}
 
 = Lübeck election results
 
@@ -31,6 +45,8 @@ Current Lübeck government: **[+ lubeck_current_government_name +]** ([+ lubeck_
 Current government seats: **[+ lubeck_current_government_seats +] / 80**. Status: **[+ lubeck_current_government_status +]**. Majority cabinet: **[+ lubeck_majority_cabinet +]**.
 
 Current government leverage: **[+ lubeck_leverage +]**.
+
+{!<svg id="lubeck_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Lübeck vote share</td><td>Seats (out of 80)</td></tr>!}
