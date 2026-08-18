@@ -19,6 +19,19 @@ set-jump: bremen_landtag_results
 
 @bremen_landtag_results
 on-arrival: {! Q.bremen_next_election_year_preview = Number(Q.bremen_election_year) || Number(Q.year) || 0; Q.bremen_next_election_month_preview = Q.bremen_election_month; if (typeof window !== 'undefined' && typeof window.calculateBremenLandtagResults === 'function') { window.calculateBremenLandtagResults(Q); } !}
+on-display: {!
+var data = [
+    { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.bremen_spd_r) || 0, color: '#E3000F' },
+    { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.bremen_kpd_r) || 0, color: '#8B0000' },
+    { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.bremen_ddp_r) || 0, color: '#DCCA4A' },
+    { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.bremen_z_r) || 0, color: '#000' },
+    { id: 'dvp', legend: 'DVP/Other-aligned DVP', name: 'DVP/Other-aligned DVP', seats: Number(Q.bremen_dvp_r) || 0, color: '#D5AC27' },
+    { id: 'hausbesitzer', legend: 'Hausbesitzer Party', name: 'Hausbesitzer Party', seats: Number(Q.bremen_hausbesitzer_r) || 0, color: '#7A5C20' },
+    { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.bremen_dnvp_r) || 0, color: '#3f7bc1' },
+    { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.bremen_nsdap_r) || 0, color: '#954B00' }
+];
+renderParliamentChart("bremen_landtag_chart", data);
+!}
 
 = Bremen Bürgerschaft election results
 
@@ -31,6 +44,8 @@ Current Bremen government: **[+ bremen_current_government_name +]** ([+ bremen_c
 Current government seats: **[+ bremen_current_government_seats +] / 120**. Status: **[+ bremen_current_government_status +]**. Majority cabinet: **[+ bremen_majority_cabinet +]**.
 
 Current government leverage: **[+ bremen_leverage +]**.
+
+{!<svg id="bremen_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Bremen vote share</td><td>Seats (out of 120)</td></tr>!}
