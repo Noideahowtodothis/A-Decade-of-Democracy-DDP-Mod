@@ -19,6 +19,21 @@ set-jump: thuringia_landtag_results
 
 @thuringia_landtag_results
 on-arrival: {! Q.thuringia_next_election_year_preview = Number(Q.thuringia_election_year) || Number(Q.year) || 0; Q.thuringia_next_election_month_preview = Q.thuringia_election_month; if (typeof window !== 'undefined' && typeof window.calculateThuringiaLandtagResults === 'function') { window.calculateThuringiaLandtagResults(Q); } !}
+on-display: {!
+var data = [
+    { id: 'spd', legend: 'SPD', name: 'SPD', seats: Number(Q.thuringia_spd_r) || 0, color: '#E3000F' },
+    { id: 'kpd', legend: 'KPD', name: 'KPD', seats: Number(Q.thuringia_kpd_r) || 0, color: '#8B0000' },
+    { id: 'ddp', legend: Q.ddp_name || 'DDP', name: Q.ddp_name || 'DDP', seats: Number(Q.thuringia_ddp_r) || 0, color: '#DCCA4A' },
+    { id: 'dvp', legend: 'DVP', name: 'DVP', seats: Number(Q.thuringia_dvp_r) || 0, color: '#D5AC27' },
+    { id: 'dnvp', legend: 'DNVP', name: 'DNVP', seats: Number(Q.thuringia_dnvp_r) || 0, color: '#3f7bc1' },
+    { id: 'landbund', legend: 'Thüringer Landbund', name: 'Thüringer Landbund', seats: Number(Q.thuringia_landbund_r) || 0, color: '#7A5C20' },
+    { id: 'nsdap', legend: 'NSDAP', name: 'NSDAP', seats: Number(Q.thuringia_nsdap_r) || 0, color: '#954B00' },
+    { id: 'wp', legend: 'WP', name: 'WP', seats: Number(Q.thuringia_wp_r) || 0, color: '#5E8C31' },
+    { id: 'z', legend: 'Z', name: 'Z', seats: Number(Q.thuringia_z_r) || 0, color: '#000' },
+    { id: 'other', legend: 'Others', name: 'Others', seats: Number(Q.thuringia_other_r) || 0, color: '#a0a0a0' }
+];
+renderParliamentChart("thuringia_landtag_chart", data);
+!}
 
 = Thuringia Landtag election results
 
@@ -31,6 +46,8 @@ Current Thuringia government: **[+ thuringia_current_government_name +]** ([+ th
 Current government seats: **[+ thuringia_current_government_seats +] / 56**. Status: **[+ thuringia_current_government_status +]**. Majority cabinet: **[+ thuringia_majority_cabinet +]**.
 
 Current government leverage: **[+ thuringia_leverage +]**.
+
+{!<svg id="thuringia_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 {!<table>!}
 {!<tr><td>Party</td><td>Thuringia vote share</td><td>Seats (out of 56)</td></tr>!}
