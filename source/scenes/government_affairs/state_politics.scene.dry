@@ -190,7 +190,7 @@ var orderedPartiesByState = {
     wurttemberg: ['spd','ddp','dvp','z','kpd','dnvp','csvd','wbwb','nsdap','other'],
     thuringia: ['spd','kpd','ddp','dvp','dnvp','landbund','nsdap','wp','z','other']
 };
-var defaultParties = Q[p + '_parties'] || ['spd','kpd','z','ddp','dvp','wp','dnvp','nsdap','other'];
+var defaultParties = Q[p + '_parties'] || ['kpd','spd','z','ddp','dvp','wp','dnvp','nsdap','other'];
 var partyOrder = orderedPartiesByState[p] || defaultParties;
 var data = [];
 for (var idx = 0; idx < partyOrder.length; idx += 1) {
