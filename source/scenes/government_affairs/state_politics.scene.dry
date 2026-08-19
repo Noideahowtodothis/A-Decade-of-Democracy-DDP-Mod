@@ -168,8 +168,48 @@ Q.state_result_table_rows = lines.join('');
 Q.state_result_table_header = Q.state_land_name + ' vote share';
 
 !}
+on-display: {!
+var p = Q.state_land;
+var statePartyDisplayNames = {
+    spd: 'SPD', kpd: 'KPD', z: 'Z', bvp: 'BVP', bvp_z: 'BVP/Z', ddp: (Q.ddp_name || 'DDP'), dvp: 'DVP', wp: 'WP', dnvp: 'DNVP', nsdap: 'NSDAP', other: 'Other',
+    aspd: 'ASPD', peasant: 'Bavarian Peasant Party', hausbesitzer: 'Hausbesitzer Party', hvb: (Q.lubeck_hvb_name || 'HVB'), csvd: 'CSVD',
+    wbwb: (Q.wurttemberg_wbwb_party_name || 'WBWB'), landbund: 'Thüringer Landbund', cnbl: (Q.oldenburg_cnbl_name || 'CNBL')
+};
+var statePartyColors = {
+    spd: '#E3000F', kpd: '#8B0000', z: '#000000', bvp: '#69A2BE', bvp_z: '#000000', ddp: '#DCCA4A', dvp: '#D5AC27',
+    wp: '#7A5C20', dnvp: '#3f7bc1', nsdap: '#954B00', other: '#a0a0a0', aspd: '#C05050', peasant: '#5E8C31',
+    hausbesitzer: '#7A5C20', hvb: '#7A5C20', csvd: '#4F8F46', wbwb: '#5E8C31', landbund: '#7A5C20', cnbl: '#7A5C20'
+};
+var orderedPartiesByState = {
+    baden: ['spd','z','ddp','dvp','dnvp','kpd','nsdap','other'],
+    lubeck: ['spd','kpd','ddp','dvp','dnvp','nsdap','hvb','z','other'],
+    saxony: ['spd','aspd','kpd','ddp','dvp','dnvp','wp','nsdap','other'],
+    mecklenburg_schwerin: ['spd','ddp','dvp','wp','dnvp','kpd','nsdap','other'],
+    oldenburg: ['spd','z','ddp','dvp','wp','dnvp','cnbl','kpd','nsdap','other'],
+    wurttemberg: ['spd','ddp','dvp','z','kpd','dnvp','csvd','wbwb','nsdap','other'],
+    thuringia: ['spd','kpd','ddp','dvp','dnvp','landbund','nsdap','wp','z','other']
+};
+var defaultParties = Q[p + '_parties'] || ['spd','kpd','z','ddp','dvp','wp','dnvp','nsdap','other'];
+var partyOrder = orderedPartiesByState[p] || defaultParties;
+var data = [];
+for (var idx = 0; idx < partyOrder.length; idx += 1) {
+    var key = partyOrder[idx];
+    var label = statePartyDisplayNames[key] || key.toUpperCase();
+    data.push({
+        id: key,
+        legend: label,
+        name: label,
+        seats: Number(Q[p + '_' + key + '_r']) || 0,
+        color: statePartyColors[key] || '#a0a0a0',
+        outline: Q[p + '_' + key + '_in_government'] ? '#FFFFFF' : 'none'
+    });
+}
+renderParliamentChart("state_landtag_chart", data);
+!}
 
 = [+ state_land_name +] State Affairs
+
+{!<svg id="state_landtag_chart" style="width: 320px; height: 180px;"></svg>!}
 
 Current coalition/government: [+ state_government_name +]
 
