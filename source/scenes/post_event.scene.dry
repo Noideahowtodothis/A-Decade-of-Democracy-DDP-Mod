@@ -1591,6 +1591,8 @@ if (typeof window !== 'undefined') {
         q.oldenburg_ddp_in_government = parties.indexOf('DDP') >= 0 ? 1 : 0;
         q.oldenburg_z_in_government = parties.indexOf('Z') >= 0 ? 1 : 0;
         q.oldenburg_dvp_in_government = parties.indexOf('DVP') >= 0 ? 1 : 0;
+        q.oldenburg_wp_in_government = parties.indexOf('WP') >= 0 ? 1 : 0;
+        q.oldenburg_cnbl_in_government = parties.indexOf('CNBL') >= 0 ? 1 : 0;
         q.oldenburg_dnvp_in_government = parties.indexOf('DNVP') >= 0 ? 1 : 0;
         q.oldenburg_nsdap_in_government = parties.indexOf('NSDAP') >= 0 ? 1 : 0;
 
