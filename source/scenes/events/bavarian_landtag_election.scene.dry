@@ -13,7 +13,7 @@ Bavaria holds Landtag elections. This system reuses the federal party-support sy
 - @calculate_bavarian_landtag: Count the votes.
 
 @calculate_bavarian_landtag
-on-arrival: bavaria_government = 2 if bavaria_government == undefined; bavaria_leader = "Heinrich Held" if bavaria_leader == undefined; bavaria_majority_cabinet = 1 if bavaria_majority_cabinet == undefined
+on-arrival: bavaria_government = 2 if bavaria_government == undefined; bavaria_leader = "Heinrich Held" if bavaria_leader == undefined; bavaria_majority_cabinet = 1 if bavaria_majority_cabinet == undefined; bavaria_landtag_election_held = 1
 go-to: election_algorithm
 set-jump: bavarian_landtag_results
 

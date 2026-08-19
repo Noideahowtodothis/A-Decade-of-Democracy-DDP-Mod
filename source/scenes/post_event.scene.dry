@@ -999,7 +999,11 @@ if (typeof window !== 'undefined') {
         q.bavaria_majority_cabinet = selected.seats >= threshold ? 1 : 0;
         q.bavaria_current_government_status = q.bavaria_majority_cabinet ? 'Majority' : 'Minority';
     };
-    window.calculateBavarianLandtagResults(Q);
+    if (Q.bavaria_landtag_election_held === 1) {
+        window.calculateBavarianLandtagResults(Q);
+    } else {
+        window.updateBavarianCoalitionOptions(Q);
+    }
 
     // Calculate Bremen Bürgerschaft/Landtag support from federal party support using Bremen party weights.
     // DVP and Other are combined before applying the Bremen DVP/Other scale, then split 3/4 to DVP and 1/4 to the Bremen-only Hausbesitzer Party.
