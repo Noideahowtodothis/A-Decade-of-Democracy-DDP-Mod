@@ -1480,6 +1480,7 @@ if (typeof window !== 'undefined') {
         q.lubeck_ddp_in_government = selected.parties.indexOf('DDP') >= 0 ? 1 : 0;
         q.lubeck_dvp_in_government = selected.parties.indexOf('DVP') >= 0 ? 1 : 0;
         q.lubeck_hvb_in_government = selected.parties.indexOf('HVB') >= 0 ? 1 : 0;
+        q.lubeck_dnvp_in_government = selected.parties.indexOf('DNVP') >= 0 ? 1 : 0;
         q.lubeck_nsdap_in_government = selected.parties.indexOf('NSDAP') >= 0 ? 1 : 0;
         var currentYear = Number(q.year) || 0;
         q.lubeck_leader_default = q.lubeck_nsdap_in_government ? 'Otto-Heinrich Drechsler' : (q.lubeck_spd_in_government ? 'Paul Löwigt' : (q.lubeck_hvb_in_government ? (currentYear >= 1928 ? 'Rudolf Keibel' : 'Johann Martin Andreas Neumann') : (q.lubeck_dvp_in_government ? (q.lubeck_spd_in_government ? 'Carl Heinsohn' : 'Hans Ewers') : (q.lubeck_ddp_in_government ? 'Heinrich Eckholdt' : ''))));
