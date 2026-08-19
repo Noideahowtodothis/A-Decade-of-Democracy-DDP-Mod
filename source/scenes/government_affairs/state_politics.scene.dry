@@ -77,6 +77,7 @@ Q.state_land_name = stateNames[p] || 'Unknown Land';
 Q.state_government_name = Q[p + '_current_government_name'] || Q[p + '_government'] || 'No government recorded';
 Q.state_leader_name = Q[p + '_leader'] || 'No leader recorded';
 Q.state_government_status = Q[p + '_current_government_status'] || (Q[p + '_majority_cabinet'] ? 'Majority' : 'Minority');
+Q.state_coalition_tension = Number(Q[Q.state_land + '_coalition_tension']) || 0;
 Q.state_ddp_seats = Number(Q[p + '_ddp_r']) || 0;
 Q.state_total_seats = Number(Q[p + '_landtag_total_seats']) || Number(Q[p + '_landtag_seat_count']) || 0;
 Q.state_next_election_month = Q[p + '_election_month'] || '-';
@@ -216,6 +217,8 @@ Current coalition/government: [+ state_government_name +]
 Minister-President / state leader: [+ state_leader_name +]
 
 Cabinet status: [+ state_government_status +]
+
+Coalition tension: [+ state_coalition_tension +]
 
 DDP seats: [+ state_ddp_seats +] / [+ state_total_seats +]
 
