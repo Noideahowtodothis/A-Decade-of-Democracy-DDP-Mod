@@ -1116,6 +1116,12 @@ if (typeof window !== 'undefined') {
         q.bremen_current_government_name = selected.name;
         q.bremen_current_government_parties = selected.parties;
         q.bremen_current_government_seats = selected.seats;
+        q.bremen_spd_in_government = selected.parties.indexOf('SPD') >= 0 ? 1 : 0;
+        q.bremen_kpd_in_government = selected.parties.indexOf('KPD') >= 0 ? 1 : 0;
+        q.bremen_ddp_in_government = selected.parties.indexOf('DDP') >= 0 ? 1 : 0;
+        q.bremen_dvp_in_government = selected.parties.indexOf('DVP') >= 0 ? 1 : 0;
+        q.bremen_dnvp_in_government = selected.parties.indexOf('DNVP') >= 0 ? 1 : 0;
+        q.bremen_hausbesitzer_in_government = selected.parties.indexOf('Hausbesitzer') >= 0 ? 1 : 0;
         q.bremen_majority_cabinet = selected.seats >= threshold ? 1 : 0;
         q.bremen_current_government_status = q.bremen_majority_cabinet ? 'Majority' : 'Minority';
     };
