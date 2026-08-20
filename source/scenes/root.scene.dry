@@ -253,9 +253,9 @@ Q.thuringia_landtag_seat_count = 56;
 Q.thuringia_landtag_total_seats = 56;
 Q.thuringia_landtag_seat_allocation_valid = 1;
 Q.thuringia_landbund_party_name = "Thüringer Landbund";
-Q.saxony_government = 0;
+Q.saxony_government = 4;
 Q.saxony_majority_cabinet = 0;
-Q.saxony_leader = "";
+Q.saxony_leader = "Max Heldt";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.saxony_leverage = 0;
