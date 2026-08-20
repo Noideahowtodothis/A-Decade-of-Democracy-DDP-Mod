@@ -280,9 +280,9 @@ Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
-Q.wurttemberg_government = 4;
+Q.wurttemberg_government = 7;
 Q.wurttemberg_majority_cabinet = 1;
-Q.wurttemberg_leader = "Eugen Bolz";
+Q.wurttemberg_leader = "Wilhelm Bazille";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.wurttemberg_leverage = 0;
@@ -582,9 +582,9 @@ Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
-Q.wurttemberg_government = 4;
+Q.wurttemberg_government = 7;
 Q.wurttemberg_majority_cabinet = 1;
-Q.wurttemberg_leader = "Eugen Bolz";
+Q.wurttemberg_leader = "Wilhelm Bazille";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.wurttemberg_leverage = 0;
@@ -1038,9 +1038,9 @@ Q.oldenburg_landtag_seat_count = 48;
 Q.oldenburg_majority_threshold = 25;
 Q.oldenburg_landtag_total_seats = 48;
 Q.oldenburg_landtag_seat_allocation_valid = 1;
-Q.wurttemberg_government = 4;
+Q.wurttemberg_government = 7;
 Q.wurttemberg_majority_cabinet = 1;
-Q.wurttemberg_leader = "Eugen Bolz";
+Q.wurttemberg_leader = "Wilhelm Bazille";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.wurttemberg_leverage = 0;
