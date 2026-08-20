@@ -296,12 +296,6 @@ window.calculateBadenLandtagResults = function(qualities) {
     }
     q.baden_landtag_seat_allocation_valid = q.baden_landtag_total_seats == badenSeatCount ? 1 : 0;
 };
-window.calculateBadenLandtagResults(Q);
-if (typeof window.updateBadenCoalitionOptions === 'function') {
-    window.updateBadenCoalitionOptions(Q);
-}
-
-
 
 window.updateBadenCoalitionOptions = function(qualities) {
     var q = qualities || Q;

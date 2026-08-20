@@ -192,6 +192,15 @@ Q.baden_majority_threshold = 45;
 // TODO(baden-election): Future version should randomize Baden seat count.
 Q.baden_landtag_total_seats = 88;
 Q.baden_landtag_seat_allocation_valid = 1;
+Q.baden_z_r = 38;
+Q.baden_spd_r = 22;
+Q.baden_dnvp_r = 8;
+Q.baden_dvp_r = 8;
+Q.baden_ddp_r = 8;
+Q.baden_kpd_r = 3;
+Q.baden_wp_r = 1;
+Q.baden_nsdap_r = 0;
+Q.baden_other_r = 0;
 Q.bremen_government = 5;
 Q.bremen_majority_cabinet = 1;
 Q.bremen_leader = "Theodor Spitta";
@@ -461,6 +470,15 @@ Q.baden_majority_threshold = 45;
 // TODO(baden-election): Future version should randomize Baden seat count.
 Q.baden_landtag_total_seats = 88;
 Q.baden_landtag_seat_allocation_valid = 1;
+Q.baden_z_r = 38;
+Q.baden_spd_r = 22;
+Q.baden_dnvp_r = 8;
+Q.baden_dvp_r = 8;
+Q.baden_ddp_r = 8;
+Q.baden_kpd_r = 3;
+Q.baden_wp_r = 1;
+Q.baden_nsdap_r = 0;
+Q.baden_other_r = 0;
 Q.bremen_government = 5;
 Q.bremen_majority_cabinet = 1;
 Q.bremen_leader = "Theodor Spitta";
@@ -884,6 +902,15 @@ Q.baden_majority_threshold = 45;
 // TODO(baden-election): Future version should randomize Baden seat count.
 Q.baden_landtag_total_seats = 88;
 Q.baden_landtag_seat_allocation_valid = 1;
+Q.baden_z_r = 38;
+Q.baden_spd_r = 22;
+Q.baden_dnvp_r = 8;
+Q.baden_dvp_r = 8;
+Q.baden_ddp_r = 8;
+Q.baden_kpd_r = 3;
+Q.baden_wp_r = 1;
+Q.baden_nsdap_r = 0;
+Q.baden_other_r = 0;
 Q.bremen_government = 5;
 Q.bremen_majority_cabinet = 1;
 Q.bremen_leader = "Theodor Spitta";
@@ -1379,9 +1406,6 @@ for (var initialVoteShareParty of initialVoteShareParties) {
     Q['old_' + initialVoteShareParty + '_votes_disp'] = Q['old_' + initialVoteShareParty + '_votes'].toFixed(1);
 }
 
-if (typeof window !== 'undefined' && typeof window.calculateBadenLandtagResults === 'function') {
-    window.calculateBadenLandtagResults(Q);
-}
 if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions === 'function') {
     window.updateBadenCoalitionOptions(Q);
 }
