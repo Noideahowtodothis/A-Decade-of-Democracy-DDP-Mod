@@ -1482,6 +1482,10 @@ if (typeof window !== 'undefined' && typeof window.updateBadenCoalitionOptions =
     window.updateBadenCoalitionOptions(Q);
 }
 
+if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') {
+    window.updateWurttembergCoalitionOptions(Q);
+}
+
 if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') {
     window.updateSaxonyCoalitionOptions(Q);
 }
