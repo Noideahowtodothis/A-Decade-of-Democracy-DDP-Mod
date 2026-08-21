@@ -1621,9 +1621,6 @@ if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions 
     window.updateSaxonyCoalitionOptions(Q);
 }
 
-if (typeof window !== 'undefined' && typeof window.calculateThuringiaLandtagResults === 'function') {
-    window.calculateThuringiaLandtagResults(Q);
-}
 if (typeof window !== 'undefined' && typeof window.updateThuringiaCoalitionOptions === 'function') {
     window.updateThuringiaCoalitionOptions(Q);
 }
