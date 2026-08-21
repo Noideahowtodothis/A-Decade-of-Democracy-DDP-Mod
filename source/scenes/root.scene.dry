@@ -999,6 +999,12 @@ Q.prussian_government = 1;
 Q.prussia_government = 1;
 Q.prussia_majority_cabinet = 0;
 Q.prussia_leader = "Otto Braun";
+Q.prussia_spd_in_government = 1;
+Q.prussia_z_in_government = 1;
+Q.prussia_ddp_in_government = 1;
+Q.prussia_dvp_in_government = 0;
+Q.prussia_dnvp_in_government = 0;
+Q.prussia_nsdap_in_government = 0;
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.prussia_leverage = 0;
