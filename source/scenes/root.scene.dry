@@ -1219,7 +1219,7 @@ Q.lubeck_dvp_r = 0;
 Q.lubeck_hvb_r = 8;
 Q.lubeck_z_r = 0;
 Q.lubeck_other_r = 0;
-Q.mecklenburg_schwerin_government = 0;
+Q.mecklenburg_schwerin_government = 4;
 Q.mecklenburg_schwerin_majority_cabinet = 0;
 Q.mecklenburg_schwerin_leader = "Joachim von Brandenstein";
 
