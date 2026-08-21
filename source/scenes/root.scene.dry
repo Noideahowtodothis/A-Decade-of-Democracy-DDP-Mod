@@ -1647,6 +1647,12 @@ if (typeof window !== 'undefined' && typeof window.updateThuringiaCoalitionOptio
     window.updateThuringiaCoalitionOptions(Q);
 }
 
+if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') {
+    var startupOldenburgLeader = Q.oldenburg_leader;
+    window.updateOldenburgCoalitionOptions(Q);
+    Q.oldenburg_leader = startupOldenburgLeader;
+}
+
 if (typeof window !== 'undefined' && typeof window.calculateMecklenburgSchwerinLandtagResults === 'function') {
     window.calculateMecklenburgSchwerinLandtagResults(Q);
 }
