@@ -1661,11 +1661,10 @@ if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptio
     Q.oldenburg_leader = startupOldenburgLeader;
 }
 
-if (typeof window !== 'undefined' && typeof window.calculateMecklenburgSchwerinLandtagResults === 'function') {
-    window.calculateMecklenburgSchwerinLandtagResults(Q);
-}
 if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') {
+    var startupMecklenburgSchwerinLeader = Q.mecklenburg_schwerin_leader;
     window.updateMecklenburgSchwerinCoalitionOptions(Q);
+    Q.mecklenburg_schwerin_leader = startupMecklenburgSchwerinLeader;
 }
 
 // Historical May 1925 Landtag composition. The NSDAP bucket represents the NSFP;
