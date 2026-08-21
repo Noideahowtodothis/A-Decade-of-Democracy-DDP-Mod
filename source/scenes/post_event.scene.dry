@@ -1429,6 +1429,7 @@ if (typeof window !== 'undefined') {
         q.wurttemberg_nsdap_in_government = selected.parties.indexOf('NSDAP') >= 0 ? 1 : 0;
         q.wurttemberg_other_in_government = selected.parties.indexOf('Other') >= 0 ? 1 : 0;
     };
+    window.updateWurttembergCoalitionOptions(Q);
     window.calculateLubeckLandtagResults = function(qualities) {
         var q = qualities || Q;
         var parties = ['spd', 'kpd', 'ddp', 'dvp', 'dnvp', 'nsdap', 'hvb', 'z', 'other'];
