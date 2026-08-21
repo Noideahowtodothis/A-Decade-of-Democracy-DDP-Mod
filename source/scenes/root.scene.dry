@@ -1613,6 +1613,10 @@ if (typeof window !== 'undefined' && typeof window.updateBremenCoalitionOptions 
     window.updateBremenCoalitionOptions(Q);
 }
 
+if (typeof window !== 'undefined' && typeof window.updateHamburgCoalitionOptions === 'function') {
+    window.updateHamburgCoalitionOptions(Q);
+}
+
 if (typeof window !== 'undefined' && typeof window.updateWurttembergCoalitionOptions === 'function') {
     window.updateWurttembergCoalitionOptions(Q);
 }
