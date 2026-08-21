@@ -302,6 +302,9 @@ Q.saxony_ddp_r = 8;
 Q.saxony_wp_r = 0;
 Q.saxony_nsdap_r = 0;
 Q.saxony_other_r = 0;
+if (typeof window !== 'undefined' && typeof window.updateSaxonyCoalitionOptions === 'function') {
+    window.updateSaxonyCoalitionOptions(Q);
+}
 Q.oldenburg_government = 3;
 Q.oldenburg_majority_cabinet = 0;
 Q.oldenburg_leader = "";
