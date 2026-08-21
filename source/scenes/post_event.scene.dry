@@ -1561,7 +1561,8 @@ if (typeof window !== 'undefined') {
             {id:5,key:'ddp_dnvp_z_dvp',name:'DDP-DNVP-Z-DVP',parties:'DDP + DNVP + Z + DVP',seats:(Number(q.oldenburg_ddp_r)||0)+(Number(q.oldenburg_dnvp_r)||0)+(Number(q.oldenburg_z_r)||0)+(Number(q.oldenburg_dvp_r)||0)},
             {id:6,key:'dnvp_z_dvp_cnbl',name:'DNVP-Z-DVP-CNBL',parties:'DNVP + Z + DVP + CNBL',seats:(Number(q.oldenburg_dnvp_r)||0)+(Number(q.oldenburg_z_r)||0)+(Number(q.oldenburg_dvp_r)||0)+(Number(q.oldenburg_cnbl_r)||0)},
             {id:7,key:'nsdap_dnvp',name:'NSDAP-DNVP',parties:'NSDAP + DNVP',seats:(Number(q.oldenburg_nsdap_r)||0)+(Number(q.oldenburg_dnvp_r)||0)},
-            {id:8,key:'nsdap_majority',name:'NSDAP Majority',parties:'NSDAP',seats:(Number(q.oldenburg_nsdap_r)||0)}
+            {id:8,key:'nsdap_majority',name:'NSDAP Majority',parties:'NSDAP',seats:(Number(q.oldenburg_nsdap_r)||0)},
+            {id:9,key:'z_dvp_dnvp',name:'Z-DVP-DNVP',parties:'Z + DVP + DNVP',seats:(Number(q.oldenburg_z_r)||0)+(Number(q.oldenburg_dvp_r)||0)+(Number(q.oldenburg_dnvp_r)||0)}
         ];
 
         var anyMajority = 0;
