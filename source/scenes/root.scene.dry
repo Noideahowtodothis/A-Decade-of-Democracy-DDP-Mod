@@ -1017,9 +1017,9 @@ Q.baden_kpd_r = 3;
 Q.baden_wp_r = 1;
 Q.baden_nsdap_r = 0;
 Q.baden_other_r = 0;
-Q.bremen_government = 5;
+Q.bremen_government = 6;
 Q.bremen_majority_cabinet = 1;
-Q.bremen_leader = "Theodor Spitta";
+Q.bremen_leader = "Martin Donandt";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.bremen_leverage = 0;
