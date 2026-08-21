@@ -1137,7 +1137,9 @@ if (typeof window !== 'undefined') {
         q.bremen_majority_cabinet = selected.seats >= threshold ? 1 : 0;
         q.bremen_current_government_status = q.bremen_majority_cabinet ? 'Majority' : 'Minority';
     };
-    window.calculateBremenLandtagResults(Q);
+    if (Q.bremen_spd_result_votes !== undefined) {
+        window.calculateBremenLandtagResults(Q);
+    }
 
     // Calculate Hamburg Bürgerschaft/Landtag support from federal party support using Hamburg party weights.
     window.calculateHamburgLandtagResults = function(qualities) {
@@ -1249,7 +1251,9 @@ if (typeof window !== 'undefined') {
         q.hamburg_current_government_status = q.hamburg_majority_cabinet ? 'Majority' : 'Minority';
         q.hamburg_leader_default = selected.parties.indexOf('SPD') >= 0 ? 'Rudolf Ross' : (selected.parties.indexOf('DDP') >= 0 ? 'Carl Wilhelm Petersen' : (selected.parties.indexOf('DVP') >= 0 ? 'Walther Dauch' : ''));
     };
-    window.calculateHamburgLandtagResults(Q);
+    if (Q.hamburg_spd_result_votes !== undefined) {
+        window.calculateHamburgLandtagResults(Q);
+    }
 
     // Calculate Saxony Landtag support from federal party support using Saxony party weights.
     // Saxony has a state-only ASPD split from the weighted SPD pool.
@@ -1326,7 +1330,9 @@ if (typeof window !== 'undefined') {
         }
         q.saxony_landtag_seat_allocation_valid = q.saxony_landtag_total_seats == saxonySeatCount ? 1 : 0;
     };
-    window.calculateSaxonyLandtagResults(Q);
+    if (Q.saxony_spd_result_votes !== undefined) {
+        window.calculateSaxonyLandtagResults(Q);
+    }
 
     
     window.calculateWurttembergLandtagResults = function(qualities) {
@@ -1496,7 +1502,9 @@ if (typeof window !== 'undefined') {
         var currentYear = Number(q.year) || 0;
         q.lubeck_leader_default = q.lubeck_nsdap_in_government ? 'Otto-Heinrich Drechsler' : (q.lubeck_spd_in_government ? 'Paul Löwigt' : (q.lubeck_hvb_in_government ? (currentYear >= 1928 ? 'Rudolf Keibel' : 'Johann Martin Andreas Neumann') : (q.lubeck_dvp_in_government ? (q.lubeck_spd_in_government ? 'Carl Heinsohn' : 'Hans Ewers') : (q.lubeck_ddp_in_government ? 'Heinrich Eckholdt' : ''))));
     };
-    window.calculateLubeckLandtagResults(Q);
+    if (Q.lubeck_spd_result_votes !== undefined) {
+        window.calculateLubeckLandtagResults(Q);
+    }
 
     window.calculateOldenburgLandtagResults = function(qualities) {
         var q = qualities || Q;
@@ -1631,7 +1639,9 @@ if (typeof window !== 'undefined') {
             q.oldenburg_leader = 'Eugen von Finckh';
         }
     };
-    window.calculateOldenburgLandtagResults(Q);
+    if (Q.oldenburg_spd_result_votes !== undefined) {
+        window.calculateOldenburgLandtagResults(Q);
+    }
 
 window.calculatePrussianLandtagResults = function(qualities) {
         var q = qualities || Q;
@@ -1725,7 +1735,9 @@ window.calculatePrussianLandtagResults = function(qualities) {
         q.prussia_nsdap_in_government = selected.parties.indexOf('NSDAP') !== -1 ? 1 : 0;
         q.spd_prussia = Number(q.prussia_government) === 1 || Number(q.prussia_government) === 2 ? 1 : 0;
     };
-    window.calculatePrussianLandtagResults(Q);
+    if (Q.prussia_spd_result_votes !== undefined) {
+        window.calculatePrussianLandtagResults(Q);
+    }
 }
 
 
