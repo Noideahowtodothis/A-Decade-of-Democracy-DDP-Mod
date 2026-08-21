@@ -74,6 +74,7 @@ A coalition is selectable if it controls at least **29** of the **56** Landtag s
 - @thuringia_select_ddp_dvp_dnvp_landbund
 - @thuringia_select_ddp_dvp_dnvp_landbund_nsdap
 - @thuringia_select_dvp_dnvp_landbund_nsdap
+- @thuringia_select_dvp_dnvp_landbund
 - @new_thuringia_elections: Call new Thuringia Landtag elections.
 - @root: Continue without changing the Thuringia government.
 
@@ -124,6 +125,13 @@ title: DVP-DNVP-Landbund-NSDAP
 subtitle: DVP + DNVP + Landbund + NSDAP — [+ thuringia_dvp_dnvp_landbund_nsdap_coalition_seats +] / 56 — [+ thuringia_dvp_dnvp_landbund_nsdap_coalition_status +]
 view-if: thuringia_dvp_dnvp_landbund_nsdap_coalition_selectable = 1
 on-arrival: {! Q.thuringia_government = 7; window.updateThuringiaCoalitionOptions(Q); !}
+go-to: thuringia_leader_selection
+
+@thuringia_select_dvp_dnvp_landbund
+title: DVP-DNVP-Landbund
+subtitle: DVP + DNVP + Landbund — [+ thuringia_dvp_dnvp_landbund_coalition_seats +] / 56 — [+ thuringia_dvp_dnvp_landbund_coalition_status +]
+view-if: thuringia_dvp_dnvp_landbund_coalition_selectable = 1
+on-arrival: {! Q.thuringia_government = 8; window.updateThuringiaCoalitionOptions(Q); !}
 go-to: thuringia_leader_selection
 
 @new_thuringia_elections
@@ -195,6 +203,7 @@ else if (gov === 4) { coalitionParties = ['spd', 'ddp', 'dvp']; }
 else if (gov === 5) { coalitionParties = ['ddp', 'dvp', 'dnvp', 'landbund']; }
 else if (gov === 6) { coalitionParties = ['ddp', 'dvp', 'dnvp', 'landbund', 'nsdap']; }
 else if (gov === 7) { coalitionParties = ['dvp', 'dnvp', 'landbund', 'nsdap']; }
+else if (gov === 8) { coalitionParties = ['dvp', 'dnvp', 'landbund']; }
 
 var majorityThreshold = Math.floor(totalSeats / 2) + 1;
 var pivotal = (coalitionSeats >= majorityThreshold && (coalitionSeats - ddpSeats) < majorityThreshold) ? 2 : 0;
