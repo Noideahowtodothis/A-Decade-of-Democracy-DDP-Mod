@@ -339,9 +339,13 @@ Q.wurttemberg_dvp_r = 3;
 Q.wurttemberg_nsdap_r = 3;
 Q.wurttemberg_csvd_r = 0;
 Q.wurttemberg_other_r = 0;
-Q.lubeck_government = 3;
-Q.lubeck_majority_cabinet = 1;
-Q.lubeck_leader = "Rudolf Keibel";
+Q.lubeck_government = 6;
+Q.lubeck_current_government_name = "SPD-HVB";
+Q.lubeck_current_government_parties = "SPD + HVB";
+Q.lubeck_current_government_seats = 36;
+Q.lubeck_current_government_status = "Minority";
+Q.lubeck_majority_cabinet = 0;
+Q.lubeck_leader = "Johann Martin Andreas Neumann";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.lubeck_leverage = 0;
@@ -659,9 +663,13 @@ Q.wurttemberg_dvp_r = 3;
 Q.wurttemberg_nsdap_r = 3;
 Q.wurttemberg_csvd_r = 0;
 Q.wurttemberg_other_r = 0;
-Q.lubeck_government = 3;
-Q.lubeck_majority_cabinet = 1;
-Q.lubeck_leader = "Rudolf Keibel";
+Q.lubeck_government = 6;
+Q.lubeck_current_government_name = "SPD-HVB";
+Q.lubeck_current_government_parties = "SPD + HVB";
+Q.lubeck_current_government_seats = 36;
+Q.lubeck_current_government_status = "Minority";
+Q.lubeck_majority_cabinet = 0;
+Q.lubeck_leader = "Johann Martin Andreas Neumann";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.lubeck_leverage = 0;
@@ -1133,9 +1141,13 @@ Q.wurttemberg_dvp_r = 3;
 Q.wurttemberg_nsdap_r = 3;
 Q.wurttemberg_csvd_r = 0;
 Q.wurttemberg_other_r = 0;
-Q.lubeck_government = 3;
-Q.lubeck_majority_cabinet = 1;
-Q.lubeck_leader = "Rudolf Keibel";
+Q.lubeck_government = 6;
+Q.lubeck_current_government_name = "SPD-HVB";
+Q.lubeck_current_government_parties = "SPD + HVB";
+Q.lubeck_current_government_seats = 36;
+Q.lubeck_current_government_status = "Minority";
+Q.lubeck_majority_cabinet = 0;
+Q.lubeck_leader = "Johann Martin Andreas Neumann";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.lubeck_leverage = 0;
