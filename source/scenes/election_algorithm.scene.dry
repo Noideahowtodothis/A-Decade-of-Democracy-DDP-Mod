@@ -603,6 +603,8 @@ window.updateThuringiaCoalitionOptions = function(qualities) {
     q.thuringia_other_in_government = selected.parties.indexOf('Other') >= 0 ? 1 : 0;
 };
 
+window.updateThuringiaCoalitionOptions(Q);
+
 window.calculateThuringiaLandtagResults(Q);
 
 // Calculate Oldenburg Landtag support from federal party support using Oldenburg party weights and DNVP/CNBL split.
