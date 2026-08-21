@@ -531,6 +531,7 @@ window.updateHamburgCoalitionOptions = function(qualities) {
     q.hamburg_current_government_status = q.hamburg_majority_cabinet ? 'Majority' : 'Minority';
     q.hamburg_leader_default = selected.parties.indexOf('SPD') >= 0 ? 'Rudolf Ross' : (selected.parties.indexOf('DDP') >= 0 ? 'Carl Wilhelm Petersen' : (selected.parties.indexOf('DVP') >= 0 ? 'Walther Dauch' : ''));
 };
+window.updateHamburgCoalitionOptions(Q);
 window.calculateHamburgLandtagResults(Q);
 
 
