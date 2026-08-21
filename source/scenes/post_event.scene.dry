@@ -1137,6 +1137,7 @@ if (typeof window !== 'undefined') {
         q.bremen_majority_cabinet = selected.seats >= threshold ? 1 : 0;
         q.bremen_current_government_status = q.bremen_majority_cabinet ? 'Majority' : 'Minority';
     };
+    window.updateBremenCoalitionOptions(Q);
     if (Q.bremen_spd_result_votes !== undefined) {
         window.calculateBremenLandtagResults(Q);
     }
