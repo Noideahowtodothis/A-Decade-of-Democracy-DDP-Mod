@@ -1468,7 +1468,8 @@ if (typeof window !== 'undefined') {
             {id:2,key:'spd_ddp_dvp',name:'SPD-DDP-DVP',parties:'SPD + DDP + DVP',seats:(Number(q.lubeck_spd_r)||0)+(Number(q.lubeck_ddp_r)||0)+(Number(q.lubeck_dvp_r)||0)},
             {id:3,key:'ddp_dvp_hvb',name:'DDP-DVP-HVB',parties:'DDP + DVP + HVB',seats:(Number(q.lubeck_ddp_r)||0)+(Number(q.lubeck_dvp_r)||0)+(Number(q.lubeck_hvb_r)||0)},
             {id:4,key:'ddp_dvp_dnvp_hvb',name:'DDP-DVP-DNVP-HVB',parties:'DDP + DVP + DNVP + HVB',seats:(Number(q.lubeck_ddp_r)||0)+(Number(q.lubeck_dvp_r)||0)+(Number(q.lubeck_dnvp_r)||0)+(Number(q.lubeck_hvb_r)||0)},
-            {id:5,key:'dvp_dnvp_nsdap',name:'DVP-DNVP-NSDAP',parties:'DVP + DNVP + NSDAP',seats:(Number(q.lubeck_dvp_r)||0)+(Number(q.lubeck_dnvp_r)||0)+(Number(q.lubeck_nsdap_r)||0)}
+            {id:5,key:'dvp_dnvp_nsdap',name:'DVP-DNVP-NSDAP',parties:'DVP + DNVP + NSDAP',seats:(Number(q.lubeck_dvp_r)||0)+(Number(q.lubeck_dnvp_r)||0)+(Number(q.lubeck_nsdap_r)||0)},
+            {id:6,key:'spd_hvb',name:'SPD-HVB',parties:'SPD + HVB',seats:(Number(q.lubeck_spd_r)||0)+(Number(q.lubeck_hvb_r)||0)}
         ];
         var anyMajority = 0;
         for (var i=0;i<options.length;i++) { if (options[i].seats >= threshold) { anyMajority = 1; } }
