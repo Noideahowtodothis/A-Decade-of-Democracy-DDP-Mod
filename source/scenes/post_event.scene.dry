@@ -1648,6 +1648,7 @@ if (typeof window !== 'undefined') {
             q.oldenburg_leader = 'Eugen von Finckh';
         }
     };
+    window.updateOldenburgCoalitionOptions(Q);
     if (Q.oldenburg_spd_result_votes !== undefined) {
         window.calculateOldenburgLandtagResults(Q);
     }
