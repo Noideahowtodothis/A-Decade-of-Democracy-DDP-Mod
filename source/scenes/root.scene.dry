@@ -1126,7 +1126,7 @@ Q.saxony_landtag_total_seats = 96;
 Q.saxony_landtag_seat_allocation_valid = 1;
 Q.oldenburg_government = 9;
 Q.oldenburg_majority_cabinet = 0;
-Q.oldenburg_leader = "";
+Q.oldenburg_leader = "Eugen von Finckh";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.oldenburg_leverage = 0;
