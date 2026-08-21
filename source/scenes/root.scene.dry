@@ -1244,6 +1244,14 @@ for (var mecklenburgSchwerinParty of Q.mecklenburg_schwerin_parties) {
     Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seats'] = 0;
     Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seat_share_disp'] = '0.0';
 }
+Q.mecklenburg_schwerin_spd_r = 12;
+Q.mecklenburg_schwerin_ddp_r = 2;
+Q.mecklenburg_schwerin_dvp_r = 4;
+Q.mecklenburg_schwerin_wp_r = 1;
+Q.mecklenburg_schwerin_dnvp_r = 15;
+Q.mecklenburg_schwerin_kpd_r = 7;
+Q.mecklenburg_schwerin_nsdap_r = 10;
+Q.mecklenburg_schwerin_z_r = 0;
 Q.mecklenburg_schwerin_current_government_name = '';
 Q.mecklenburg_schwerin_current_government_parties = '';
 Q.mecklenburg_schwerin_current_government_seats = 0;
