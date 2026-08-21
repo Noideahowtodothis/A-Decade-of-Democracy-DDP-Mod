@@ -1094,7 +1094,8 @@ if (typeof window !== 'undefined') {
             {id: 2, key: 'spd_kpd', name: 'SPD-KPD', parties: 'SPD + KPD', seats: (Number(q.bremen_spd_r) || 0) + (Number(q.bremen_kpd_r) || 0)},
             {id: 3, key: 'spd_ddp', name: 'SPD-DDP', parties: 'SPD + DDP', seats: (Number(q.bremen_spd_r) || 0) + (Number(q.bremen_ddp_r) || 0)},
             {id: 4, key: 'spd_ddp_dvp', name: 'SPD-DDP-DVP', parties: 'SPD + DDP + DVP', seats: (Number(q.bremen_spd_r) || 0) + (Number(q.bremen_ddp_r) || 0) + (Number(q.bremen_dvp_r) || 0)},
-            {id: 5, key: 'dvp_dnvp_ddp_hausbesitzer', name: 'DVP-DNVP-DDP-Hausbesitzer', parties: 'DVP + DNVP + DDP + Hausbesitzer', seats: (Number(q.bremen_dvp_r) || 0) + (Number(q.bremen_dnvp_r) || 0) + (Number(q.bremen_ddp_r) || 0) + (Number(q.bremen_hausbesitzer_r) || 0)}
+            {id: 5, key: 'dvp_dnvp_ddp_hausbesitzer', name: 'DVP-DNVP-DDP-Hausbesitzer', parties: 'DVP + DNVP + DDP + Hausbesitzer', seats: (Number(q.bremen_dvp_r) || 0) + (Number(q.bremen_dnvp_r) || 0) + (Number(q.bremen_ddp_r) || 0) + (Number(q.bremen_hausbesitzer_r) || 0)},
+            {id: 6, key: 'ddp_dvp', name: 'DDP-DVP', parties: 'DDP + DVP', seats: (Number(q.bremen_ddp_r) || 0) + (Number(q.bremen_dvp_r) || 0)}
         ];
         q.bremen_majority_threshold = threshold;
         var anyMajority = 0;
