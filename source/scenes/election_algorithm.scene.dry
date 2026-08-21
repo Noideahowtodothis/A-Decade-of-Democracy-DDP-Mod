@@ -780,6 +780,7 @@ window.updateMecklenburgSchwerinCoalitionOptions = function(qualities) {
     else if (q.mecklenburg_schwerin_dnvp_in_government) { q.mecklenburg_schwerin_leader = 'Karl Eschenburg'; }
     else if (q.mecklenburg_schwerin_dnvp_in_government) { q.mecklenburg_schwerin_leader = 'Joachim von Brandenstein'; }
 };
+window.updateMecklenburgSchwerinCoalitionOptions(Q);
 window.calculateMecklenburgSchwerinLandtagResults(Q);
 
 window.calculateOldenburgLandtagResults = function(qualities) {
