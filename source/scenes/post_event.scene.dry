@@ -340,13 +340,20 @@ if (Q.mecklenburg_schwerin_landtag_seat_allocation_valid == undefined) {
 if (Q.mecklenburg_schwerin_parties == undefined) {
     Q.mecklenburg_schwerin_parties = ['spd', 'ddp', 'dvp', 'wp', 'dnvp', 'kpd', 'nsdap', 'z'];
 }
+if (Q.mecklenburg_schwerin_dnvp_r == undefined) { Q.mecklenburg_schwerin_dnvp_r = 15; }
+if (Q.mecklenburg_schwerin_spd_r == undefined) { Q.mecklenburg_schwerin_spd_r = 12; }
+if (Q.mecklenburg_schwerin_nsdap_r == undefined) { Q.mecklenburg_schwerin_nsdap_r = 10; }
+if (Q.mecklenburg_schwerin_kpd_r == undefined) { Q.mecklenburg_schwerin_kpd_r = 7; }
+if (Q.mecklenburg_schwerin_dvp_r == undefined) { Q.mecklenburg_schwerin_dvp_r = 4; }
+if (Q.mecklenburg_schwerin_ddp_r == undefined) { Q.mecklenburg_schwerin_ddp_r = 2; }
+if (Q.mecklenburg_schwerin_wp_r == undefined) { Q.mecklenburg_schwerin_wp_r = 1; }
+if (Q.mecklenburg_schwerin_z_r == undefined) { Q.mecklenburg_schwerin_z_r = 0; }
 for (var mecklenburgSchwerinParty of Q.mecklenburg_schwerin_parties) {
     if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_raw'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_raw'] = 0; }
     if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes'] = 0; }
     if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_disp'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_disp'] = '0.0'; }
     if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_display'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_votes_display'] = '0.0'; }
     if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_result_votes'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_result_votes'] = 0; }
-    if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_r'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_r'] = 0; }
     if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seats'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seats'] = 0; }
     if (Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seat_share_disp'] == undefined) { Q['mecklenburg_schwerin_' + mecklenburgSchwerinParty + '_seat_share_disp'] = '0.0'; }
 }
