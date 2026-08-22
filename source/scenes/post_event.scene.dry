@@ -1637,7 +1637,9 @@ if (typeof window !== 'undefined') {
         } else if (selected.technocratic) {
             q.oldenburg_leader = 'Eugen von Finckh';
         } else if (q.oldenburg_dvp_in_government || q.oldenburg_dnvp_in_government) {
-            q.oldenburg_leader = 'Friedrich Cassebohm';
+            if (!(Number(q.oldenburg_government) === 9 && Number(q.time) === 1)) {
+                q.oldenburg_leader = 'Friedrich Cassebohm';
+            }
         } else if (q.oldenburg_z_in_government) {
             q.oldenburg_leader = 'Franz Driver';
         } else if (q.oldenburg_ddp_in_government) {
