@@ -1236,6 +1236,8 @@ Q.lubeck_z_r = 0;
 Q.lubeck_other_r = 0;
 Q.mecklenburg_schwerin_government = 4;
 Q.mecklenburg_schwerin_leader = "Joachim von Brandenstein";
+Q.mecklenburg_schwerin_dvp_in_government = 1;
+Q.mecklenburg_schwerin_dnvp_in_government = 1;
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.mecklenburg_schwerin_leverage = 0;
