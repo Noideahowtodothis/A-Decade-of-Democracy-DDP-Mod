@@ -1132,6 +1132,15 @@ Q.thuringia_landtag_seat_count = 56;
 Q.thuringia_landtag_total_seats = 56;
 Q.thuringia_landtag_seat_allocation_valid = 1;
 Q.thuringia_landbund_party_name = "Thüringer Landbund";
+Q.thuringia_current_government_name = "DVP-DNVP-Landbund";
+Q.thuringia_current_government_parties = "DVP + DNVP + Thüringer Landbund";
+Q.thuringia_current_government_seats = 25;
+Q.thuringia_majority_cabinet = 0;
+Q.thuringia_current_government_status = "Minority";
+
+Q.thuringia_dvp_in_government = 1;
+Q.thuringia_dnvp_in_government = 1;
+Q.thuringia_landbund_in_government = 1;
 Q.saxony_government = 4;
 Q.saxony_current_government_name = "ASPD-DVP-DDP";
 Q.saxony_current_government_parties = "ASPD + DVP + DDP";
