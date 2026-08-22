@@ -1691,8 +1691,9 @@ if (typeof window !== 'undefined' && typeof window.updateThuringiaCoalitionOptio
 }
 
 if (typeof window !== 'undefined' && typeof window.updateOldenburgCoalitionOptions === 'function') {
+    var preserveOldenburgStartupLeader = Number(Q.oldenburg_government) === 9 && Q.oldenburg_leader === "Eugen von Finckh";
     window.updateOldenburgCoalitionOptions(Q);
-    Q.oldenburg_leader = "Eugen von Finckh";
+    if (preserveOldenburgStartupLeader) { Q.oldenburg_leader = "Eugen von Finckh"; }
 }
 
 if (typeof window !== 'undefined' && typeof window.updateMecklenburgSchwerinCoalitionOptions === 'function') {
