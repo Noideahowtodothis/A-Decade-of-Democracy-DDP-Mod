@@ -1235,7 +1235,6 @@ Q.lubeck_hvb_r = 8;
 Q.lubeck_z_r = 0;
 Q.lubeck_other_r = 0;
 Q.mecklenburg_schwerin_government = 4;
-Q.mecklenburg_schwerin_majority_cabinet = 0;
 Q.mecklenburg_schwerin_leader = "Joachim von Brandenstein";
 
 // Represents the DDP's ability to influence or block policies within this Land government.
@@ -1267,10 +1266,11 @@ Q.mecklenburg_schwerin_dnvp_r = 15;
 Q.mecklenburg_schwerin_kpd_r = 7;
 Q.mecklenburg_schwerin_nsdap_r = 10;
 Q.mecklenburg_schwerin_z_r = 0;
-Q.mecklenburg_schwerin_current_government_name = '';
-Q.mecklenburg_schwerin_current_government_parties = '';
-Q.mecklenburg_schwerin_current_government_seats = 0;
-Q.mecklenburg_schwerin_current_government_status = 'Minority';
+Q.mecklenburg_schwerin_current_government_name = "DVP-DNVP";
+Q.mecklenburg_schwerin_current_government_parties = "DVP + DNVP";
+Q.mecklenburg_schwerin_current_government_seats = 19;
+Q.mecklenburg_schwerin_majority_cabinet = 0;
+Q.mecklenburg_schwerin_current_government_status = "Minority";
 
 // The array of forces - paramilitary groups
 // Number of members in 1928 (in thousands)
