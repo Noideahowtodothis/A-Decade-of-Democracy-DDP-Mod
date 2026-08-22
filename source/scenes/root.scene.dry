@@ -1110,6 +1110,15 @@ Q.bremen_hausbesitzer_party_name = "Hausbesitzer Party";
 Q.hamburg_government = 4;
 Q.hamburg_majority_cabinet = 1;
 Q.hamburg_leader = "Carl Wilhelm Petersen";
+Q.hamburg_current_government_name = "SPD-DDP-DVP";
+Q.hamburg_current_government_parties = "SPD + DDP + DVP";
+Q.hamburg_current_government_seats = 97;
+Q.hamburg_majority_cabinet = 1;
+Q.hamburg_current_government_status = "Majority";
+
+Q.hamburg_spd_in_government = 1;
+Q.hamburg_ddp_in_government = 1;
+Q.hamburg_dvp_in_government = 1;
 
 // Represents the DDP's ability to influence or block policies within this Land government.
 Q.hamburg_leverage = 0;
