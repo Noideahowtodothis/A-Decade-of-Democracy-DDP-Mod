@@ -36,7 +36,7 @@ Our proposal to offer inflation-adjusted compensation has met with approval from
 
 @none
 title: Let's let the Communists deal with it on their own
-on-arrival: rural_ddp -= 1; workers_ddp -= 2; old_middle_ddp += 1; dvp_relation += 5; spd_relation -= 5; pro_republic -= 2; expropriation_proposal = 0
+on-arrival: rural_ddp -= 1; workers_ddp -= 2; old_middle_ddp += 1; dvp_relation += 5; spd_relation -= 5; pro_republic -= 2; expropriation_proposal = 0; expropriation_implementation = 0
 
 Many within our party are pushing to support expropriation and view our silence as equivalent to condemnation. The SPD has announced that, in the absence of progress in the Reichstag they will move forward with the referendum. At least the DVP appreciates our silence.
 
