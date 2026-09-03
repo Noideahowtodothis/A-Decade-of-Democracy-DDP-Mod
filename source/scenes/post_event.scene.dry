@@ -577,6 +577,25 @@ for (var simplified_pair of Q.simplified_faction_pairs) {
     Q[simplified_pair.party + '_faction_total'] = Q[simplified_pair.left] + Q[simplified_pair.right];
     Q[simplified_pair.party + '_faction_balance'] = Q[simplified_pair.right] - Q[simplified_pair.left];
 }
+
+// Maintain the standardized NON-DDP PARTY INTERNAL STATE positions. These are
+// deliberately independent of compatibility faction pairs and have no gameplay
+// effects yet. The DDP retains its bespoke player-party state.
+if (!Q.non_ddp_internal_state_parties) {
+    Q.non_ddp_internal_state_parties = ['spd', 'z', 'bvp', 'dvp', 'wp', 'dnvp', 'kpd', 'nsdap'];
+}
+for (var internalStateParty of Q.non_ddp_internal_state_parties) {
+    var positionVariable = internalStateParty + '_position';
+    if (Q[positionVariable] === undefined || isNaN(Q[positionVariable])) {
+        Q[positionVariable] = 50;
+    }
+    Q[positionVariable] = Math.round(Q[positionVariable]);
+    if (Q[positionVariable] < 0) {
+        Q[positionVariable] = 0;
+    } else if (Q[positionVariable] > 100) {
+        Q[positionVariable] = 100;
+    }
+}
 if (!Q.core_state_variables) {
     Q.core_state_variables = [];
 }
