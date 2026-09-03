@@ -63,6 +63,16 @@ if (Q.startup_state_defaults_initialized !== 1 && Q.started !== 1) {
     Q.spd_left = 50;
     Q.spd_right = 50;
 
+    // NON-DDP PARTY INTERNAL STATE
+    // <party>_position = relative left-right position inside that party's own ideological range, 0-100.
+    // <party>_leader = current leader / dominant faction.
+    // <party>_ideology = current official ideology.
+    // The DDP is excluded and retains its bespoke player-party mechanics.
+    Q.non_ddp_internal_state_parties = ['spd', 'z', 'bvp', 'dvp', 'wp', 'dnvp', 'kpd', 'nsdap'];
+    for (var startupInternalStateParty of Q.non_ddp_internal_state_parties) {
+        Q[startupInternalStateParty + '_position'] = 50;
+    }
+
     Q.z_relation = 50;
     Q.bvp_relation = 50;
     Q.wp_relation = 50;
@@ -888,11 +898,11 @@ Q.reformist_dissent = 5;
 Q.neorevisionist_strength = 5;
 Q.neorevisionist_dissent = 10;
 
-// Simplified faction variables for party-level internal tendencies.
+// Compatibility-only simplified faction variables for party-level internal tendencies.
 // left = moderate/parliamentary tendency.
 // right = nationalist/authoritarian or radical tendency depending on party.
-// These qualities are registered separately with 0..100 clamps and can be
-// modified by events, checked in conditionals, or referenced from scripts.
+// Retain these qualities for existing saves and external scripts. New non-DDP
+// party work should use <party>_position; do not synchronize both models.
 Q.simplified_faction_variables = ['dnvp_left', 'dnvp_right', 'dvp_left', 'dvp_right', 'spd_left', 'spd_right'];
 Q.simplified_faction_pairs = [
     {party: 'dnvp', left: 'dnvp_left', right: 'dnvp_right'},
@@ -909,6 +919,16 @@ Q.dvp_left = 50;
 Q.dvp_right = 50;
 Q.spd_left = 50;
 Q.spd_right = 50;
+
+// NON-DDP PARTY INTERNAL STATE
+// <party>_position = relative left-right position inside that party's own ideological range, 0-100.
+// <party>_leader = current leader / dominant faction.
+// <party>_ideology = current official ideology.
+// The DDP is excluded and retains its bespoke player-party mechanics.
+Q.non_ddp_internal_state_parties = ['spd', 'z', 'bvp', 'dvp', 'wp', 'dnvp', 'kpd', 'nsdap'];
+for (var internalStateParty of Q.non_ddp_internal_state_parties) {
+    Q[internalStateParty + '_position'] = 50;
+}
 
 // secret events...
 Q.unions_independent = 0;
